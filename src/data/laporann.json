@@ -1,0 +1,3374 @@
+[
+ {
+  "No": 1,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "LCR Individual",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "15 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 2,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "LCR Konsolidasi",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 3,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "NSFR Individual",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "15 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 4,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "NSFR Konsolidasi",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 5,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Rencana Tindak Pemenuhan NSFR Individual",
+  "Periode_Laporan": "Insidentil Bulanan",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 6,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Rencana Tindak Pemenuhan NSFR Konsolidasi",
+  "Periode_Laporan": "Insidentil Bulanan",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 7,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "KPMM\/ATMR Individual",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "7 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 8,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "KPMM\/ATMR Konsolidasi",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "21 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 9,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "SBDK",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "7 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 10,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "BMPK\/BMPD - Individu (BUK\/UUS\/BUS)",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "15 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 11,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Publikasi Bulanan BUK\/BUS",
+  "Periode_Laporan": "Bulanan kecuali periode triwulanan tdk wajib",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 12,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Publikasi Triwulanan BUK\/BUS",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "15 bulan kedua, kecuali Des disampaikan di akhir Maret",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 13,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan Kualitas Aset dan Pembentukan PPA (Konsol)",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "15 bulan kedua",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 14,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Tax Amnesty",
+  "Periode_Laporan": "Mingguan",
+  "Batas_Waktu_Penyampaian": "Selasa",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 15,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Manajemen Risiko BUS (Konsolidasi) (tidak dilaporkan lagi)",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "15 bulan kedua",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 16,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Condensed Report-(BUK\/BUS)",
+  "Periode_Laporan": "Harian",
+  "Batas_Waktu_Penyampaian": "2 hari berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 17,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Condensed Report-(BUK\/UUS\/BUS)",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "7 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 18,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Jaringan Kantor (BUK\/BUS)",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "7 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 19,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Restrukturisasi Kredit\/Pembiayaan (BUK\/UUS\/BUS)",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "7 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 20,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Rasio Pengungkit (BUK)",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "7 dan 21 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 21,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "BPMK Konsolidasi (BUK)",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 22,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "RBB BUK\/BUS\/UUS",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "tanggal 30 November",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 23,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Kegitan Bank Kustodian (BUS\/BUK",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "7 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 24,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Kegiatan Agen Penjualan Efek Reksadana (BUS)",
+  "Periode_Laporan": "triwulanan",
+  "Batas_Waktu_Penyampaian": "tanggal 15 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 25,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Bancasurance (BUK\/BUS)",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "tanggal 15 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 26,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Realisasi RBB (BUS\/UUS)",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 27,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Pengawasan RBB (BUS)",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "Akhir 2 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 28,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan Outstanding Transaksi Structured Produk (BUK)",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "7 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 29,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan Rutin Aktivitas Keagenan Produk Keuangan Luar Negeri (BUK)",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "tanggal 15 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 30,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan Sensitivity to Market Risk – Suku Bunga",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "tanggal 15 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 31,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan Kewajiban Pemenuhan Modal Minimum (KPMM) ATMR\nRisiko Operasional",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "Tanggal 31 Januari pada Tahun Pelaporan",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 32,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laku Pandai (BUS\/BUK)",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 15 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 33,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan Penerapan Strategi Anti Fraud",
+  "Periode_Laporan": "Semesteran",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 34,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan Fraud Berdampak Signifikan",
+  "Periode_Laporan": "Insidentil",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 35,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan Anti Pencucian Uang dan Pencegahan Pendanaan Terorisme (APU PPT) Bank Umum",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "Akhir bulan Februari dan Agustus",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 36,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan Publikasi Suku Bunga Dasar Kredit BUK",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 7 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 37,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan pemantauan debitur hapus buku terbesar BUK",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 7 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 38,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan tindak lanjut 15 (lima belas) debitur non performing loans terbesar BUK",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 7 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 39,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan SDM Perbankan Indonesia",
+  "Periode_Laporan": "- Bulanan\n- Semesteran",
+  "Batas_Waktu_Penyampaian": "- Tanggal 15 bulan berikutnya\n- Tanggal 31 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 40,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BPR \/ BPRS",
+  "Nama_Laporan": "Laporan Bulanan BPR\/BPRS\n- Rutin\n- Koreksi atas inisiatif LJK tanpa denda\n- Koreksi atas permintaan pengawas",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "\n- Tanggal 10 bulan berikutnya\n- Tanggal 11 - 15 bulan berikutnya\n- 10 hari setelah tanggal surat pengawas",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 41,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BPR \/ BPRS",
+  "Nama_Laporan": "RBB BPR\/BPRS\n- Rutin\n- Koreksi atas inisiatif LJK tanpa denda\n- Koreksi atas permintaan pengawas",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "\n- Tanggal 15 Desember\n- Tanggal 30 Juni\n- 30 hari setelah tanggal surat pengawas",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 42,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BPR \/ BPRS",
+  "Nama_Laporan": "Pelaksanaan dan pengawasan RBB BPR\/BPRS",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "Tanggal 31 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 43,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BPR \/ BPRS",
+  "Nama_Laporan": "Profil Risiko BPR\/BPRS",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "Tanggal 31 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 44,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BPR \/ BPRS",
+  "Nama_Laporan": "Profil Risiko BPR\/BPRS",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "Tanggal 31 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 45,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "Laporan Aktivitas Bank Kustodian: Penyelesaian Transaksi Bank Kustodian",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "12 H pada bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 46,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "Laporan Aktivitas Bank Kustodian: Nilai Asset Under Custody",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "12 H pada bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 47,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "Laporan Hasil Pemeriksaan Operasional Akuntan Publik",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "90 H setelah laporan tahunan berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 48,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "Laporan pemenuhan Prinsip Syariah di Pasar Modal",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "mengikuti batas LK\/LKT",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 49,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "Laporan rencana kegiatan pengkinian data APU PPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "Akhir bulan Desember",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 50,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "Laporan realisasi pengkinian data APU PPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "Akhir bulan Desember",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 51,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "Kueisioner Penilaian Risiko TPPU dan TPPT Bank Kustodian",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "7\/28\/2023",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 52,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "action plan penerapan program APU dan PPT",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "5\/31\/2023",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 53,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "Laporan penyesuaian kebijakan dan prosedur penerapan program APU dan PPT",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "7 HK setelah perubahan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 54,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "Laporan perubahan atas action plan",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "7 HK setelah perubahan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 55,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "Laporan perubahan pejabat penanggung Jawab",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "untuk kebutuhan internal dan catatan tambahan pegawas",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 56,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Biro Administrasi Efek",
+  "Nama_Laporan": "Laporan Mingguan Kepemilikan Saham (Scrip & Scripless) dan Komposisi Pemilik Efek",
+  "Periode_Laporan": "Mingguan",
+  "Batas_Waktu_Penyampaian": "akhir minggu berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 57,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Biro Administrasi Efek",
+  "Nama_Laporan": "Laporan Bulanan Kepemilikan Saham atas Emiten atau Perusahaan Publik dan rekapitulasi yang telah dilaporkan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 58,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Biro Administrasi Efek",
+  "Nama_Laporan": "Laporan Kegiatan Operasional Tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan ketiga setelah tanggal laporan keuangan\ntahunan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 59,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Biro Administrasi Efek",
+  "Nama_Laporan": "Laporan Keuangan Tahunan Audited",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan ketiga setelah tanggal laporan keuangan\ntahunan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 60,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Biro Administrasi Efek",
+  "Nama_Laporan": "Penyampaian Laporan Emiten yang memperoleh penurunan tarif Pajak Penghasilan sebesar 5% lebih rendah dari tarif Pajak Penghasilan Wajib Pajak badan dalam negeri",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "tanggal 5 bulan Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 61,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Biro Administrasi Efek",
+  "Nama_Laporan": "Laporan hasil Evaluasi Komite Audit atas pelaksanaan pemberi jasa audit atas informasi keuangan historis tahunan oleh AP dan\/atau KAP",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "6 bulan setelah tahun buku (LKT)",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 62,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Biro Administrasi Efek",
+  "Nama_Laporan": "Laporan penunjukan AP dan\/atau KAP dalam rangka audit atas informasi keuangan historis tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "10 HK setelah penunjukan AP dan\/atau KAP",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 63,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Biro Administrasi Efek",
+  "Nama_Laporan": "Laporan Peristiwa Penting: Hasil RUPS",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "7 HK setelah peristiwa penting",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 64,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Biro Administrasi Efek",
+  "Nama_Laporan": "Laporan Peristiwa Penting: Perubahan Anggaran dasar BAE",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "7 HK setelah peristiwa penting",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 65,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Biro Administrasi Efek",
+  "Nama_Laporan": "Laporan Peristiwa Penting: Laporan Efek Warkat hilang",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "7 HK setelah peristiwa penting",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 66,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Biro Administrasi Efek",
+  "Nama_Laporan": "Laporan Peristiwa Penting: Laporan Pengaduan, Klaim, atau Gugatan Pemodal atas Hak yang melekat pada efek yang diadministrasikan",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "7 HK setelah peristiwa penting",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 67,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan Kegiatan Operasional Triwulanan (Maret, Juni, September, dan Desember)",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "10\/15\/2023",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 68,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan Keuangan Tahunan Audited",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "3\/31\/2023",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 69,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan hasil Evaluasi Komite Audit atas pelaksanaan pemberi jasa audit atas informasi keuangan historis tahunan oleh AP dan\/atau KAP",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "6 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 70,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan penunjukan AP dan\/atau KAP dalam rangka audit atas informasi keuangan historis tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "10 HK setelah penunjukan AP dan\/atau KAP",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 71,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan perubahan anggota direksi, anggota dewan komisaris, pejabat satu tingkat di bawah direksi dan\/atau Analis",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "7 HK setelah perubahan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 72,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan perubahan Metodologi Pemeringkatan",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "7 HK setelah perubahan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 73,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan penarikan hasil Peringkat",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "2 HK setelah penarikan Peringkat",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 74,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan perubahan pedoman perilaku",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "7 HK setelah perubahan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 75,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan perubahan berkaitan dengan:\n1. struktur organisasi\n2. alamat usaha\n3. identitas perusahaan\n4. anggaran dasar\n5. IMTA dan IKTA\n6. daftar khusus terkait pemegang saham perseroan",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "14 HK setelah perubahan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 76,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan penyampaian agenda RUPS",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "14 HK sebelum pemanggilan RUPS",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 77,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan ringkasan risalah RUPS",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "7 HK setelah tanggal penyelenggaraan RUPS",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 78,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Perusahaan Pemeringkat Efek",
+  "Nama_Laporan": "Laporan penyesuaian pedoman perilaku",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "7 HK setelah perubahan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 79,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Wali Amanat",
+  "Nama_Laporan": "Laporan tengah tahunan mengenai kegiatan Bank Umum yang melakukan kegiatan sebagai Wali Amanat",
+  "Periode_Laporan": "Tengah Tahunan",
+  "Batas_Waktu_Penyampaian": "30 H setelah periode pelaporan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 80,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Wali Amanat",
+  "Nama_Laporan": "Laporan tahunan mengenai Kegiatan Bank Umum yang melakukan kegiatan sebagai Wali Amanat",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "60 H setelah periode pelaporan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 81,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Wali Amanat",
+  "Nama_Laporan": "Laporan mengenai peristiwa penting menyangkut kegiatan perwaliamanatan",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "2 HK setelah terjadinya peristiwa atau sejak\ndiketahuinya peristiwa tersebut.",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 82,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Wali Amanat",
+  "Nama_Laporan": "Laporan penggantian Wali Amanat",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "2 HK setelah diangkatnya Wali Amanat baru",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 83,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Wali Amanat",
+  "Nama_Laporan": "Laporan perubahan pejabat penanggung jawab dan tenaga ahli",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "14 H hari setelah terjadinya perubahan\ndisertai dengan dokumen pendukung",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 84,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Wali Amanat",
+  "Nama_Laporan": "-Laporan Pembayaran\n-Laporan Pelanggaran\n-Laporan Penyelenggaraan Rapat Umum Pemegang Efek\n-Laporan Indikasi Kelalaian Emiten\n-Laporan Perubahan tentang Kegiatan Wali Amanat\n-Laporan Perubahan Insidentil Lainnya",
+  "Periode_Laporan": "Insidentil",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 85,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Wali Amanat",
+  "Nama_Laporan": "Laporan perubahan yang berkenaan dengan data dan informasi Bank Umum yang melakukan kegiatan sebagai Wali Amanat (*Laporan Perubahan Kelembagaan*)",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "14 H setelah terjadinya perubahan\ndisertai dengan dokumen pendukung",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 86,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Konsultan Hukum",
+  "Nama_Laporan": "Laporan Berkala Kegiatan Konsultan Hukum",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "15 Januari tahun berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 87,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Notaris",
+  "Nama_Laporan": "Laporan Berkala Kegiatan Notaris",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "15 Januari tahun berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 88,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Penilai",
+  "Nama_Laporan": "Laporan Berkala Kegiatan Penilai",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "15 Januari tahun berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 89,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Akuntan Publik\/Kantor Akuntan Publik",
+  "Nama_Laporan": "Laporan Kegiatan Pemberian Jasa - KAP (LKPJ-KAP)",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4\/15\/2023",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 90,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Bank Kustodian",
+  "Nama_Laporan": "Laporan Pelanggaran\/Ketidaksesuaian Pengelolaan Reksa Dana",
+  "Periode_Laporan": "insidentil",
+  "Batas_Waktu_Penyampaian": "2 hari bursa",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 91,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Ahli Syariah Pasar Modal (ASPM)",
+  "Nama_Laporan": "Laporan Kegiatan ASPM (“LK-ASPM”)",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "31 Januari tahun berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 92,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Tingkat Kesehatan Asuransi Jiwa",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 93,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Penialian Risiko APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "tanggal 31 Agustus",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 94,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Rencana kegiatan APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan Desember sebelum periode pengkinian data\n31 Desember",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 95,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Realisasi Pengkinian APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan\nJanuari setelah periode pengkinian data berakhir\n31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 96,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Rencana kegiatan APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan Desember sebelum periode pengkinian data\n31 Desember",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 97,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Realisasi Pengkinian APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan\nJanuari setelah periode pengkinian data berakhir\n31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 98,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tingkat Kesehatan Asuransi Umum dan Reasuransi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 99,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tingkat Kesehatan Asuransi Umum dan Reasuransi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 100,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Semesteran Realisasi Keuangan Asuransi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 101,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Semesteran Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 102,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Penilaian Sendiri Tingkat Kesehatan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "15 Feb untuk laporan TKS tahun sebelumnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 103,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Rencana Tindak Lanjut Penilaian Sendiri Tingkat Kesehatan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 104,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Penialian Risiko APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "tanggal 31 Agustus",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 105,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Rencana kegiatan APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan Desember sebelum periode pengkinian data\n31 Desember",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 106,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Realisasi Pengkinian APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan\nJanuari setelah periode pengkinian data berakhir\n31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 107,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan November tiap tahunnya \n30 November",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 108,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Semesteran Realisasi Keuangan Asuransi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 109,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Semesteran Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 110,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Penilaian Sendiri Tingkat Kesehatan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "15 Feb untuk laporan TKS tahun sebelumnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 111,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Rencana Tindak Lanjut Penilaian Sendiri Tingkat Kesehatan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 112,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Rencana kegiatan APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan Desember sebelum periode pengkinian data\n31 Desember",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 113,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Realisasi Pengkinian APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan\nJanuari setelah periode pengkinian data berakhir\n31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 114,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Semesteran Realisasi Keuangan Asuransi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 115,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Semesteran Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 116,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Penilaian Sendiri Tingkat Kesehatan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "15 Feb untuk laporan TKS tahun sebelumnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 117,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Rencana Tindak Lanjut Penilaian Sendiri Tingkat Kesehatan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 118,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PPI, UUS PPI",
+  "Nama_Laporan": "Laporan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 119,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PP,PPS,UUS",
+  "Nama_Laporan": "Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 120,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PP,PPS,UUS",
+  "Nama_Laporan": "Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 121,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PMV,PMVS, UUS",
+  "Nama_Laporan": "Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 122,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PMV,PMVS, UUS",
+  "Nama_Laporan": "Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 123,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PP,PPS,UUS",
+  "Nama_Laporan": "Laporan Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 November sebelum tahun rencana bisnis dimulai",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 124,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PP,PPS,UUS",
+  "Nama_Laporan": "Laporan Penyesuaian Rencana Bisnis",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "15 HK setelah tanggal surat pengawas",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 125,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PP,PPS,UUS",
+  "Nama_Laporan": "Laporan Perubahan Rencana Bisnis",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "hanya 1 kali paling lambat akhir Juni tahun berjalan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 126,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PMV,PMVS,UUS",
+  "Nama_Laporan": "Laporan Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 November sebelum tahun rencana bisnis dimulai",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 127,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PMV,PMVS, UUS",
+  "Nama_Laporan": "Laporan Penyesuaian Rencana Bisnis",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "15 HK setelah tanggal surat pengawas",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 128,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PMV,PMVS, UUS",
+  "Nama_Laporan": "Laporan Perubahan Rencana Bisnis",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "hanya 1 kali paling lambat akhir Juni tahun berjalan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 129,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PP,PPS,UUS",
+  "Nama_Laporan": "Laporan Self Assessment TKS PP",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "15 Feb untuk laporan TKS tahun sebelumnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 130,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PP,PPS,UUS",
+  "Nama_Laporan": "Laporan Pengkinian Self Assesment TKS PP",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "30 HK sejak tanggal pengkinian penilaian sendiri TKS",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 131,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PP, PMV (termasuk syariah dan UUS)",
+  "Nama_Laporan": "Laporan Penilaian Tingkat Risiko APU-PPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "31 Agustus (data yang dilaporkan adalah data Juni, periode yang diisi adalah periode Des)",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 132,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PP, PMV (termasuk syariah dan UUS)",
+  "Nama_Laporan": "Laporan Rencana Kegiatan Pengkinian APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "31 Desember sebelum tahun kegiatan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 133,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PP, PMV (termasuk syariah dan UUS)",
+  "Nama_Laporan": "Laporan Realisasi Pengkinian APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "31 Januari tahun berikutnya (untuk laporan Des)",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 134,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Lembaga Pembiayaan, P2P, LKK",
+  "Nama_Laporan": "Laporan Realisasi Penggunaan jasa AP dan KAP",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "6 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 135,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Lembaga Pembiayaan, P2P,LKK",
+  "Nama_Laporan": "Laporan Penunjukkan AP dan KAP",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "10 HK setelah perjanjian kerja antara Pihak dan KAP ditandatangani",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 136,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BP Tapera",
+  "Nama_Laporan": "Laporan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 137,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PT PNM, UUS",
+  "Nama_Laporan": "Laporan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 138,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "LKM, LKMS",
+  "Nama_Laporan": "Laporan Penunjukkan AP dan KAP",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "10 Hari Kerja setelah perjanjian kerjasama di tanda tangani",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 139,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "P2PL, P2PL Syariah",
+  "Nama_Laporan": "Laporan Penunjukkan AP dan KAP",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "10 Hari Kerja setelah perjanjian kerjasama di tanda tangani",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 140,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PT Pegadaian",
+  "Nama_Laporan": "Laporan Penunjukkan AP dan KAP",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "10 Hari Kerja setelah perjanjian kerjasama di tanda tangani",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 141,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PT Pegadaian, Pergadaian Swasta, \nPergadaian Swasta Syariah",
+  "Nama_Laporan": "Laporan Penilaian Tingkat Risiko APU-PPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "tanggal 31 Agustus",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 142,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PT Pegadaian, Pergadaian Swasta, \nPergadaian Swasta Syariah",
+  "Nama_Laporan": "Laporan Rencana Kegiatan Pengkinian APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan Desember sebelum periode pengkinian data\n31 Desember",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 143,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PT Pegadaian, Pergadaian Swasta, \nPergadaian Swasta Syariah",
+  "Nama_Laporan": "Laporan Realisasi Pengkinian APUPPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan\nJanuari setelah periode pengkinian data berakhir\n31 Januari",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 144,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU",
+  "Nama_Laporan": "Laporan Keuangan Berkelanjutan (Sustainable Finance)",
+  "Periode_Laporan": "Triwulanan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 145,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU, BPR\/BPRS",
+  "Nama_Laporan": "Laporan Penunjukan AP\/KAP",
+  "Periode_Laporan": "Tahunan",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 146,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "BU, BPR\/BPRS",
+  "Nama_Laporan": "Laporan Evaluasi atas Pemberian Jasa KAP",
+  "Periode_Laporan": "Tahunan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 147,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Pergadaian Swasta, \nPergadaian Swasta Syariah",
+  "Nama_Laporan": "Modul Laporan APU - PPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "3 Laporan:\npenilaian tingkat risiko APUPPT: \nrutin: 1 Juli s.d paling lambat 31 Agustus tahun pelaporan.\nkoreksi: 1 September s.d paling lambat 31 Oktober tahun pelaporan.\n\nrencana kegiatan pengkinian\nrutin: 1 November sampai dengan paling lambat 31 Desember tahun berjalan\nkoreksi: 1 Januari sampai dengan 31 Oktober tahun selanjutnya dengan tambahan validasi rentang waktu maksimal 7 HK (yang ditentukan oleh pengawas) dari tanggal surat penyesuaian rencana kegiatan pengkinian data dari PJK\n\nrealisasi pengkinian: \nrutin: 1 Januari sampai dengan 31 Januari untuk periode data tahun sebelumnya\nkoreksi: 1 Februari sampai dengan 31 Desember dengan tambahan validasi rentang waktu maksimal 7 HK (yang ditentukan oleh pengawas) dari tanggal surat penyesuaian realisasi pengkinian data dari PJK. Nomor Surat yang telah digunakan tidak dapat digunakan kembali",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 148,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PMV, PMVS",
+  "Nama_Laporan": "Modul Laporan APU - PPT",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "3 Laporan:\npenilaian tingkat risiko APUPPT: \nrutin: 1 Juli s.d paling lambat 31 Agustus tahun pelaporan.\nkoreksi: 1 September s.d paling lambat 31 Oktober tahun pelaporan.\n\nrencana kegiatan pengkinian\nrutin: 1 November sampai dengan paling lambat 31 Desember tahun berjalan\nkoreksi: 1 Januari sampai dengan 31 Oktober tahun selanjutnya dengan tambahan validasi rentang waktu maksimal 7 HK (yang ditentukan oleh pengawas) dari tanggal surat penyesuaian rencana kegiatan pengkinian data dari PJK\n\nrealisasi pengkinian: \nrutin: 1 Januari sampai dengan 31 Januari untuk periode data tahun sebelumnya\nkoreksi: 1 Februari sampai dengan 31 Desember dengan tambahan validasi rentang waktu maksimal 7 HK (yang ditentukan oleh pengawas) dari tanggal surat penyesuaian realisasi pengkinian data dari PJK. Nomor Surat yang telah digunakan tidak dapat digunakan kembali",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 149,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "Pergadaian Swasta, \nPergadaian Swasta Syariah",
+  "Nama_Laporan": "Modul Laporan AP - KAP",
+  "Batas_Waktu_Penyampaian": "Progress penyampaian laporan APOLO:\n1. Tanggal 1 Agustus 2023 telah dilaksanakan sosialisasi kepada Industri dengan Format lama\nakan diimplementasikan tahun 2024\n2. Saat ini masih koordinasi antara satker Pengaturan dan Pengawasan\nSurat S-2\/NB.013\/2023 tanggal 10 Februari 2023 - Hal: Sosialisasi Aplikasi APOLO modul AP\/KAP tanggal 14 Februari 2023\n",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 150,
+  "Aplikasi": "APOLO",
+  "Jenis_LJK": "PMV,PMVS, UUS",
+  "Nama_Laporan": "Modul Laporan AP - KAP",
+  "Batas_Waktu_Penyampaian": "Progress penyampaian laporan APOLO:\n1. Tanggal 1 Agustus 2023 telah dilaksanakan sosialisasi kepada Industri dengan Format lama\nakan diimplementasikan tahun 2024\n2. Saat ini masih koordinasi antara satker Pengaturan dan Pengawasan\nSurat S-2\/NB.013\/2023 tanggal 10 Februari 2023 - Hal: Sosialisasi Aplikasi APOLO modul AP\/KAP tanggal 14 Februari 2023\n",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 151,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE",
+  "Nama_Laporan": "Laporan Kegiatan Penjamin Emisi Efek",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "HK 12 bulan berikutnya (Juli dan Januari)",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 152,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan Kegiataan Perantara Perdagangan Efek",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "HK 12 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 153,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan Keuangan Tahunan (Audited)",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "31 Maret tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 154,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan Keuangan Tengah Tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "1, 2 atau 3 bulan sejak tengah\ntahun buku (sesuai jenis\nLKTT)",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 155,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan Akuntan atas Modal Kerja Bersih Disesuaikan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "31 Maret tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 156,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan Kegiatan di Lokasi Lain selain Kantor Pusat",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "7 Hari setelah periode laporan (7 juli dan 7 Januari)",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 157,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan penunjukan AP dan\/atau KAP",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "10 HK setelah penunjukan",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 158,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan hasil evaluasi Komite Audit",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 Juni tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 159,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB",
+  "Nama_Laporan": "Laporan penerapan Tata Kelola tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "15 Februari tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 160,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB",
+  "Nama_Laporan": "Revisi laporan penerapan Tata Kelola",
+  "Periode_Laporan": "setiap perubahan",
+  "Batas_Waktu_Penyampaian": "insidental",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 161,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB",
+  "Nama_Laporan": "Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "HK terakhir November tahun sebelumnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 162,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB",
+  "Nama_Laporan": "Laporan realisasi Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "15 Februari tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 163,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan berkala pelaksanaan kegiatan lain",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "31-Mar",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 164,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PPE AB",
+  "Nama_Laporan": "Laporan Rencana Pengkinian Data (APU PPT)",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "31 Desember tahun sebelumnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 165,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PPE AB",
+  "Nama_Laporan": "Laporan Realisasi Rencana Pengkinian Data (APU PPT)",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "31-Dec",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 166,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PPE AB",
+  "Nama_Laporan": "Kuesioner Manajemen Risiko Perusahaan Efek",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "15-Mar",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 167,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PPE AB, PPE Non AB, BANK, PPU",
+  "Nama_Laporan": "Laporan kegiatan berkala PPE-EBUS",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "HK 12 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 168,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "APEI",
+  "Nama_Laporan": "Laporan Rencana Kegiatan Tahunan Asosiasi PE",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "12-Jan",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 169,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "APEI",
+  "Nama_Laporan": "Laporan Realisasi Pelaksanaan Kegiatan Tengah Tahunan Asosiasi PE",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "12 Januari dan 12 Juli",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 170,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "APEI",
+  "Nama_Laporan": "Laporan Daftar Sertifikat Program Pendidikan Berkelanjutan Anggota Direksi Dan Anggota Dewan Komisaris Yang Diterbitkan Asosiasi PE",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "12 Januari dan 12 Juli",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 171,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan Profil Risiko Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "15 Agustus dan 15 Februari",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 172,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan Kecukupan Permodalan Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "15 Agustus dan 15 Februari",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 173,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan Penilaian Pelaksanaan Tata Kelola Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "15 Agustus dan 15 Februari",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 174,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PEE, PPE AB, PPE Non AB",
+  "Nama_Laporan": "Laporan Tahunan Pelaksanaan Tata Kelola Terintegrasi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "31 Mei tahun beriktunya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 175,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 176,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Keuangan Tahunan (Audited)",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 177,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Teknis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 178,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Aktuaris",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "setiap ada perubahan PDP",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 179,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Aktuaris Berkala",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 180,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Rencana Bisnis Dana Pensiun",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 November tahun sebelumnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 181,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Penyesuaian Rencana Bisnis",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "30 Juni tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 182,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Perubahan Rencana Bisnis",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "30 Juni tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 183,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 bulan setelahnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 184,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 bulan setelahnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 185,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Penilaian Tingkat Kesehatan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "15 Februari tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 186,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan Pelaksanaan Rencana Tindak atas Hasil Penilaian Sendiri Tingkat Kesehatan",
+  "Periode_Laporan": "Tahunan, disampaikan bersama laporan TKS",
+  "Batas_Waktu_Penyampaian": "15 Februari tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 187,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan pengaduan konsumen dan tindak lanjut pelayanan dan penyelesaian pengaduan konsumen;",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 188,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan penunjukan akuntan publik dan\/atau kantor akuntan publik dalam audit atas informasi keuangan historis tahunan;",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "10 hari kerja setelah penunjukkan dilakukan",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 189,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Dana Pensiun",
+  "Nama_Laporan": "Laporan hasil evaluasi komite audit terhadap pelaksanaan pemberian jasa audit atas informasi keuangan historis tahunan oleh akuntan publik dan\/atau kantor akuntan publik",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 190,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Penjaminan",
+  "Nama_Laporan": "Laporan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 191,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Penjaminan",
+  "Nama_Laporan": "Laporan Tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 192,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Penjaminan",
+  "Nama_Laporan": "Laporan Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 November tahun sebelumnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 193,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Penjaminan",
+  "Nama_Laporan": "Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 bulan setelahnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 194,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Keuangan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 195,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Keuangan Triwulanan",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 196,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Semesteran - Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 197,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Semesteran - Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 198,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Semesteran - Kecukupan Permodalan Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 199,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Semesteran - Penilaian Pelaksanaan Tata Kelola Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 200,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Semesteran - Profil Risiko Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 201,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Semesteran - Laporan Pemenuhan Kepemilikan Aktuaris",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 202,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Penempatan Reasuransi \/ Retrosesi Asuransi Jiwa",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 203,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Rencana Bisnis Asuransi Jiwa (Format Baru)",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 204,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Ringkasan Laporan Keuangan - Laporan Koran",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 205,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Publikasi Laporan Keberlanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 206,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Tahunan Audited KAP",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 207,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Hasil Evaluasi Komite Audit terhadap Pelaksanaan Pemberian Jasa Audit",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 208,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Penunjukan AP KAP",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 209,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Publikasi Laporan Tahunan Pelaksanaan Tata Kelola Terintegrasi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 210,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Rencana Aksi Keuangan Berkelanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 211,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Tahunan Keberlanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 212,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Tahunan Pelaksanaan Tata Kelola Terintegrasi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 213,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Tingkat Kesehatan Asuransi Jiwa",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 214,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Tahunan Aktuaris Tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 215,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Tahunan Bukti Sertifikat\/Bukti Lain Terkait Pemenuhan Syarat Keberlanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 216,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Tahunan Penerapan Tata Kelola",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 217,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Pengendalian dan Penerapan Strategi Anti Fraud",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 218,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Keuangan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 219,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Keuangan Triwulanan",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 220,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Semesteran - Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 221,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Semesteran - Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 222,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Semesteran - Kecukupan Permodalan Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 223,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Semesteran - Penilaian Pelaksanaan Tata Kelola Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 224,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Semesteran - Profil Risiko Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 225,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Semesteran - Laporan Pemenuhan Kepemilikan Aktuaris",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 226,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Penempatan Reasuransi \/ Retrosesi Asuransi Umum dan Reasuransi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 227,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Penempatan Reasuransi \/ Retrosesi Asuransi Umum dan Reasuransi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 228,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Ringkasan Laporan Keuangan - Laporan Koran",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 229,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan - Publikasi Laporan Keberlanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 230,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tahunan Audited KAP",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 231,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Hasil Evaluasi Komite Audit terhadap Pelaksanaan Pemberian Jasa Audit",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 232,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Penunjukan AP KAP",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 233,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Publikasi Laporan Tahunan Pelaksanaan Tata Kelola Terintegrasi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 234,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Rencana Aksi Keuangan Berkelanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 235,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tahunan Keberlanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 236,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tahunan Pelaksanaan Tata Kelola Terintegrasi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 237,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tingkat Kesehatan Asuransi Umum dan Reasuransi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 238,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tahunan Aktuaris Tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 239,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Tahunan Bukti Sertifikat\/Bukti Lain Terkait Pemenuhan Syarat Keberlanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 240,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan - Laporan Tahunan Penerapan Tata Kelola",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 241,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Pengendalian dan Penerapan Strategi Anti Fraud",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 242,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Keuangan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 243,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Keuangan Triwulanan",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 244,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Semesteran - Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 245,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Semesteran - Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 246,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Semesteran - Kecukupan Permodalan Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 247,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Semesteran - Penilaian Pelaksanaan Tata Kelola Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 248,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Semesteran - Profil Risiko Terintegrasi",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 249,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Semesteran -Laporan Pemenuhan Kepemilikan Aktuaris",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 250,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Penempatan Reasuransi \/ Retrosesi Asuransi Umum dan Reasuransi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 251,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Rencana Bisnis Asuransi Umum dan Reasuransi (Format Baru)",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 252,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Ringkasan Laporan Keuangan - Laporan Koran",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 253,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan - Publikasi Laporan Keberlanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 254,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tahunan Audited KAP",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 255,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Hasil Evaluasi Komite Audit terhadap Pelaksanaan Pemberian Jasa Audit",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 256,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Penunjukan AP KAP",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 257,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Publikasi Laporan Tahunan Pelaksanaan Tata Kelola Terintegrasi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 258,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Rencana Aksi Keuangan Berkelanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 259,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tahunan Keberlanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 260,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tahunan Pelaksanaan Tata Kelola Terintegrasi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 261,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tingkat Kesehatan Asuransi Umum dan Reasuransi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 262,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tahunan Aktuaris Tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 263,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tahunan Bukti Sertifikat\/Bukti Lain Terkait Pemenuhan Syarat Keberlanjutan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 264,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Tahunan Penerapan Tata Kelola",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 265,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi",
+  "Nama_Laporan": "Laporan Tahunan -Laporan Pengendalian dan Penerapan Strategi Anti Fraud",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 266,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi ASN, TNI\/POLRI, Kecelakaan Penumpang Umum dan Lalu Lintas Jalan",
+  "Nama_Laporan": "Laporan Keuangan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 267,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Sosial (BPJS)",
+  "Nama_Laporan": "Laporan Pengelolaan Program BPJS Kesehatan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 268,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Sosial (BPJS)",
+  "Nama_Laporan": "Laporan Keuangan Bulanan BPJS Kesehatan dan DJS Kesehatan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 269,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Keuangan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 270,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Keuangan Triwulanan",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 271,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Semesteran Pemenuhan Kepemilikan Aktuaris",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 272,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Keuangan Audited",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 273,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Kebutuhan Data Desain Penyelenggaraan Program Penjamin Polis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 274,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Aktuaris",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 275,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Pelaksanaan Penempatan Reasuransi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 276,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Penerapan Strategi Anti Fraud",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 277,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Penerapan Tata kelola",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 278,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Jiwa Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Hasil Pengawasan Dewan Pengawas Syariah",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 279,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Keuangan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 280,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Keuangan Triwulanan",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 281,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Semesteran Pemenuhan Kepemilikan Aktuaris",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 282,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Keuangan Audited",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 283,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Kebutuhan Data Desain Penyelenggaraan Program Penjamin Polis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 284,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Aktuaris",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 285,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Pelaksanaan Penempatan Reasuransi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 286,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Penerapan Strategi Anti Fraud",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 287,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Penerapan Tata kelola",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 288,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan November tiap tahunnya \n30 November",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 289,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Asuransi Umum Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Hasil Pengawasan Dewan Pengawas Syariah",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 290,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Keuangan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "Tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 291,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Keuangan Triwulanan",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 292,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Semesteran Pemenuhan Kepemilikan Aktuaris",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "Akhir bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 293,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Keuangan Audited",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 294,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Kebutuhan Data Desain Penyelenggaraan Program Penjamin Polis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 295,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Aktuaris",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 296,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Pelaksanaan Penempatan Reasuransi",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 297,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Penerapan Strategi Anti Fraud",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 298,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Penerapan Tata kelola",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 299,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "akhir bulan November tiap tahunnya \n30 November",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 300,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Reasuransi Syariah\/UUS",
+  "Nama_Laporan": "Laporan Tahunan Hasil Pengawasan Dewan Pengawas Syariah",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 301,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PPI, UUS",
+  "Nama_Laporan": "Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 302,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PPI, UUS",
+  "Nama_Laporan": "Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 303,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PMV, PMVS",
+  "Nama_Laporan": "Laporan Keuangan Tahunan Audited",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 304,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PPI",
+  "Nama_Laporan": "Laporan Keuangan Tahunan Audited",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "4 bulan setelah tahun buku berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 305,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PPI, UUS",
+  "Nama_Laporan": "Laporan Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 November sebelum tahun rencana bisnis dimulai",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 306,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PPI, UUS",
+  "Nama_Laporan": "Laporan Penyesuaian Rencana Bisnis",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "15 HK setelah tanggal surat pengawas",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 307,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PPI, UUS",
+  "Nama_Laporan": "Laporan Perubahan Rencana Bisnis",
+  "Periode_Laporan": "Insidentil",
+  "Batas_Waktu_Penyampaian": "hanya 1 kali paling lambat akhir Juni tahun berjalan",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 308,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PT SMF, UUS",
+  "Nama_Laporan": "Laporan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 309,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PT SMF, UUS",
+  "Nama_Laporan": "Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 310,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PT SMF, UUS",
+  "Nama_Laporan": "Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 311,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PT SMF, UUS",
+  "Nama_Laporan": "Laporan Keuangan Tahunan Audited",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "laporan keuangan tahunan yang telah diaudit\noleh akuntan publik paling lambat 4 (empat)\nbulan setelah tahun buku berakhir \n30 April",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 312,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "LPEI, UUS",
+  "Nama_Laporan": "Laporan Bulanan",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 313,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "P2PL, P2PL Syariah",
+  "Nama_Laporan": "Laporan Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 November sebelum tahun rencana bisnis dimulai",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 314,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "P2PL, P2PL Syariah",
+  "Nama_Laporan": "Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 315,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "P2PL, P2PL Syariah",
+  "Nama_Laporan": "Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 316,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PT Pegadaian, UUS",
+  "Nama_Laporan": "Laporan keuangan dan laporan operasional",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "tanggal 10 bulan berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 317,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Pergadaian Swasta, \nPergadaian Swasta Syariah",
+  "Nama_Laporan": "Laporan keuangan dan laporan operasional",
+  "Periode_Laporan": "Bulanan",
+  "Batas_Waktu_Penyampaian": "1 bulan setelah triwulan berakhir",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 318,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PT Pegadaian, UUS, Pergadaian Swasta, \nPergadaian Swasta Syariah",
+  "Nama_Laporan": "Laporan Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 November sebelum tahun rencana bisnis dimulai",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 319,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PT Pegadaian, UUS, Pergadaian Swasta, \nPergadaian Swasta Syariah",
+  "Nama_Laporan": "Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 320,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "PT Pegadaian, UUS, Pergadaian Swasta, \nPergadaian Swasta Syariah",
+  "Nama_Laporan": "Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang\nbersangkutan berakhir\n31 Juli dan 31 Januari",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 321,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Asuransi",
+  "Nama_Laporan": "Laporan Keuangan Triwulanan",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan sejak berakhirnya triwulan yang bersangkutan",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 322,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Asuransi",
+  "Nama_Laporan": "Laporan Keuangan Tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 323,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Asuransi",
+  "Nama_Laporan": "Laporan Keuangan Tahunan Audited",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 324,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Asuransi",
+  "Nama_Laporan": "Laporan Tata Kelola yang Baik",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 325,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Asuransi",
+  "Nama_Laporan": "Laporan Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 November sebelum tahun Rencana Bisnis dimulai",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 326,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Asuransi",
+  "Nama_Laporan": "Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang bersangkutan berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 327,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Asuransi",
+  "Nama_Laporan": "Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang bersangkutan berakhir",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 328,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Reasuransi",
+  "Nama_Laporan": "Laporan Keuangan Triwulanan",
+  "Periode_Laporan": "Triwulanan",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan sejak berakhirnya triwulan yang bersangkutan",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 329,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Reasuransi",
+  "Nama_Laporan": "Laporan Keuangan Tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 330,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Reasuransi",
+  "Nama_Laporan": "Laporan Keuangan Tahunan Audited",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 331,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Reasuransi",
+  "Nama_Laporan": "Laporan Tata Kelola yang Baik",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 332,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Reasuransi",
+  "Nama_Laporan": "Laporan Rencana Bisnis",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 November sebelum tahun Rencana Bisnis dimulai",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 333,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Reasuransi",
+  "Nama_Laporan": "Laporan Realisasi Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang bersangkutan berakhir",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 334,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perusahaan Pialang Reasuransi",
+  "Nama_Laporan": "Laporan Pengawasan Rencana Bisnis",
+  "Periode_Laporan": "Semesteran",
+  "Batas_Waktu_Penyampaian": "1 (satu) bulan setelah semester yang bersangkutan berakhir",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 335,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perushaaan Penilai Kerugian Asuransi",
+  "Nama_Laporan": "Laporan Keuangan Tahunan",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 336,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perushaaan Penilai Kerugian Asuransi",
+  "Nama_Laporan": "Laporan Keuangan Tahunan Audited",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Tidak Berhasil",
+  "Status_Ketepatan_Waktu": "Terlambat"
+ },
+ {
+  "No": 337,
+  "Aplikasi": "Ereporting",
+  "Jenis_LJK": "Perushaaan Penilai Kerugian Asuransi",
+  "Nama_Laporan": "Laporan Tata Kelola yang Baik",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "30 April tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ },
+ {
+  "No": 338,
+  "Aplikasi": "SiPina",
+  "Jenis_LJK": "Asuransi Jiwa",
+  "Nama_Laporan": "Laporan Tahunan - Penyampaian Informasi Nasabah Asing",
+  "Periode_Laporan": "Tahunan",
+  "Batas_Waktu_Penyampaian": "1 Juli s.d 1 Agustus Tahun berikutnya",
+  "Status_Pengiriman": "Berhasil",
+  "Status_Ketepatan_Waktu": "Tepat Waktu"
+ }
+]
