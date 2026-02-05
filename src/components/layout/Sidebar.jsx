@@ -133,7 +133,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     },
     { 
       id: 'logout',
-      path: '/logout', 
+      path: '/admin/dashboard', 
       icon: LogOut, 
       label: 'Keluar' 
     },
