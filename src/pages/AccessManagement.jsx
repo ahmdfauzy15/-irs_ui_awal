@@ -1,228 +1,115 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Key, 
-  CheckCircle,
-  User,
-  Building,
-  Mail,
-  Phone,
-  Shield,
-  Database
-} from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { User, Mail, Phone, Building } from 'lucide-react';
 
-const AccessManagement = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  
-  const getActiveTabFromURL = () => {
-    return 'profil';
-  };
-
-  const [activeTab, setActiveTab] = useState(getActiveTabFromURL());
+const SimpleProfile = () => {
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
-    setActiveTab(getActiveTabFromURL());
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const loadProfileData = () => {
-      const dbProfile = {
-        nama: 'John Doe',
-        email: 'john.doe@contohljk.co.id',
-        telepon: '+62 812-3456-7890',
-        institusi: 'PT. Contoh Lembaga Jasa Keuangan',
-        jabatan: 'Senior Manager Compliance',
-        userId: 'LJK-COMP-2024-001',
-        joinDate: '15 Januari 2023',
-        status: 'Aktif',
-        nip: '2023123456',
-        divisi: 'Divisi Risk Management & Compliance',
-        levelAkses: 'Level 4 - Senior Management'
-      };
-      setUserProfile(dbProfile);
-      localStorage.setItem('userProfile', JSON.stringify(dbProfile));
+    const profileData = {
+      nama: 'John Doe',
+      email: 'john.doe@contohljk.co.id',
+      telepon: '+62 812-3456-7890',
+      institusi: 'PT. Contoh Lembaga Jasa Keuangan'
     };
-    
-    loadProfileData();
+    setUserProfile(profileData);
   }, []);
 
-  // Tabs untuk Management Account - hanya profil
-  const tabs = [
-    { id: 'profil', label: 'Informasi Profil', icon: User, path: '/AccessManagement' }
+  if (!userProfile) return null;
+
+  const profileItems = [
+    {
+      icon: User,
+      label: 'Nama Lengkap',
+      value: userProfile.nama,
+      description: 'Nama lengkap terdaftar'
+    },
+    {
+      icon: Mail,
+      label: 'Email',
+      value: userProfile.email,
+      description: 'Alamat email resmi'
+    },
+    {
+      icon: Phone,
+      label: 'Nomor Telepon',
+      value: userProfile.telepon,
+      description: 'Nomor kontak terdaftar'
+    },
+    {
+      icon: Building,
+      label: 'Nama LJK / Institusi',
+      value: userProfile.institusi,
+      description: 'Lembaga terafiliasi'
+    }
   ];
 
-  const handleTabClick = (tabId, tabPath) => {
-    setActiveTab(tabId);
-    navigate(tabPath);
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 md:p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white p-4 md:p-8">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <div className="p-2.5 bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow">
-                <Database className="w-6 h-6 text-white" />
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Profil IRS</h1>
+          <p className="text-red-600 font-medium">Informasi Profil Terdaftar</p>
+        </div>
+
+        {/* Profile Card */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
+          {/* Card Header */}
+          <div className="bg-gradient-to-r from-red-600 to-red-700 p-6">
+            <div className="flex items-center justify-center gap-3">
+              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                <User className="w-6 h-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Profil Akun IRS</h1>
-                <p className="text-red-600 text-sm md:text-base font-medium">Informasi Profile IRS</p>
+              <div className="text-center">
+                <h2 className="text-2xl font-bold text-white">Informasi Profil</h2>
+                <p className="text-white/90 text-sm mt-1">Data lengkap pengguna IRS</p>
               </div>
             </div>
           </div>
 
-        
-          {/* Tabs dengan warna merah - hanya profil */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => handleTabClick(tab.id, tab.path)}
-                  className={`
-                    flex items-center space-x-2 px-4 py-2.5 rounded-lg border transition-all duration-200
-                    ${activeTab === tab.id 
-                      ? 'bg-gradient-to-r from-red-500 to-red-600 text-white border-red-600 shadow-md' 
-                      : 'bg-white text-gray-700 border-gray-200 hover:bg-red-50 hover:border-red-300'
-                    }
-                  `}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="font-medium">{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Content hanya profil */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
-          <ProfileTab userProfile={userProfile} />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Komponen Profil Tab yang disederhanakan
-const ProfileTab = ({ userProfile }) => {
-  return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-          <User className="w-5 h-5 text-red-600" />
-          Informasi Profil
-        </h2>
-        <p className="text-sm text-gray-600 mt-1">Data profil lengkap pengguna</p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Informasi Pribadi */}
-        <div>
-          <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            {/* Header Informasi Pribadi */}
-            <div className="bg-gradient-to-r from-red-500 to-red-600 p-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-white rounded-lg">
-                  <User className="w-5 h-5 text-red-600" />
-                </div>
-                <h3 className="text-lg font-bold text-white">Informasi Pribadi</h3>
-              </div>
+          {/* Profile Information Grid */}
+          <div className="p-6 md:p-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {profileItems.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div 
+                    key={index}
+                    className="group transition-all duration-300 hover:scale-[1.02]"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2 bg-red-100 rounded-lg group-hover:bg-red-200 transition-colors">
+                        <Icon className="w-5 h-5 text-red-600" />
+                      </div>
+                      <label className="text-sm font-semibold text-gray-700">
+                        {item.label}
+                      </label>
+                    </div>
+                    
+                    <div className="p-4 bg-gradient-to-r from-red-50 to-white rounded-xl border border-red-100 
+                                   group-hover:border-red-300 group-hover:shadow-md transition-all">
+                      <p className="text-xl font-bold text-gray-900 mb-1">
+                        {item.value}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Detail Informasi Pribadi */}
-            <div className="p-6">
-              <div className="space-y-4">
-                {/* Nama Lengkap */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-500">Nama Lengkap</label>
-                  <div className="flex items-center space-x-3 p-3 bg-red-50/50 rounded-lg border border-red-100">
-                    <User className="w-4 h-4 text-red-600" />
-                    <p className="font-medium text-gray-900">{userProfile?.nama || 'John Doe'}</p>
-                  </div>
+            {/* Footer */}
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <p className="text-sm text-gray-500">
+                  Data diperbarui terakhir: {new Date().toLocaleDateString('id-ID')}
+                </p>
+                <div className="flex items-center gap-2 px-4 py-2 bg-red-50 rounded-xl border border-red-100">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-medium text-gray-700">Status: Aktif</span>
                 </div>
-
-                {/* Email */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-500">Email</label>
-                  <div className="flex items-center space-x-3 p-3 bg-red-50/50 rounded-lg border border-red-100">
-                    <Mail className="w-4 h-4 text-red-600" />
-                    <p className="font-medium text-gray-900">{userProfile?.email || 'john.doe@contohljk.co.id'}</p>
-                  </div>
-                </div>
-
-                {/* Nomor Telepon */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-500">Nomor Telepon</label>
-                  <div className="flex items-center space-x-3 p-3 bg-red-50/50 rounded-lg border border-red-100">
-                    <Phone className="w-4 h-4 text-red-600" />
-                    <p className="font-medium text-gray-900">{userProfile?.telepon || '+62 812-3456-7890'}</p>
-                  </div>
-                </div>
-
-                {/* Nama LJK / Institusi */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-500">Nama LJK / Institusi</label>
-                  <div className="flex items-center space-x-3 p-3 bg-red-50/50 rounded-lg border border-red-100">
-                    <Building className="w-4 h-4 text-red-600" />
-                    <p className="font-medium text-gray-900">{userProfile?.institusi || 'PT. Contoh Lembaga Jasa Keuangan'}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Statistik Hak Akses */}
-        <div>
-          <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden h-full">
-            {/* Header Statistik */}
-            <div className="bg-gradient-to-r from-red-500 to-red-600 p-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-white rounded-lg">
-                  <Key className="w-5 h-5 text-red-600" />
-                </div>
-                <h3 className="text-lg font-bold text-white">Statistik Hak Akses</h3>
-              </div>
-            </div>
-
-            {/* Detail Statistik */}
-            <div className="p-6">
-              <div className="grid grid-cols-2 gap-4">
-                {/* Total Hak Akses */}
-                {/* <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-3xl font-bold text-gray-900">3</p>
-                      <p className="text-sm text-gray-600 mt-1">Total Hak Akses</p>
-                    </div>
-                    <div className="p-2 rounded-lg bg-red-50">
-                      <Key className="w-5 h-5 text-red-600" />
-                    </div>
-                  </div>
-                </div> */}
-
-                {/* Akses Aktif */}
-                <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-3xl font-bold text-gray-900">3</p>
-                      <p className="text-sm text-gray-600 mt-1">Akses Aktif</p>
-                    </div>
-                    <div className="p-2 rounded-lg bg-green-50">
-                      <CheckCircle className="w-5 h-5 text-green-600" />
-                    </div>
-                  </div>
-                </div>
-
-         
-
-              
               </div>
             </div>
           </div>
@@ -232,4 +119,4 @@ const ProfileTab = ({ userProfile }) => {
   );
 };
 
-export default AccessManagement;
+export default SimpleProfile;

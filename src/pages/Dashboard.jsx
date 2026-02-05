@@ -134,14 +134,7 @@ const Dashboard = () => {
                 <p className="text-red-100 text-lg mb-4">
                   Status: <span className="font-bold">User Baru</span> - Akses Terbatas
                 </p>
-                <div className="flex items-center space-x-2">
-                  <div className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full">
-                    <span className="text-white text-sm font-medium">Perlu Verifikasi</span>
-                  </div>
-                  <div className="px-3 py-1 bg-yellow-500/20 backdrop-blur-sm rounded-full">
-                    <span className="text-yellow-100 text-sm font-medium">Hak Akses Menunggu</span>
-                  </div>
-                </div>
+           
               </div>
               <div className="mt-4 md:mt-0">
                 <div className="w-20 h-20 bg-gradient-to-br from-white to-red-200 rounded-full flex items-center justify-center text-red-700 font-bold text-2xl border-4 border-white shadow-lg">
@@ -195,43 +188,7 @@ const Dashboard = () => {
 
       {/* Recent Activity untuk User Baru */}
       <div className="space-y-6">
-        <div className="bg-gradient-to-br from-white to-red-50/30 rounded-xl shadow-lg border border-red-100 overflow-hidden hover:shadow-red transition-shadow duration-300">
-          <div className="p-6 border-b border-red-100 bg-gradient-to-r from-red-50 to-white">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-gradient-to-br from-red-100 to-white rounded-lg border border-red-200">
-                  <History className="w-5 h-5 text-red-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-red-900">Aktivitas Akun Terbaru</h3>
-                  <p className="text-sm text-red-600/80">Status pendaftaran dan verifikasi</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="p-6 bg-white">
-            <div className="space-y-4">
-              {activityDataNewUser.map((activity) => (
-                <div key={activity.id} className="flex items-start space-x-4 p-4 rounded-lg hover:bg-red-50 transition-colors duration-200">
-                  <div className={`p-2 rounded-lg ${
-                    activity.color === 'red' ? 'bg-red-100 text-red-600' :
-                    activity.color === 'yellow' ? 'bg-yellow-100 text-yellow-600' :
-                    'bg-green-100 text-green-600'
-                  }`}>
-                    <activity.icon className="w-5 h-5" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-bold text-gray-900">{activity.title}</h4>
-                      <span className="text-sm text-gray-500">{activity.time}</span>
-                    </div>
-                    <p className="text-gray-600 text-sm mt-1">{activity.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        
 
         {/* Informasi Sistem Terkunci */}
         <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-xl shadow-lg">

@@ -21,9 +21,12 @@ import {
   Key,
   FileSpreadsheet,
   Clock,
-  AlertCircle
+  AlertCircle,
+  BackpackIcon
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { PiFunctionThin } from 'react-icons/pi';
+import { MdSystemSecurityUpdate } from 'react-icons/md';
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const location = useLocation();
@@ -134,6 +137,8 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       icon: LogOut, 
       label: 'Keluar' 
     },
+    
+
   ];
 
   const isActive = (path, exact = false) => {
@@ -485,3 +490,5 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
 };
 
 export default Sidebar;
+
+
