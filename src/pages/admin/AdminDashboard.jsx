@@ -19,6 +19,7 @@ import {
   Database,
   BarChart3,
   TrendingUp,
+
   UserCheck,
   XCircle,
   MoreVertical,
@@ -37,7 +38,9 @@ import {
   ExternalLink,
   ChevronLeft,
   Lock,
-  KeyIcon
+  KeyIcon,
+  File,
+  User
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -442,6 +445,114 @@ const AdminDashboard = () => {
     setDocumentViewerOpen(true);
   };
 
+  // Generate PDF content untuk preview
+  const generateDocumentPreview = (submission, type) => {
+    const docType = type === 'aro' ? 'Surat Permohonan ARO' : 'Surat Permohonan Hak Akses';
+    const aro = type === 'aro' ? selectedARO : null;
+    
+    const content = `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h1 style="color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 10px;">
+          ${docType}
+        </h1>
+        
+        <div style="margin: 20px 0;">
+          <p><strong>ID Pengajuan:</strong> ${submission.trackingId}</p>
+          <p><strong>Nama Pemohon:</strong> ${submission.dataUmum?.nama || 'N/A'}</p>
+          <p><strong>Instansi:</strong> ${submission.dataUmum?.institusi || 'N/A'}</p>
+          <p><strong>Email:</strong> ${submission.dataUmum?.email || 'N/A'}</p>
+          <p><strong>Aplikasi:</strong> ${submission.app?.toUpperCase() || 'N/A'}</p>
+          ${aro ? `
+            <p><strong>Nama ARO:</strong> ${aro.nama}</p>
+            <p><strong>Modul:</strong> ${aro.module}</p>
+            <p><strong>Deskripsi:</strong> ${aro.deskripsi}</p>
+          ` : ''}
+          <p><strong>Tanggal Pengajuan:</strong> ${formatDate(submission.submittedAt || submission.timestamp)}</p>
+          <p><strong>Status:</strong> ${submission.status}</p>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+          <h3 style="color: #374151;">Keterangan:</h3>
+          <p>${submission.data?.keterangan || 'Surat permohonan resmi untuk pengajuan hak akses aplikasi.'}</p>
+        </div>
+        
+        <div style="margin-top: 40px; text-align: center; color: #6b7280;">
+          <p>Dokumen ini dihasilkan oleh sistem IRS OJK</p>
+          <p>${new Date().toLocaleDateString('id-ID', { 
+            day: 'numeric', 
+            month: 'long', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })}</p>
+        </div>
+      </div>
+    `;
+    
+    return content;
+  };
+
+  // Download PDF
+  const downloadPDF = (submission, type) => {
+    const docType = type === 'aro' ? 'Surat Permohonan ARO' : 'Surat Permohonan Hak Akses';
+    const aro = type === 'aro' ? selectedARO : null;
+    
+    const content = `
+      Surat Permohonan Hak Akses
+      ============================
+      
+      ID Pengajuan: ${submission.trackingId}
+      Nama Pemohon: ${submission.dataUmum?.nama || 'N/A'}
+      Instansi: ${submission.dataUmum?.institusi || 'N/A'}
+      Email: ${submission.dataUmum?.email || 'N/A'}
+      Aplikasi: ${submission.app?.toUpperCase() || 'N/A'}
+      ${aro ? `
+      Nama ARO: ${aro.nama}
+      Modul: ${aro.module}
+      Deskripsi: ${aro.deskripsi}
+      ` : ''}
+      Tanggal Pengajuan: ${formatDate(submission.submittedAt || submission.timestamp)}
+      Status: ${submission.status}
+      
+      Keterangan:
+      ${submission.data?.keterangan || 'Surat permohonan resmi untuk pengajuan hak akses aplikasi.'}
+      
+      ---
+      Dokumen ini dihasilkan oleh sistem IRS OJK
+      ${new Date().toLocaleDateString('id-ID', { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}
+    `;
+    
+    const blob = new Blob([content], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${docType}_${submission.trackingId}_${new Date().getTime()}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    alert(`✅ ${docType} berhasil didownload!`);
+  };
+
+  // Navigasi ke profil user
+  const navigateToUserProfile = (submission) => {
+    // Simulasi navigasi ke profil user
+    alert(`Membuka profil user: ${submission.dataUmum?.nama}\nEmail: ${submission.dataUmum?.email}\nAkan diarahkan ke halaman profil user...`);
+    
+    // Dalam aplikasi React Router, kita bisa menggunakan:
+    // navigate(`/admin/users/${submission.dataUmum?.email}`);
+    
+    // Untuk sekarang kita buka di tab baru (simulasi)
+    window.open('#', '_blank');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
       {/* Konten Dashboard saja */}
@@ -752,6 +863,15 @@ const AdminDashboard = () => {
                                   <div className="text-xs text-gray-500 truncate">
                                     {submission.dataUmum?.institusi || 'N/A'}
                                   </div>
+                                  
+                                  {/* Tautan ke Profil User */}
+                                  <button
+                                    onClick={() => navigateToUserProfile(submission)}
+                                    className="mt-1 flex items-center gap-1 text-xs text-red-600 hover:text-red-800 hover:underline"
+                                  >
+                                    <User className="w-3 h-3" />
+                                    Lihat Profil User
+                                  </button>
                                 </div>
                               </div>
                             </td>
@@ -783,6 +903,7 @@ const AdminDashboard = () => {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center gap-2">
+                                {/* Tombol Lihat Detail */}
                                 <button
                                   onClick={() => {
                                     setSelectedSubmission(submission);
@@ -794,14 +915,36 @@ const AdminDashboard = () => {
                                   <Eye className="w-4 h-4" />
                                 </button>
                                 
-                                <button
-                                  onClick={() => viewDocumentFile(submission, 'app')}
-                                  className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                                  title="Lihat Dokumen"
-                                >
-                                  <FileText className="w-4 h-4" />
-                                </button>
+                                {/* Tombol Lihat/Download Dokumen */}
+                                <div className="relative group">
+                                  <button
+                                    onClick={() => viewDocumentFile(submission, 'app')}
+                                    className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                    title="Lihat Dokumen"
+                                  >
+                                    <FileText className="w-4 h-4" />
+                                  </button>
+                                  
+                                  {/* Dropdown untuk Download PDF */}
+                                  <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                                    <button
+                                      onClick={() => viewDocumentFile(submission, 'app')}
+                                      className="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center gap-2"
+                                    >
+                                      <Eye className="w-4 h-4" />
+                                      Lihat Dokumen
+                                    </button>
+                                    <button
+                                      onClick={() => downloadPDF(submission, 'app')}
+                                      className="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center gap-2"
+                                    >
+                                      <Download className="w-4 h-4" />
+                                      Download PDF
+                                    </button>
+                                  </div>
+                                </div>
                                 
+                                {/* Tombol Approve/Reject untuk pending */}
                                 {submission.status === 'pending' && (
                                   <>
                                     <button
@@ -849,18 +992,45 @@ const AdminDashboard = () => {
                                             </p>
                                           </div>
                                           <div className="flex items-center gap-1">
-                                            {aro.suratPermohonan && (
-                                              <button
-                                                onClick={() => {
-                                                  setSelectedARO(aro);
-                                                  viewDocumentFile(submission, 'aro');
-                                                }}
-                                                className="p-1 text-purple-600 hover:bg-purple-50 rounded"
-                                                title="Lihat Dokumen ARO"
-                                              >
-                                                <FileText className="w-3 h-3" />
-                                              </button>
-                                            )}
+                                            {/* Tombol Dokumen ARO */}
+                                            <div className="relative group">
+                                              {aro.suratPermohonan && (
+                                                <button
+                                                  onClick={() => {
+                                                    setSelectedARO(aro);
+                                                    viewDocumentFile(submission, 'aro');
+                                                  }}
+                                                  className="p-1 text-purple-600 hover:bg-purple-50 rounded"
+                                                  title="Lihat Dokumen ARO"
+                                                >
+                                                  <FileText className="w-3 h-3" />
+                                                </button>
+                                              )}
+                                              
+                                              {/* Dropdown untuk ARO Document */}
+                                              <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                                                <button
+                                                  onClick={() => {
+                                                    setSelectedARO(aro);
+                                                    viewDocumentFile(submission, 'aro');
+                                                  }}
+                                                  className="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-1 text-xs"
+                                                >
+                                                  <Eye className="w-3 h-3" />
+                                                  Lihat Dokumen
+                                                </button>
+                                                <button
+                                                  onClick={() => {
+                                                    setSelectedARO(aro);
+                                                    downloadPDF(submission, 'aro');
+                                                  }}
+                                                  className="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-1 text-xs"
+                                                >
+                                                  <Download className="w-3 h-3" />
+                                                  Download PDF
+                                                </button>
+                                              </div>
+                                            </div>
                                             
                                             <button
                                               onClick={() => handleApproveARO(submission.id, aro)}
@@ -938,6 +1108,8 @@ const AdminDashboard = () => {
             handleReject(selectedSubmission.id);
           }}
           onViewDocument={() => viewDocumentFile(selectedSubmission, 'app')}
+          onDownloadPDF={() => downloadPDF(selectedSubmission, 'app')}
+          onNavigateToProfile={() => navigateToUserProfile(selectedSubmission)}
           getStatusBadge={getStatusBadge}
           getAppBadge={getAppBadge}
           formatDate={formatDate}
@@ -991,14 +1163,40 @@ const AdminDashboard = () => {
               );
             }, 100);
           }}
+          onDownloadPDF={() => {
+            setShowAROActionModal(false);
+            setTimeout(() => {
+              downloadPDF(
+                submissions.find(s => s.id === selectedActionId),
+                'aro'
+              );
+            }, 100);
+          }}
+        />
+      )}
+
+      {/* Document Viewer Modal */}
+      {documentViewerOpen && viewDocument && (
+        <DocumentViewerModal
+          submission={viewDocument}
+          documentType={documentType}
+          selectedARO={selectedARO}
+          formatDate={formatDate}
+          onClose={() => setDocumentViewerOpen(false)}
+          onDownloadPDF={() => {
+            setDocumentViewerOpen(false);
+            setTimeout(() => {
+              downloadPDF(viewDocument, documentType);
+            }, 100);
+          }}
         />
       )}
     </div>
   );
 };
 
-// Komponen Modal Detail
-const DetailModal = ({ submission, onClose, onApprove, onReject, onViewDocument, getStatusBadge, getAppBadge, formatDate }) => {
+// Komponen Modal Detail - DITAMBAH TOMBOL PROFIL & PDF
+const DetailModal = ({ submission, onClose, onApprove, onReject, onViewDocument, onDownloadPDF, onNavigateToProfile, getStatusBadge, getAppBadge, formatDate }) => {
   
   const renderFormDetails = () => {
     if (!submission.data && !submission.dataUmum) return null;
@@ -1119,10 +1317,19 @@ const DetailModal = ({ submission, onClose, onApprove, onReject, onViewDocument,
             <div className="lg:col-span-2 space-y-6">
               {/* Data Pemohon */}
               <div className="border border-red-200 rounded-xl p-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Users className="w-5 h-5 text-red-600" />
-                  Data Pemohon
-                </h4>
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <Users className="w-5 h-5 text-red-600" />
+                    Data Pemohon
+                  </h4>
+                  <button
+                    onClick={onNavigateToProfile}
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700"
+                  >
+                    <User className="w-4 h-4" />
+                    Lihat Profil User
+                  </button>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Nama Lengkap</p>
@@ -1235,31 +1442,48 @@ const DetailModal = ({ submission, onClose, onApprove, onReject, onViewDocument,
               )}
             </div>
             
-            {/* Kolom 2: Log & Aksi */}
+            {/* Kolom 2: Dokumen, Log & Aksi */}
             <div className="space-y-6">
               {/* Dokumen */}
               <div className="border border-red-200 rounded-xl p-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-red-600" />
-                  Dokumen
-                </h4>
-                <div className="space-y-3">
-                  <button
-                    onClick={onViewDocument}
-                    className="w-full p-3 border border-red-200 rounded-lg hover:bg-red-50 transition-colors text-left"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-red-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">Surat Permohonan</p>
-                        <p className="text-xs text-gray-500">Klik untuk melihat dokumen</p>
-                      </div>
-                    </div>
-                  </button>
+            <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-red-600" />
+              Dokumen
+            </h4>
+            <div className="space-y-3">
+              <button
+                onClick={onViewDocument}
+                className="w-full p-3 border border-red-200 rounded-lg hover:bg-red-50 transition-colors text-left flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-red-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">Surat Permohonan</p>
+                    <p className="text-xs text-gray-500">Lihat dokumen online</p>
+                  </div>
                 </div>
-              </div>
+                <Eye className="w-4 h-4 text-gray-400" />
+              </button>
+              
+              <button
+                onClick={onDownloadPDF}
+                className="w-full p-3 border border-red-200 rounded-lg hover:bg-red-50 transition-colors text-left flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                    <File className="w-5 h-5 text-red-600" /> {/* Ganti dengan File */}
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">Download PDF</p>
+                    <p className="text-xs text-gray-500">Download dalam format PDF</p>
+                  </div>
+                </div>
+                <Download className="w-4 h-4 text-gray-400" />
+              </button>
+            </div>
+          </div>
               
               {/* Log Aktivitas */}
               {submission.log && submission.log.length > 0 && (
@@ -1342,7 +1566,14 @@ const DetailModal = ({ submission, onClose, onApprove, onReject, onViewDocument,
         </div>
         
         <div className="p-6 border-t border-red-200 bg-gray-50">
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={onDownloadPDF}
+              className="px-4 py-2.5 border border-red-300 text-red-600 font-bold rounded-lg hover:bg-red-50 flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Download PDF
+            </button>
             <button
               onClick={onClose}
               className="px-6 py-2.5 border border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50"
@@ -1428,7 +1659,7 @@ const ActionModal = ({ type, title, icon: Icon, note, setNote, onConfirm, onCanc
 };
 
 // Modal khusus untuk ARO Action
-const AROActionModal = ({ aro, action, note, setNote, onConfirm, onCancel, onViewDocument }) => {
+const AROActionModal = ({ aro, action, note, setNote, onConfirm, onCancel, onViewDocument, onDownloadPDF }) => {
   const isApprove = action === 'approve';
   
   return (
@@ -1458,13 +1689,23 @@ const AROActionModal = ({ aro, action, note, setNote, onConfirm, onCancel, onVie
             <p className="text-sm text-gray-600 mt-1">{aro.deskripsi}</p>
             {aro.suratPermohonan && (
               <div className="mt-3 pt-3 border-t border-gray-200">
-                <button
-                  onClick={onViewDocument}
-                  className="flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700"
-                >
-                  <FileText className="w-4 h-4" />
-                  Lihat surat permohonan ARO
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={onViewDocument}
+                    className="flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Lihat dokumen
+                  </button>
+                  <span className="text-gray-400">|</span>
+                  <button
+                    onClick={onDownloadPDF}
+                    className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download PDF
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -1504,6 +1745,146 @@ const AROActionModal = ({ aro, action, note, setNote, onConfirm, onCancel, onVie
               }`}
             >
               Ya, {isApprove ? 'Setujui ARO' : 'Tolak ARO'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Document Viewer Modal untuk melihat dokumen
+const DocumentViewerModal = ({ submission, documentType, selectedARO, formatDate, onClose, onDownloadPDF }) => {
+  const docTitle = documentType === 'aro' 
+    ? `Surat Permohonan ARO - ${selectedARO?.nama || ''}`
+    : `Surat Permohonan Hak Akses - ${submission.app?.toUpperCase()}`;
+  
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+          <div className="p-6 border-b border-red-200 bg-gradient-to-r from-red-50 to-white">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
+                  <File className="w-6 h-6 text-white" /> {/* Ganti dengan File */}
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">{docTitle}</h3>
+                  <p className="text-gray-600">ID: {submission.trackingId}</p>
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        
+        <div className="p-6 overflow-y-auto max-h-[70vh]">
+          <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
+            <h4 className="text-lg font-bold text-gray-900 mb-4">Preview Dokumen</h4>
+            
+            {/* Preview konten dokumen */}
+            <div className="bg-white border border-gray-300 rounded-lg p-6 min-h-[400px]">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-red-600 border-b-2 border-red-600 pb-2 inline-block">
+                  {documentType === 'aro' ? 'SURAT PERMOHONAN ARO' : 'SURAT PERMOHONAN HAK AKSES'}
+                </h2>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600">ID Pengajuan</p>
+                    <p className="font-bold">{submission.trackingId}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Tanggal</p>
+                    <p className="font-bold">{formatDate(new Date())}</p>
+                  </div>
+                </div>
+                
+                <div className="border-t border-gray-200 pt-4">
+                  <p className="text-sm text-gray-600">Nama Pemohon</p>
+                  <p className="font-bold text-lg">{submission.dataUmum?.nama || 'N/A'}</p>
+                  <p className="text-gray-600">{submission.dataUmum?.institusi || 'N/A'}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600">Email</p>
+                    <p className="font-bold">{submission.dataUmum?.email || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Telepon</p>
+                    <p className="font-bold">{submission.dataUmum?.telepon || 'N/A'}</p>
+                  </div>
+                </div>
+                
+                <div className="border-t border-gray-200 pt-4">
+                  <p className="text-sm text-gray-600">Aplikasi yang Diajukan</p>
+                  <p className="font-bold text-lg">{submission.app?.toUpperCase()}</p>
+                </div>
+                
+                {documentType === 'aro' && selectedARO && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
+                    <h5 className="font-bold text-gray-900 mb-2">Detail ARO:</h5>
+                    <p className="font-medium">{selectedARO.nama}</p>
+                    <p className="text-gray-600">{selectedARO.module}</p>
+                    <p className="text-sm text-gray-500 mt-2">{selectedARO.deskripsi}</p>
+                  </div>
+                )}
+                
+                <div className="border-t border-gray-200 pt-4 mt-6">
+                  <p className="text-sm text-gray-600">Keterangan</p>
+                  <p className="italic">
+                    {submission.data?.keterangan || 
+                     (documentType === 'aro' 
+                       ? 'Permohonan penambahan Additional Responsible Officer (ARO) untuk akses modul tambahan.'
+                       : 'Permohonan hak akses aplikasi untuk keperluan pelaporan sesuai regulasi OJK.')}
+                  </p>
+                </div>
+                
+                {/* Signature area */}
+                <div className="mt-12 pt-8 border-t border-gray-300">
+                  <div className="flex justify-between">
+                    <div>
+                      <p className="text-center text-gray-600">Pemohon</p>
+                      <div className="h-16"></div>
+                      <p className="text-center font-bold">{submission.dataUmum?.nama || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <p className="text-center text-gray-600">Mengetahui,</p>
+                      <div className="h-16"></div>
+                      <p className="text-center font-bold">Administrator IRS</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 text-center text-gray-500 text-sm">
+              <p>Dokumen ini adalah preview. File PDF akan berisi informasi lengkap.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-6 border-t border-red-200 bg-gray-50">
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={onDownloadPDF}
+              className="px-6 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Download PDF
+            </button>
+            <button
+              onClick={onClose}
+              className="px-6 py-2.5 border border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50"
+            >
+              Tutup Preview
             </button>
           </div>
         </div>
