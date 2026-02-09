@@ -1465,7 +1465,7 @@ STATUS: ${submission.status.toUpperCase()}
                                       }`}>
                                         {aro.status === 'approved' ? '✓ Disetujui' : 
                                          aro.status === 'pending' ? '⏳ Menunggu' : 
-                                         '? Unknown'}
+                                         '🚫Ditolak'}
                                       </span>
                                       {aro.addedByAdmin && (
                                         <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full">
@@ -1574,7 +1574,7 @@ STATUS: ${submission.status.toUpperCase()}
                                     }`}>
                                       {aro.status === 'approved' ? '✓ Disetujui' : 
                                        aro.status === 'pending' ? '⏳ Menunggu' : 
-                                       '? Unknown'}
+                                       '🚫 Ditolak'}
                                     </span>
                                     {aro.addedByAdmin && (
                                       <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full">

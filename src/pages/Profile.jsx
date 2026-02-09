@@ -883,7 +883,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
                                   aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                                   'bg-gray-100 text-gray-800'
                                 }`}>
-                                  {aro.status === 'approved' ? '✓' : aro.status === 'pending' ? '' : '?'}
+                                  {aro.status === 'approved' ? '✓' : aro.status === 'pending' ? '⏳' : '🚫'}
                                 </span>
                                 <button
                                   onClick={() => handleDeleteARO(aro.id)}
@@ -3558,7 +3558,7 @@ const StatusMonitoringTab = ({ submissions }) => {
                               aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800 font-bold' :
                               'bg-gray-100 text-gray-800'
                             }`}>
-                              {aro.status === 'approved' ? 'Disetujui' : aro.status === 'pending' ? 'Menunggu' : '?'}
+                              {aro.status === 'approved' ? 'Disetujui' : aro.status === 'pending' ? 'Menunggu' : 'Ditolak'}
                             </span>
                             {submission.status === 'approved' && (
                               <span className="text-xs text-gray-500">
