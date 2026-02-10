@@ -491,7 +491,7 @@ const AdminDashboard = () => {
                   <option value="all">Semua Aplikasi</option>
                   <option value="sipina">SIPINA</option>
                   <option value="apolo">APOLO</option>
-                  <option value="ereporting">E-Reporting</option>
+                  {/* <option value="ereporting">E-Reporting</option> */}
                 </select>
               </div>
               
@@ -1673,7 +1673,7 @@ STATUS: ${submission.status.toUpperCase()}
                 
                 {/* TOMBOL DOWNLOAD DOKUMEN */}
                 <div className="mb-4 p-4 bg-white border border-gray-200 rounded-lg">
-                  <h5 className="font-bold text-gray-900 mb-2">Dokumen & Laporan</h5>
+                  <h5 className="font-bold text-gray-900 mb-2">Surat Permohonan</h5>
                   <button
                     onClick={() => handleDownloadDocument('report', submission)}
                     disabled={documentLoading}
@@ -1687,7 +1687,7 @@ STATUS: ${submission.status.toUpperCase()}
                     ) : (
                       <>
                         <Download className="w-4 h-4" />
-                        Download Dokumen
+                        Download Surat Permohonan
                       </>
                     )}
                   </button>
