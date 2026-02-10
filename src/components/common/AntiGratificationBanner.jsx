@@ -93,26 +93,7 @@ const AntiGratificationBanner = () => {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-2 mb-5">
-                <div className="bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/10">
-                  <div className="text-center">
-                    <div className="font-bold text-white text-xs">0%</div>
-                    <div className="text-white/70 text-[10px]">Toleransi</div>
-                  </div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/10">
-                  <div className="text-center">
-                    <div className="font-bold text-white text-xs">100%</div>
-                    <div className="text-white/70 text-[10px]">Integritas</div>
-                  </div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/10">
-                  <div className="text-center">
-                    <div className="font-bold text-white text-xs">24/7</div>
-                    <div className="text-white/70 text-[10px]">Pengawasan</div>
-                  </div>
-                </div>
-              </div>
+         
 
               {/* Single Agree Button */}
               <div className="text-center">
