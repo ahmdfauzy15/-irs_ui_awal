@@ -35,8 +35,7 @@ import {
   Lock,
   FolderOpen,
   FilePlus,
-  Info,
-  ArrowRight
+  Info
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -49,7 +48,7 @@ const Profile = () => {
     const path = location.pathname;
     if (path === '/profile' || path === '/profile/hak-akses/pengajuan') return 'pengajuan';
     if (path === '/profile/hak-akses' || path === '/profile/hak-akses/status') return 'status';
-    return 'pengajuan';
+    return 'pengajuan'; // default
   };
 
   const [activeTab, setActiveTab] = useState(getActiveTabFromURL());
@@ -57,15 +56,18 @@ const Profile = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Update activeTab ketika URL berubah
   useEffect(() => {
     setActiveTab(getActiveTabFromURL());
   }, [location.pathname]);
 
+  // Load data dari localStorage saat komponen mount
   useEffect(() => {
     const loadData = () => {
       const storedSubs = localStorage.getItem('hakAksesSubmissions');
       if (storedSubs) setSubmissions(JSON.parse(storedSubs));
       
+      // Data profil dari "database" (simulasi)
       const dbProfile = {
         nama: 'John Doe',
         email: 'john.doe@contohljk.co.id',
@@ -86,6 +88,7 @@ const Profile = () => {
     loadData();
   }, []);
 
+  // Status badge
   const getStatusBadge = (status) => {
     switch(status) {
       case 'pending':
@@ -99,6 +102,7 @@ const Profile = () => {
     }
   };
 
+  // App badge
   const getAppBadge = (app) => {
     const appNames = {
       'sipina': 'SIPINA',
@@ -113,11 +117,13 @@ const Profile = () => {
     );
   };
 
+  // Tabs untuk Hak Akses
   const tabs = [
     { id: 'pengajuan', label: 'Pengajuan Hak Akses', icon: FileSpreadsheet, path: '/profile/hak-akses/pengajuan' },
     { id: 'status', label: 'Status & Monitoring', icon: Eye, path: '/profile/hak-akses/status' }
   ];
 
+  // Fungsi untuk handle klik tab
   const handleTabClick = (tabId, tabPath) => {
     setActiveTab(tabId);
     navigate(tabPath);
@@ -126,6 +132,7 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
@@ -134,11 +141,12 @@ const Profile = () => {
               </div>
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Management Account IRS</h1>
-                <p className="text-red-600 text-sm md:text-base font-medium">Sistem pengelolaan hak akses</p>
+                <p className="text-red-600 text-sm md:text-base font-medium">Sistem pengelolaan hak akses aplikasi pelaporan OJK</p>
               </div>
             </div>
           </div>
 
+          {/* Tabs untuk Hak Akses */}
           <div className="mb-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Hak Akses Aplikasi</h3>
             <div className="flex flex-wrap gap-2">
@@ -165,6 +173,7 @@ const Profile = () => {
           </div>
         </div>
 
+        {/* Content berdasarkan tab */}
         <div className="bg-white rounded-2xl border border-red-200 shadow-lg overflow-hidden">
           {activeTab === 'pengajuan' && (
             <NewAccessSubmissionFlow 
@@ -175,11 +184,7 @@ const Profile = () => {
           )}
           
           {activeTab === 'status' && (
-            <StatusMonitoringTab 
-              submissions={submissions}
-              getStatusBadge={getStatusBadge}
-              getAppBadge={getAppBadge}
-            />
+            <StatusMonitoringTab submissions={submissions} />
           )}
         </div>
       </div>
@@ -187,7 +192,7 @@ const Profile = () => {
   );
 };
 
-// KOMPONEN UTAMA: Alur Pengajuan Hak Akses
+// KOMPONEN BARU: Alur Pengajuan Hak Akses
 const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -203,13 +208,15 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
   const [savedSubmissions, setSavedSubmissions] = useState([]);
   
   // State untuk ARO - HANYA UNTUK APOLO
-  const [aroData, setAroData] = useState({
-    keterangan: '',
-    suratPermohonan: null
-  });
-  const [showAroForm, setShowAroForm] = useState(false);
+  const [showAddAROModal, setShowAddAROModal] = useState(false);
+  const [aroSuratPermohonan, setAroSuratPermohonan] = useState(null);
+  const [aroKeterangan, setAroKeterangan] = useState('');
+  const [selectedAROs, setSelectedAROs] = useState([]);
+  const [availableAROs, setAvailableAROs] = useState([]);
 
+  // Cek aplikasi yang sudah diajukan
   const [submittedApps, setSubmittedApps] = useState([]);
+  const [submittedAros, setSubmittedAros] = useState([]);
   const [existingApoloSubmission, setExistingApoloSubmission] = useState(null);
 
   // Load data submitted apps
@@ -217,15 +224,18 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     const loadSubmittedData = () => {
       const storedSubs = JSON.parse(localStorage.getItem('hakAksesSubmissions') || '[]');
       const apps = [];
+      const aros = [];
       
       storedSubs.forEach(sub => {
         apps.push(sub.app);
-        if (sub.app === 'apolo') {
+        if (sub.app === 'apolo' && sub.aros) {
+          sub.aros.forEach(aro => aros.push(aro.id));
           setExistingApoloSubmission(sub);
         }
       });
       
       setSubmittedApps(apps);
+      setSubmittedAros(aros);
     };
     
     loadSubmittedData();
@@ -237,16 +247,20 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       const resubmitData = location.state.resubmitData;
       const app = location.state.app;
       
+      // Set data untuk resubmit
       setDataUmum(resubmitData.dataUmum);
       setSelectedApps([app]);
       
+      // Load saved submission data
       const formDataToLoad = resubmitData.data || {};
       
+      // Update form data spesifik untuk aplikasi
       setFormData(prev => ({
         ...prev,
         [app]: formDataToLoad
       }));
       
+      // Buat saved submission untuk editing
       const newSubmission = {
         id: Date.now(),
         app: app,
@@ -260,15 +274,18 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       };
       
       setSavedSubmissions([newSubmission]);
-      setStep(3);
+      setStep(3); // Langsung ke step pemilihan aplikasi
       
+      // Clear state navigasi
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state]);
 
+  // Handle klik tombol + (mulai pengajuan baru)
   const handleStartNewSubmission = () => {
     if (!userProfile) return;
     
+    // Set data umum dari userProfile
     setDataUmum({
       nama: userProfile.nama,
       email: userProfile.email,
@@ -276,14 +293,17 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       institusi: userProfile.institusi
     });
     
-    setStep(2);
+    setStep(2); // Pindah ke step data umum
   };
 
+  // Handle selesai Step 2 (Data Umum)
   const handleFinishStep2 = () => {
-    setStep(3);
+    setStep(3); // Pindah ke pemilihan aplikasi
   };
 
+  // Handle pilih aplikasi di Step 3
   const handleSelectApp = (app) => {
+    // Cek apakah aplikasi sudah diajukan sebelumnya
     if (submittedApps.includes(app)) {
       alert(`Aplikasi ${app.toUpperCase()} sudah pernah diajukan sebelumnya!`);
       return;
@@ -294,28 +314,28 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     }
   };
 
+  // Handle hapus aplikasi di Step 3
   const handleRemoveApp = (app) => {
     setSelectedApps(selectedApps.filter(a => a !== app));
     
+    // Reset form data untuk app yang dihapus
     setFormData(prev => ({
       ...prev,
       [app.toLowerCase()]: {}
     }));
     
+    // Hapus dari savedSubmissions jika ada
     const newSavedSubmissions = savedSubmissions.filter(s => s.app !== app);
     setSavedSubmissions(newSavedSubmissions);
-    
-    // Reset ARO data jika app yang dihapus adalah APOLO
-    if (app === 'apolo') {
-      setAroData({ keterangan: '', suratPermohonan: null });
-      setShowAroForm(false);
-    }
   };
 
+  // Handle buka form aplikasi spesifik
   const handleOpenAppForm = (app) => {
+    // Cek apakah sudah ada form untuk app ini di savedSubmissions
     const existingSubmission = savedSubmissions.find(s => s.app === app);
     
     if (existingSubmission) {
+      // Jika sudah ada, gunakan data yang sudah disimpan
       setFormData(prev => ({
         ...prev,
         [app]: existingSubmission.data
@@ -323,21 +343,15 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     }
     
     setActiveAppForm(app);
-    
-    // Jika app adalah APOLO, tampilkan form ARO
-    if (app === 'apolo') {
-      setShowAroForm(true);
-    } else {
-      setShowAroForm(false);
-    }
-    
-    setStep(4);
+    setStep(4); // Pindah ke form spesifik
   };
 
+  // Handle simpan form aplikasi
   const handleSaveAppForm = (app, data) => {
+    // Simpan data form dengan menambahkan data umum
     const completeData = {
       ...data,
-      dataUmum: dataUmum
+      dataUmum: dataUmum // Tambahkan data umum ke data form
     };
     
     setFormData(prev => ({
@@ -345,10 +359,12 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       [app]: completeData
     }));
 
+    // Cek apakah submission sudah ada
     const existingIndex = savedSubmissions.findIndex(s => s.app === app);
     
     let newSubmission;
     if (existingIndex >= 0) {
+      // Update existing submission
       newSubmission = {
         ...savedSubmissions[existingIndex],
         data: completeData,
@@ -359,6 +375,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       updatedSubmissions[existingIndex] = newSubmission;
       setSavedSubmissions(updatedSubmissions);
     } else {
+      // Buat submission baru
       newSubmission = {
         id: Date.now(),
         app,
@@ -367,30 +384,15 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
         timestamp: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         trackingId: `IRS-${Date.now().toString().slice(-8)}`,
-        aros: [] // Array untuk menyimpan ARO
+        aros: [] // Array untuk menyimpan ARO yang ditambahkan
       };
       
       setSavedSubmissions([...savedSubmissions, newSubmission]);
     }
     
+    // Kembali ke step pemilihan aplikasi
     setActiveAppForm(null);
-    setShowAroForm(false);
     setStep(3);
-  };
-
-  // Handle simpan ARO untuk APOLO
-  const handleSaveAro = () => {
-    if (!aroData.keterangan) {
-      alert('Harap isi keterangan ARO!');
-      return false;
-    }
-    
-    if (!aroData.suratPermohonan) {
-      alert('Harap upload surat permohonan ARO!');
-      return false;
-    }
-    
-    return true;
   };
 
   // Handle submit semua pengajuan
@@ -400,45 +402,13 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       return;
     }
 
-    // Validasi khusus untuk APOLO: pastikan ARO sudah diisi
-    const apoloSubmission = savedSubmissions.find(s => s.app === 'apolo');
-    if (apoloSubmission && (!aroData.keterangan || !aroData.suratPermohonan)) {
-      alert('Untuk pengajuan APOLO, Anda harus mengisi data ARO terlebih dahulu!');
-      // Kembalikan ke form APOLO
-      const apoloIndex = savedSubmissions.findIndex(s => s.app === 'apolo');
-      if (apoloIndex >= 0) {
-        handleOpenAppForm('apolo');
-      }
-      return;
-    }
-
     const allSubmissions = savedSubmissions.map(sub => {
+      // SEMUA STATUS pending - menunggu persetujuan admin
       const status = 'pending';
-      
-      // Buat data ARO jika ini adalah APOLO
-      let aros = sub.aros || [];
-      if (sub.app === 'apolo' && aroData.keterangan && aroData.suratPermohonan) {
-        const newARO = {
-          id: `aro-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          nama: `ARO APOLO - ${new Date().toLocaleDateString('id-ID')}`,
-          keterangan: aroData.keterangan,
-          suratPermohonan: aroData.suratPermohonan,
-          status: 'pending',
-          tanggalDiajukan: new Date().toISOString(),
-          log: [{
-            timestamp: new Date().toISOString(),
-            action: 'ARO Diajukan',
-            description: 'Permohonan ARO untuk APOLO',
-            status: 'pending'
-          }]
-        };
-        aros = [newARO];
-      }
       
       const submissionData = {
         ...sub,
         dataUmum,
-        aros: aros,
         status: status,
         submittedAt: new Date().toISOString(),
         log: [{
@@ -453,10 +423,12 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       return submissionData;
     });
 
+    // Hapus submission lama jika ini adalah resubmit
     const existingSubmissions = JSON.parse(localStorage.getItem('hakAksesSubmissions') || '[]');
     let updatedSubmissions;
     
     if (savedSubmissions.some(s => s.isResubmit)) {
+      // Hapus submission lama yang ditolak
       const filteredSubmissions = existingSubmissions.filter(sub => 
         !savedSubmissions.some(s => 
           s.isResubmit && s.originalSubmissionId === sub.id
@@ -470,6 +442,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     localStorage.setItem('hakAksesSubmissions', JSON.stringify(updatedSubmissions));
     setSubmissions(updatedSubmissions);
 
+    // Reset dan kembali ke halaman utama
     setStep(1);
     setSelectedApps([]);
     setSavedSubmissions([]);
@@ -478,32 +451,29 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       apolo: {},
       ereporting: {}
     });
-    setAroData({ keterangan: '', suratPermohonan: null });
     
     alert('✅ Pengajuan berhasil dikirim! Menunggu persetujuan admin.');
   };
 
-  // Handle tambah ARO baru (untuk pengajuan setelah APOLO disetujui)
+  // Handle tambah ARO (hanya untuk APOLO yang sudah diajukan)
   const handleOpenAddAROModal = () => {
-    const storedSubs = JSON.parse(localStorage.getItem('hakAksesSubmissions') || '[]');
-    const apoloSubmission = storedSubs.find(sub => sub.app === 'apolo' && sub.status === 'approved');
+    // Cek apakah ada aplikasi APOLO yang sudah diajukan
+    const apoloSubmitted = submittedApps.includes('apolo');
     
-    if (!apoloSubmission) {
-      alert('Aplikasi APOLO harus disetujui terlebih dahulu sebelum dapat menambah ARO!');
+    if (!apoloSubmitted) {
+      alert('Belum ada aplikasi APOLO yang diajukan!');
       return;
     }
 
     setAroModalStep(1);
-    setAroKeterangan('');
     setAroSuratPermohonan(null);
+    setAroKeterangan('');
     setShowAddAROModal(true);
   };
 
-  const [showAddAROModal, setShowAddAROModal] = useState(false);
-  const [aroModalStep, setAroModalStep] = useState(1);
-  const [aroKeterangan, setAroKeterangan] = useState('');
-  const [aroSuratPermohonan, setAroSuratPermohonan] = useState(null);
+  const [aroModalStep, setAroModalStep] = useState(1); // 1: Form, 2: Upload Surat
 
+  // Handle next step di modal ARO
   const handleARONextStep = () => {
     if (!aroKeterangan) {
       alert('Harap isi keterangan penambahan ARO!');
@@ -512,10 +482,12 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     setAroModalStep(2);
   };
 
+  // Handle back di modal ARO
   const handleAROBack = () => {
     setAroModalStep(1);
   };
 
+  // Handle upload surat untuk ARO
   const handleAroSuratUpload = (e) => {
     const file = e.target.files[0];
     if (file && file.type === 'application/pdf') {
@@ -529,37 +501,45 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     }
   };
 
+  // Handle submit ARO dengan surat permohonan
   const handleSubmitARO = () => {
+    if (!aroSuratPermohonan) {
+      alert('Harap upload surat permohonan untuk penambahan ARO!');
+      return;
+    }
+
     if (!aroKeterangan) {
       alert('Harap isi keterangan penambahan ARO!');
       return;
     }
 
-    if (!aroSuratPermohonan) {
-      alert('Harap upload surat permohonan!');
-      return;
-    }
-
+    // Generate ID untuk ARO baru
     const newAroId = `aro-${Date.now()}`;
     
+    // Data ARO baru (default 3 ARO yang bisa diajukan)
     const newARO = {
       id: newAroId,
-      nama: `Permohonan ARO ${new Date().toLocaleDateString('id-ID')}`,
-      keterangan: aroKeterangan,
-      suratPermohonan: aroSuratPermohonan,
+      nama: `ARO APOLO - ${new Date().toLocaleDateString('id-ID')}`,
+      deskripsi: 'Hak akses modul APOLO tambahan',
+      module: 'Modul APOLO Tambahan',
       status: 'pending',
       tanggalDiajukan: new Date().toISOString(),
+      suratPermohonan: aroSuratPermohonan,
+      keterangan: aroKeterangan,
       log: [{
         timestamp: new Date().toISOString(),
         action: 'ARO Diajukan',
-        description: 'Permohonan penambahan ARO baru',
-        status: 'pending'
+        description: `Penambahan ARO diajukan`,
+        status: 'pending',
+        details: 'Menunggu persetujuan admin'
       }]
     };
 
+    // Update submissions dengan ARO baru
     const storedSubs = JSON.parse(localStorage.getItem('hakAksesSubmissions') || '[]');
     const updatedSubmissions = [...storedSubs];
     
+    // Cari submission APOLO
     const apoloSubmissionIndex = updatedSubmissions.findIndex(sub => sub.app === 'apolo');
     
     if (apoloSubmissionIndex >= 0) {
@@ -569,30 +549,109 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       
       updatedSubmissions[apoloSubmissionIndex].aros.push(newARO);
       
+      // Tambah log untuk perubahan ARO
       updatedSubmissions[apoloSubmissionIndex].log = updatedSubmissions[apoloSubmissionIndex].log || [];
       updatedSubmissions[apoloSubmissionIndex].log.push({
         timestamp: new Date().toISOString(),
-        action: 'ARO Baru Diajukan',
-        description: `Permohonan ARO baru: ${aroKeterangan.substring(0, 50)}...`,
+        action: 'Perubahan ARO',
+        description: `Penambahan ARO baru diajukan`,
         status: 'pending'
       });
     }
 
+    // Simpan ke localStorage
     localStorage.setItem('hakAksesSubmissions', JSON.stringify(updatedSubmissions));
     setSubmissions(updatedSubmissions);
     
+    // Update existingApoloSubmission
     if (apoloSubmissionIndex >= 0) {
       setExistingApoloSubmission(updatedSubmissions[apoloSubmissionIndex]);
     }
     
+    // Update submitted AROs
+    setSubmittedAros([...submittedAros, newAroId]);
+    
+    // Reset dan tutup modal
     setAroKeterangan('');
     setAroSuratPermohonan(null);
     setAroModalStep(1);
     setShowAddAROModal(false);
     
-    alert('✅ Permohonan ARO berhasil diajukan! Menunggu persetujuan admin.');
+    alert('ARO berhasil diajukan! Menunggu persetujuan admin.');
   };
 
+  // Handle hapus ARO
+  const handleDeleteARO = (aroId) => {
+    // Minta konfirmasi dan upload surat
+    const confirmDelete = window.confirm('Apakah Anda yakin ingin menghapus ARO ini? Penghapusan ARO memerlukan upload surat permohonan.');
+    
+    if (confirmDelete) {
+      // Tampilkan input untuk upload surat penghapusan
+      const suratInput = document.createElement('input');
+      suratInput.type = 'file';
+      suratInput.accept = '.pdf';
+      suratInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type === 'application/pdf') {
+          const suratPermohonan = {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            purpose: 'penghapusan_aro'
+          };
+          
+          // Minta keterangan penghapusan
+          const keterangan = prompt('Masukkan keterangan penghapusan ARO:');
+          if (!keterangan) {
+            alert('Keterangan penghapusan wajib diisi!');
+            return;
+          }
+          
+          // Proses penghapusan setelah upload surat
+          const storedSubs = JSON.parse(localStorage.getItem('hakAksesSubmissions') || '[]');
+          const updatedSubmissions = [...storedSubs];
+          
+          const apoloSubmissionIndex = updatedSubmissions.findIndex(sub => sub.app === 'apolo');
+          if (apoloSubmissionIndex >= 0 && updatedSubmissions[apoloSubmissionIndex].aros) {
+            // Cari ARO yang akan dihapus
+            const aroToDelete = updatedSubmissions[apoloSubmissionIndex].aros.find(aro => aro.id === aroId);
+            
+            // Hapus ARO dari array
+            updatedSubmissions[apoloSubmissionIndex].aros = updatedSubmissions[apoloSubmissionIndex].aros.filter(aro => aro.id !== aroId);
+            
+            // Tambah log untuk penghapusan ARO
+            updatedSubmissions[apoloSubmissionIndex].log = updatedSubmissions[apoloSubmissionIndex].log || [];
+            updatedSubmissions[apoloSubmissionIndex].log.push({
+              timestamp: new Date().toISOString(),
+              action: 'ARO Dihapus',
+              description: `ARO ${aroToDelete?.nama || aroId} diajukan untuk dihapus`,
+              status: 'pending',
+              suratPermohonan: suratPermohonan,
+              keterangan: keterangan,
+              details: 'Penghapusan ARO menunggu persetujuan admin'
+            });
+            
+            localStorage.setItem('hakAksesSubmissions', JSON.stringify(updatedSubmissions));
+            setSubmissions(updatedSubmissions);
+            
+            // Update existingApoloSubmission
+            setExistingApoloSubmission(updatedSubmissions[apoloSubmissionIndex]);
+            
+            // Update submitted AROs
+            const newSubmittedAros = submittedAros.filter(id => id !== aroId);
+            setSubmittedAros(newSubmittedAros);
+            
+            alert('ARO berhasil diajukan untuk dihapus! Permohonan penghapusan menunggu persetujuan admin.');
+          }
+        } else {
+          alert('Harap unggah file PDF untuk surat permohonan penghapusan!');
+        }
+      };
+      suratInput.click();
+    }
+  };
+
+  // Handle kembali ke awal
   const handleBackToMain = () => {
     setStep(1);
     setSelectedApps([]);
@@ -602,10 +661,9 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       apolo: {},
       ereporting: {}
     });
-    setAroData({ keterangan: '', suratPermohonan: null });
-    setShowAroForm(false);
   };
 
+  // Tampilkan berdasarkan step
   if (step === 1) {
     return (
       <div className="p-6">
@@ -614,7 +672,9 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
           <p className="text-gray-600">Ajukan hak akses untuk aplikasi SIPINA, APOLO, atau E-Reporting</p>
         </div>
 
+        {/* Tombol Utama */}
         <div className="flex flex-col md:flex-row gap-6 mb-8">
+          {/* Tombol Tambah Pengajuan */}
           <button
             onClick={handleStartNewSubmission}
             disabled={submittedApps.length >= 3}
@@ -644,12 +704,13 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
             </div>
           </button>
 
+          {/* Tombol Tambah ARO (Hanya aktif jika ada APOLO yang sudah diajukan) */}
           <button
             onClick={handleOpenAddAROModal}
-            disabled={!submittedApps.includes('apolo') || !existingApoloSubmission || existingApoloSubmission.status !== 'approved'}
+            disabled={!submittedApps.includes('apolo')}
             className={`
               w-full md:w-1/2 p-8 border-2 rounded-xl text-center transition-all duration-300
-              ${(!submittedApps.includes('apolo') || !existingApoloSubmission || existingApoloSubmission.status !== 'approved')
+              ${!submittedApps.includes('apolo')
                 ? 'border-gray-300 bg-gray-100 cursor-not-allowed' 
                 : 'border-dashed border-red-300 bg-red-50 hover:bg-red-100 hover:border-red-400'
               }
@@ -657,30 +718,24 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
           >
             <div className="flex flex-col items-center justify-center">
               <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
-                (!submittedApps.includes('apolo') || !existingApoloSubmission || existingApoloSubmission.status !== 'approved')
-                  ? 'bg-gray-300' 
-                  : 'bg-gradient-to-r from-red-500 to-red-600'
+                !submittedApps.includes('apolo') ? 'bg-gray-300' : 'bg-gradient-to-r from-red-500 to-red-600'
               }`}>
                 <Layers className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Tambah ARO</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Tambah/Hapus ARO</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Ajukan permohonan ARO baru untuk APOLO
+                Tambah atau hapus ARO untuk aplikasi APOLO
               </p>
               {!submittedApps.includes('apolo') && (
                 <p className="text-xs text-red-600 font-medium">
                   Belum ada APOLO yang diajukan
                 </p>
               )}
-              {submittedApps.includes('apolo') && existingApoloSubmission?.status !== 'approved' && (
-                <p className="text-xs text-yellow-600 font-medium">
-                  APOLO harus disetujui dulu
-                </p>
-              )}
             </div>
           </button>
         </div>
 
+        {/* Daftar Aplikasi yang Sudah Diajukan */}
         {submittedApps.length > 0 && (
           <div className="mb-8">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Aplikasi yang Sudah Diajukan</h3>
@@ -748,50 +803,42 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
                       </div>
                     </div>
                     
+                    {/* INFORMASI ARO YANG DIMILIKI - DITAMPILKAN LENGKAP */}
                     {app === 'apolo' && appSubmission?.aros && appSubmission.aros.length > 0 && (
                       <div className="mt-4 pt-4 border-t border-red-100">
                         <p className="text-xs font-bold text-gray-700 mb-3 flex items-center gap-1">
                           <Info className="w-3 h-3 text-red-500" />
-                          Daftar ARO:
+                          Daftar ARO yang Dimiliki:
                         </p>
                         <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                           {appSubmission.aros.map((aro, idx) => (
-                            <div key={idx} className={`p-2 rounded border ${
-                              aro.status === 'approved' ? 'bg-green-50 border-green-200' :
-                              aro.status === 'pending' ? 'bg-yellow-50 border-yellow-200' :
-                              'bg-red-50 border-red-200'
-                            }`}>
-                              <div className="flex items-center justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2">
-                                    <p className="text-xs font-medium text-gray-800">
-                                      Permohonan ARO #{idx + 1}
-                                    </p>
-                                    <span className={`px-1.5 py-0.5 text-xs rounded-full ${
-                                      aro.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                      aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                      'bg-red-100 text-red-800'
-                                    }`}>
-                                      {aro.status === 'approved' ? '✓ Disetujui' : 
-                                       aro.status === 'pending' ? '⏳ Menunggu' : 
-                                       '✗ Ditolak'}
-                                    </span>
-                                  </div>
-                                  <p className="text-xs text-gray-600 mt-1">
-                                    "{aro.keterangan?.substring(0, 50)}..."
-                                  </p>
-                                  {aro.status === 'approved' && aro.modulDipilih && (
-                                    <p className="text-xs text-green-600 mt-1">
-                                      Modul: {aro.modulDipilih}
-                                    </p>
-                                  )}
-                                  {aro.status === 'rejected' && aro.rejectionNote && (
-                                    <p className="text-xs text-red-600 mt-1">
-                                      Alasan: {aro.rejectionNote}
-                                    </p>
-                                  )}
+                            <div key={idx} className="flex items-center justify-between bg-gray-50 p-2 rounded border border-gray-200">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <p className="text-xs font-medium text-gray-800">{aro.nama || `ARO APOLO #${idx + 1}`}</p>
+                                  <span className={`px-1.5 py-0.5 text-xs rounded-full ${
+                                    aro.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                    aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                    'bg-gray-100 text-gray-800'
+                                  }`}>
+                                    {aro.status === 'approved' ? 'Disetujui' : aro.status === 'pending' ? 'Menunggu' : 'Ditolak'}
+                                  </span>
                                 </div>
+                                <p className="text-xs text-gray-500 mt-0.5">{aro.module || 'Modul APOLO'}</p>
+                                {aro.keterangan && (
+                                  <p className="text-xs text-gray-500 mt-0.5 italic">"{aro.keterangan}"</p>
+                                )}
+                                <p className="text-xs text-gray-400 mt-0.5">
+                                  Diajukan: {new Date(aro.tanggalDiajukan).toLocaleDateString('id-ID')}
+                                </p>
                               </div>
+                              <button
+                                onClick={() => handleDeleteARO(aro.id)}
+                                className="ml-2 p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"
+                                title="Hapus ARO"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
                             </div>
                           ))}
                         </div>
@@ -804,15 +851,16 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
           </div>
         )}
 
+        {/* Modal Tambah ARO - FORM SEDERHANA */}
         {showAddAROModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
               <div className="p-6 border-b border-red-200 bg-gradient-to-r from-red-50 to-white">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">Tambah ARO Baru</h3>
+                    <h3 className="text-xl font-bold text-gray-900">Tambah ARO untuk APOLO</h3>
                     <p className="text-gray-600 mt-1">
-                      {aroModalStep === 1 ? 'Isi keterangan permohonan' : 'Upload surat permohonan'}
+                      {aroModalStep === 1 ? 'Isi keterangan penambahan ARO' : 'Upload surat permohonan'}
                     </p>
                   </div>
                   <button
@@ -829,49 +877,57 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
                 </div>
               </div>
               
-              <div className="p-6 overflow-y-auto">
+              <div className="p-6 overflow-y-auto max-h-[50vh]">
                 {aroModalStep === 1 ? (
-                  <div className="space-y-4">
+                  // Step 1: Form Keterangan
+                  <div className="space-y-6">
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                       <p className="text-sm text-yellow-700 flex items-start gap-2">
                         <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
                         <span>
-                          <span className="font-medium">Informasi:</span> Jelaskan tujuan dan kebutuhan penambahan ARO ini.
+                          <span className="font-medium">Informasi:</span> Anda akan mengajukan penambahan ARO baru untuk aplikasi APOLO. Setiap penambahan ARO membutuhkan persetujuan admin.
                         </span>
                       </p>
                     </div>
                     
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Keterangan Permohonan ARO <span className="text-red-500">*</span>
+                        Keterangan Penambahan ARO <span className="text-red-500">*</span>
                       </label>
                       <textarea
                         value={aroKeterangan}
                         onChange={(e) => setAroKeterangan(e.target.value)}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                         rows="5"
-                        placeholder="Contoh: Membutuhkan akses modul Strategi Anti Fraud untuk keperluan pelaporan..."
+                        placeholder="Jelaskan tujuan dan kebutuhan penambahan ARO ini..."
                         required
                       />
                       {!aroKeterangan && (
                         <p className="text-xs text-red-600 mt-1">Keterangan wajib diisi</p>
                       )}
                     </div>
+                    
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <p className="text-sm text-blue-700">
+                        <span className="font-medium">Catatan:</span> Setelah mengisi keterangan, Anda akan diminta upload surat permohonan di langkah berikutnya.
+                      </p>
+                    </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  // Step 2: Upload Surat Permohonan
+                  <div className="space-y-6">
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                       <p className="text-sm text-yellow-700">
-                        <span className="font-medium">Perhatian:</span> Upload surat permohonan resmi.
+                        <span className="font-medium">Perhatian:</span> Setiap penambahan ARO wajib disertai surat permohonan resmi.
                       </p>
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Surat Permohonan ARO <span className="text-red-500">*</span>
-                      </label>
-                      <div className={`border-2 border-dashed rounded-xl p-8 text-center ${
-                        aroSuratPermohonan ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'
+                      <h4 className="font-medium text-gray-900 mb-3">Upload Surat Permohonan Penambahan ARO</h4>
+                      <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
+                        aroSuratPermohonan 
+                          ? 'border-green-300 bg-green-50' 
+                          : 'border-red-300 bg-red-50 hover:border-red-400 hover:bg-red-100'
                       }`}>
                         <input
                           type="file"
@@ -893,32 +949,32 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
                           <p className="text-gray-700 font-medium mb-2">
                             {aroSuratPermohonan
                               ? `✓ File: ${aroSuratPermohonan.name}`
-                              : 'Klik untuk upload surat permohonan'
+                              : 'Upload Surat Permohonan Penambahan ARO'
                             }
                           </p>
-                          <p className="text-sm text-gray-500">Format: PDF (maks. 5MB)</p>
-                          {!aroSuratPermohonan && (
-                            <p className="text-xs text-red-500 mt-2">*Wajib diunggah</p>
-                          )}
+                          <p className="text-sm text-gray-500 mb-1">Format: PDF (maks. 5MB)</p>
+                          <p className="text-xs text-red-500">*Wajib diunggah</p>
                         </label>
                       </div>
                     </div>
                     
-                    {aroKeterangan && (
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <p className="text-sm font-medium text-gray-700 mb-2">Ringkasan Permohonan:</p>
-                        <p className="text-sm text-gray-600">"{aroKeterangan.substring(0, 100)}..."</p>
-                      </div>
-                    )}
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h5 className="font-medium text-gray-900 mb-2">Ringkasan Pengajuan:</h5>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Keterangan:</span> {aroKeterangan}
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
               
               <div className="p-6 border-t border-red-200 bg-red-50">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-600">
-                    {aroModalStep === 1 ? 'Langkah 1 dari 2' : 'Langkah 2 dari 2'}
-                  </p>
+                  <div>
+                    <p className="text-sm text-gray-600">
+                      {aroModalStep === 1 ? 'Langkah 1 dari 2' : 'Langkah 2 dari 2'}
+                    </p>
+                  </div>
                   <div className="flex gap-3">
                     {aroModalStep === 1 ? (
                       <>
@@ -961,7 +1017,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
                             }
                           `}
                         >
-                          Ajukan ARO
+                          Ajukan Penambahan ARO
                         </button>
                       </>
                     )}
@@ -1007,26 +1063,15 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       onSave: (data) => handleSaveAppForm(activeAppForm, data),
       onCancel: () => {
         setActiveAppForm(null);
-        setShowAroForm(false);
         setStep(3);
       }
     };
 
-    if (activeAppForm === 'apolo') {
-      return (
-        <div className="p-6">
-          <ApoloFormWithAro 
-            {...formProps}
-            aroData={aroData}
-            setAroData={setAroData}
-          />
-        </div>
-      );
-    }
-
     switch(activeAppForm) {
       case 'sipina':
         return <SipinaForm {...formProps} />;
+      case 'apolo':
+        return <ApoloForm {...formProps} />;
       case 'ereporting':
         return <EReportingForm {...formProps} />;
       default:
@@ -1037,7 +1082,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
   return null;
 };
 
-// STEP 2: DATA UMUM
+// Step 2: Data Umum (Read-only)
 const DataUmumStep = ({ dataUmum, onFinish, onBack }) => {
   return (
     <div className="p-8">
@@ -1052,13 +1097,16 @@ const DataUmumStep = ({ dataUmum, onFinish, onBack }) => {
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Data Umum Pemohon</h2>
             <p className="text-gray-600">Data berikut diambil dari sistem Pelaporan.id</p>
+            <p className="text-sm text-red-600 mt-2">⚠️ Data ini hanya ditampilkan sekali dan tidak akan muncul lagi di form aplikasi</p>
           </div>
         </div>
 
         <div className="bg-gradient-to-r from-red-50 to-white rounded-xl border border-red-200 p-8 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-4 rounded-lg border border-gray-200">
-              <label className="block text-sm font-medium text-gray-500 mb-2">Nama Pengguna</label>
+              <label className="block text-sm font-medium text-gray-500 mb-2">
+                Nama Pengguna
+              </label>
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-gray-400" />
                 <input
@@ -1071,7 +1119,9 @@ const DataUmumStep = ({ dataUmum, onFinish, onBack }) => {
             </div>
 
             <div className="bg-white p-4 rounded-lg border border-gray-200">
-              <label className="block text-sm font-medium text-gray-500 mb-2">Email</label>
+              <label className="block text-sm font-medium text-gray-500 mb-2">
+                Email
+              </label>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-gray-400" />
                 <input
@@ -1084,7 +1134,9 @@ const DataUmumStep = ({ dataUmum, onFinish, onBack }) => {
             </div>
 
             <div className="bg-white p-4 rounded-lg border border-gray-200">
-              <label className="block text-sm font-medium text-gray-500 mb-2">Nomor Telepon</label>
+              <label className="block text-sm font-medium text-gray-500 mb-2">
+                Nomor Telepon
+              </label>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-gray-400" />
                 <input
@@ -1097,7 +1149,9 @@ const DataUmumStep = ({ dataUmum, onFinish, onBack }) => {
             </div>
 
             <div className="bg-white p-4 rounded-lg border border-gray-200">
-              <label className="block text-sm font-medium text-gray-500 mb-2">Instansi</label>
+              <label className="block text-sm font-medium text-gray-500 mb-2">
+                Instansi
+              </label>
               <div className="flex items-center gap-2">
                 <Building className="w-4 h-4 text-gray-400" />
                 <input
@@ -1108,6 +1162,13 @@ const DataUmumStep = ({ dataUmum, onFinish, onBack }) => {
                 />
               </div>
             </div>
+          </div>
+
+          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-100 rounded-lg">
+            <p className="text-sm text-yellow-700">
+              <span className="font-medium">Informasi:</span> Data diambil dari database Pelaporan.id. 
+              Data ini akan digunakan untuk semua pengajuan aplikasi dan tidak akan ditampilkan lagi di form aplikasi spesifik.
+            </p>
           </div>
         </div>
 
@@ -1130,7 +1191,7 @@ const DataUmumStep = ({ dataUmum, onFinish, onBack }) => {
   );
 };
 
-// STEP 3: PILIH APLIKASI
+// Step 3: Pilih Aplikasi
 const PilihAplikasiStep = ({ 
   selectedApps, 
   savedSubmissions, 
@@ -1162,8 +1223,21 @@ const PilihAplikasiStep = ({
         </div>
       </div>
 
-      
+      {/* Informasi Status Pengajuan */}
+      <div className="mb-6 bg-gradient-to-r from-red-50 to-white border-l-4 border-red-500 p-4 rounded-r-lg">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+          <div>
+            <p className="font-medium text-red-900">Informasi Status Pengajuan:</p>
+            <ul className="text-sm text-gray-700 mt-1 space-y-1">
+              <li>• <span className="font-medium">Semua pengajuan:</span> Menunggu persetujuan admin</li>
+              <li>• <span className="font-medium">Penambahan ARO:</span> Menunggu persetujuan admin</li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
+      {/* Tombol Tambah Aplikasi */}
       <div className="mb-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {apps.map(app => {
@@ -1196,11 +1270,8 @@ const PilihAplikasiStep = ({
                 </div>
                 <h3 className="font-bold text-gray-900">{app.label}</h3>
                 <p className="text-sm text-gray-600 mt-1">{app.description}</p>
-                {app.id === 'apolo' && !isSubmitted && !isSelected && (
-                  <p className="text-xs text-red-500 mt-2"></p>
-                )}
                 {isSubmitted && (
-                  <p className="text-xs text-red-600 mt-2">Sudah diajukan</p>
+                  <p className="text-xs text-red-600 mt-2">Tidak dapat dipilih lagi</p>
                 )}
               </button>
             );
@@ -1208,6 +1279,7 @@ const PilihAplikasiStep = ({
         </div>
       </div>
 
+      {/* Daftar Aplikasi yang Dipilih */}
       {selectedApps.length > 0 && (
         <div className="mb-8">
           <h3 className="text-lg font-bold text-gray-900 mb-4">Aplikasi yang Dipilih</h3>
@@ -1257,6 +1329,11 @@ const PilihAplikasiStep = ({
                         <div>
                           <p className="text-sm text-gray-600">Status: <span className="font-medium text-yellow-600">Draft</span></p>
                           <p className="text-xs text-gray-500">ID: {savedSubmission.trackingId}</p>
+                          {savedSubmission.updatedAt && (
+                            <p className="text-xs text-gray-500">
+                              Terakhir diupdate: {new Date(savedSubmission.updatedAt).toLocaleDateString('id-ID')}
+                            </p>
+                          )}
                         </div>
                         <button
                           onClick={() => onOpenAppForm(appId)}
@@ -1274,11 +1351,70 @@ const PilihAplikasiStep = ({
         </div>
       )}
 
+      {/* Tabel Pengajuan yang Sudah Disimpan */}
+      {savedSubmissions.length > 0 && (
+        <div className="mb-8">
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Daftar Pengajuan Siap Submit</h3>
+          <div className="border border-red-200 rounded-lg overflow-hidden">
+            <table className="min-w-full divide-y divide-red-200">
+              <thead className="bg-red-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-bold text-red-800 uppercase">Aplikasi</th>
+                  <th className="px-6 py-3 text-left text-xs font-bold text-red-800 uppercase">Tracking ID</th>
+                  <th className="px-6 py-3 text-left text-xs font-bold text-red-800 uppercase">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-bold text-red-800 uppercase">Terakhir Update</th>
+                  <th className="px-6 py-3 text-left text-xs font-bold text-red-800 uppercase">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-red-100">
+                {savedSubmissions.map(sub => (
+                  <tr key={sub.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="font-bold text-gray-900">
+                        {sub.app.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {sub.trackingId}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full">
+                        Draft
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {new Date(sub.updatedAt || sub.timestamp).toLocaleDateString('id-ID')}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => onOpenAppForm(sub.app)}
+                          className="text-red-600 hover:text-red-700"
+                          title="Edit Form"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Tombol Aksi */}
       <div className="flex justify-between items-center pt-6 border-t border-red-200">
         <div>
           <p className="text-sm text-gray-600">
             {selectedApps.length} aplikasi dipilih • {savedSubmissions.length} form sudah diisi
           </p>
+          {submittedApps.length > 0 && (
+            <p className="text-xs text-red-600 mt-1">
+              {submittedApps.length} aplikasi sudah pernah diajukan sebelumnya
+            </p>
+          )}
         </div>
         
         <div className="flex gap-3">
@@ -1306,222 +1442,6 @@ const PilihAplikasiStep = ({
           )}
         </div>
       </div>
-    </div>
-  );
-};
-
-// FORM APOLO DENGAN ARO
-// FORM APOLO DENGAN ARO SEDERHANA (TANPA UPLOAD SURAT APOLO)
-const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, aroData, setAroData }) => {
-  const [formData, setFormData] = useState({
-    nomorSurat: initialData.nomorSurat || '',
-    tanggalSurat: initialData.tanggalSurat || '',
-    perihal: initialData.perihal || '',
-  });
-
-  useEffect(() => {
-    if (initialData && Object.keys(initialData).length > 0) {
-      setFormData(prev => ({
-        ...prev,
-        ...initialData
-      }));
-    }
-  }, [initialData]);
-
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type === 'application/pdf') {
-      setAroData(prev => ({
-        ...prev,
-        suratPermohonan: {
-          name: file.name,
-          size: file.size,
-          type: file.type
-        }
-      }));
-    } else {
-      alert('Harap unggah file PDF');
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    // Validasi APOLO
-    if (!formData.nomorSurat || !formData.tanggalSurat || !formData.perihal) {
-      alert('Semua field APOLO wajib diisi!');
-      return;
-    }
-    
-    // Validasi ARO
-    if (!aroData.keterangan) {
-      alert('Harap isi keterangan ARO!');
-      return;
-    }
-    
-    if (!aroData.suratPermohonan) {
-      alert('Harap unggah surat permohonan ARO!');
-      return;
-    }
-    
-    onSave(formData);
-  };
-
-  return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Form Pengajuan APOLO + ARO</h2>
-          <p className="text-gray-600">Isi data APOLO dan ARO dalam satu alur</p>
-        </div>
-        <button onClick={onCancel} className="p-2 text-gray-400 hover:text-gray-600">
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {/* BAGIAN 1: FORM APOLO */}
-        <div className="border border-red-200 rounded-xl p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-red-100 flex items-center gap-2">
-            <span className="bg-red-100 text-red-800 w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span>
-            Data Pengajuan APOLO
-          </h3>
-          
-          <div className="space-y-6">
-            {/* Nomor Surat */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nomor Surat <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={formData.nomorSurat}
-                onChange={(e) => setFormData({...formData, nomorSurat: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                placeholder="Masukkan nomor surat permohonan"
-                required
-              />
-            </div>
-            
-            {/* Tanggal Surat */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tanggal Surat <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="date"
-                value={formData.tanggalSurat}
-                onChange={(e) => setFormData({...formData, tanggalSurat: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                required
-              />
-            </div>
-            
-            {/* Perihal */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Perihal <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={formData.perihal}
-                onChange={(e) => setFormData({...formData, perihal: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                placeholder="Masukkan perihal surat"
-                required
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* BAGIAN 2: FORM ARO */}
-        <div className="border border-red-200 rounded-xl p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-red-100 flex items-center gap-2">
-            <span className="bg-red-100 text-red-800 w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
-            Data ARO (Area of Responsibility)
-          </h3>
-          
-          <div className="space-y-6">
-            {/* Informasi ARO */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-              <p className="text-xs text-yellow-700 flex items-start gap-2">
-                <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>ARO akan diajukan bersamaan dengan APOLO dan menunggu persetujuan admin.</span>
-              </p>
-            </div>
-
-            {/* Keterangan ARO */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Keterangan ARO <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                value={aroData.keterangan}
-                onChange={(e) => setAroData(prev => ({...prev, keterangan: e.target.value}))}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                rows="3"
-                placeholder="Jelaskan tujuan dan kebutuhan ARO ini..."
-                required
-              />
-            </div>
-
-            {/* Upload Surat ARO */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Upload Surat Permohonan ARO <span className="text-red-500">*</span>
-              </label>
-              <div className={`border-2 border-dashed rounded-xl p-6 text-center ${
-                aroData.suratPermohonan ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'
-              }`}>
-                <input
-                  type="file"
-                  id="aroSurat"
-                  accept=".pdf"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                  required
-                />
-                <label htmlFor="aroSurat" className="cursor-pointer">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${
-                    aroData.suratPermohonan ? 'bg-green-100' : 'bg-red-100'
-                  }`}>
-                    {aroData.suratPermohonan ? (
-                      <FileCheck className="w-6 h-6 text-green-600" />
-                    ) : (
-                      <UploadCloud className="w-6 h-6 text-red-600" />
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-700 font-medium">
-                    {aroData.suratPermohonan
-                      ? aroData.suratPermohonan.name
-                      : 'Klik untuk upload surat ARO'
-                    }
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">Format: PDF</p>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* TOMBOL SIMPAN */}
-        <div className="flex justify-between pt-6 border-t border-gray-200">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
-          >
-            Kembali
-          </button>
-          <button
-            type="submit"
-            className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 flex items-center gap-2"
-          >
-            <ArrowRight className="w-5 h-5" />
-            Simpan APOLO + ARO
-          </button>
-        </div>
-      </form>
     </div>
   );
 };
@@ -2146,7 +2066,244 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   );
 };
 
-// FORM E-REPORTING
+// Form APOLO - TANPA LIST ARO, HANYA FORM UMUM
+const ApoloForm = ({ dataUmum, initialData, onSave, onCancel }) => {
+  const [formData, setFormData] = useState({
+    sumberData: 'Pelaporan.id',
+    nomorSurat: initialData.nomorSurat || '',
+    tanggalSurat: initialData.tanggalSurat || '',
+    perihal: initialData.perihal || '',
+    keterangan: initialData.keterangan || '',
+    suratPermohonan: initialData.suratPermohonan || null
+  });
+
+  // Pre-fill data jika ada initialData dari resubmit
+  useEffect(() => {
+    if (initialData && Object.keys(initialData).length > 0) {
+      setFormData(prev => ({
+        ...prev,
+        ...initialData
+      }));
+    }
+  }, [initialData]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // VALIDASI SEMUA FIELD WAJIB
+    if (!formData.nomorSurat) {
+      alert('Harap isi Nomor Surat!');
+      return;
+    }
+    
+    if (!formData.tanggalSurat) {
+      alert('Harap isi Tanggal Surat!');
+      return;
+    }
+    
+    if (!formData.perihal) {
+      alert('Harap isi Perihal!');
+      return;
+    }
+    
+    if (!formData.keterangan) {
+      alert('Harap isi Keterangan!');
+      return;
+    }
+    
+    // Validasi surat permohonan
+    if (!formData.suratPermohonan) {
+      alert('Harap unggah surat permohonan!');
+      return;
+    }
+    
+    onSave(formData);
+  };
+
+  const handleFileUpload = (e, type) => {
+    const file = e.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      setFormData(prev => ({
+        ...prev,
+        [type]: {
+          name: file.name,
+          size: file.size,
+          type: file.type
+        }
+      }));
+    } else {
+      alert('Harap unggah file PDF');
+    }
+  };
+
+  return (
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Form Pengajuan Hak Akses APOLO</h2>
+          <p className="text-gray-600">Semua field bersifat mandatory</p>
+        </div>
+        <button
+          onClick={onCancel}
+          className="p-2 text-gray-400 hover:text-gray-600"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Informasi ARO akan ditambahkan nanti melalui fitur terpisah */}
+      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="flex items-start gap-3">
+          <Info className="w-5 h-5 text-blue-600 mt-0.5" />
+          <div>
+            <p className="font-medium text-blue-800">Informasi ARO</p>
+            <p className="text-sm text-blue-700 mt-1">
+              Pengajuan ARO untuk APOLO dapat dilakukan setelah aplikasi APOLO disetujui. 
+              Gunakan fitur "Tambah/Hapus ARO" di halaman utama untuk mengelola ARO.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Form APOLO */}
+        <div className="border border-red-200 rounded-xl p-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-red-100">
+            Informasi Pengajuan APOLO <span className="text-red-500 text-sm">(Semua Wajib Diisi)</span>
+          </h3>
+          
+          <div className="space-y-6">
+            {/* Nomor Surat */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nomor Surat <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={formData.nomorSurat}
+                onChange={(e) => setFormData({...formData, nomorSurat: e.target.value})}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                placeholder="Masukkan nomor surat permohonan"
+                required
+              />
+              {!formData.nomorSurat && (
+                <p className="text-xs text-red-600 mt-1">Field ini wajib diisi</p>
+              )}
+            </div>
+            
+            {/* Tanggal Surat */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tanggal Surat <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                value={formData.tanggalSurat}
+                onChange={(e) => setFormData({...formData, tanggalSurat: e.target.value})}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                required
+              />
+              {!formData.tanggalSurat && (
+                <p className="text-xs text-red-600 mt-1">Field ini wajib diisi</p>
+              )}
+            </div>
+            
+            {/* Perihal */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Perihal <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={formData.perihal}
+                onChange={(e) => setFormData({...formData, perihal: e.target.value})}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                placeholder="Masukkan perihal surat"
+                required
+              />
+              {!formData.perihal && (
+                <p className="text-xs text-red-600 mt-1">Field ini wajib diisi</p>
+              )}
+            </div>
+            
+            {/* Keterangan */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Keterangan <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                value={formData.keterangan}
+                onChange={(e) => setFormData({...formData, keterangan: e.target.value})}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                rows="3"
+                placeholder="Keterangan tambahan"
+                required
+              />
+              {!formData.keterangan && (
+                <p className="text-xs text-red-600 mt-1">Field ini wajib diisi</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Upload Surat Permohonan */}
+        <div className="border border-red-200 rounded-xl p-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-red-100">
+            Upload Surat Permohonan <span className="text-red-500">*</span>
+          </h3>
+          
+          <div className="border-2 border-dashed border-red-300 rounded-xl p-8 text-center">
+            <input
+              type="file"
+              id="apoloSurat"
+              accept=".pdf"
+              onChange={(e) => handleFileUpload(e, 'suratPermohonan')}
+              className="hidden"
+              required
+            />
+            <label htmlFor="apoloSurat" className="cursor-pointer">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                {formData.suratPermohonan ? (
+                  <FileCheck className="w-8 h-8 text-green-600" />
+                ) : (
+                  <UploadCloud className="w-8 h-8 text-red-600" />
+                )}
+              </div>
+              <p className="text-gray-700 font-medium mb-2">
+                {formData.suratPermohonan
+                  ? `File: ${formData.suratPermohonan.name}`
+                  : 'Upload Surat Permohonan APOLO'
+                }
+              </p>
+              <p className="text-sm text-gray-500 mb-1">Format: PDF (maks. 5MB)</p>
+              <p className="text-xs text-red-500">*Wajib diunggah</p>
+            </label>
+          </div>
+        </div>
+
+        <div className="flex justify-between pt-6 border-t border-gray-200">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
+          >
+            Batal
+          </button>
+          
+          <button
+            type="submit"
+            className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!formData.nomorSurat || !formData.tanggalSurat || !formData.perihal || !formData.keterangan || !formData.suratPermohonan}
+          >
+            Simpan Form APOLO
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+// Form E-Reporting (tidak diubah secara signifikan, hanya hapus auto-approve)
 const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   const [step, setStep] = useState(1); // 1: Pilih Metode, 2-5: Wizard
   const [metodePendaftaran, setMetodePendaftaran] = useState(null); // 'sipo' atau 'non-sipo'
@@ -2997,14 +3154,17 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   );
 };
 
-// TAB STATUS & MONITORING
-const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
+// Komponen Status & Monitoring Tab
+const StatusMonitoringTab = ({ submissions }) => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('monitoring');
   
+  // Filter submissions yang sudah diajukan (bukan draft)
   const submittedSubmissions = submissions.filter(s => s.status !== 'draft');
   
+  // Fungsi untuk handle update/isi ulang data
   const handleResubmit = (submission) => {
+    // Navigasi ke tab pengajuan dengan membawa data submission yang ditolak
     navigate('/profile/hak-akses/pengajuan', { 
       state: { 
         resubmitData: submission,
@@ -3013,10 +3173,44 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
     });
   };
 
+  // Status badge
+  const getStatusBadge = (status) => {
+    switch(status) {
+      case 'pending':
+        return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full flex items-center gap-1"><Clock className="w-3 h-3" /> Menunggu</span>;
+      case 'approved':
+        return <span className="px-3 py-1 bg-green-100 text-green-800 text-xs font-bold rounded-full flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Disetujui</span>;
+      case 'rejected':
+        return <span className="px-3 py-1 bg-red-100 text-red-800 text-xs font-bold rounded-full flex items-center gap-1"><XCircle className="w-3 h-3" /> Ditolak</span>;
+      default:
+        return <span className="px-3 py-1 bg-gray-100 text-gray-800 text-xs font-bold rounded-full">Unknown</span>;
+    }
+  };
+
+  // App badge
+  const getAppBadge = (app) => {
+    const appNames = {
+      'sipina': 'SIPINA',
+      'apolo': 'APOLO',
+      'ereporting': 'E-Reporting'
+    };
+    
+    return (
+      <span className="px-3 py-1 bg-red-100 text-red-800 text-xs font-bold rounded-full border border-red-200">
+        {appNames[app] || app.toUpperCase()}
+      </span>
+    );
+  };
+
+  // Format tanggal
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('id-ID', {
-      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
@@ -3027,21 +3221,26 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
           <Eye className="w-5 h-5 text-red-600" />
           Status & Monitoring Pengajuan
         </h2>
+        <p className="text-sm text-gray-600 mt-1">Pantau status pengajuan dan riwayat aktivitas</p>
       </div>
 
       <div className="flex border-b border-red-200 mb-6">
         <button
           onClick={() => setActiveSection('monitoring')}
-          className={`px-4 py-2 font-bold text-sm border-b-2 ${
-            activeSection === 'monitoring' ? 'border-red-600 text-red-600' : 'border-transparent text-gray-500'
+          className={`px-4 py-2 font-bold text-sm border-b-2 transition-colors ${
+            activeSection === 'monitoring'
+              ? 'border-red-600 text-red-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
           }`}
         >
           Monitoring Status
         </button>
         <button
           onClick={() => setActiveSection('log')}
-          className={`px-4 py-2 font-bold text-sm border-b-2 ${
-            activeSection === 'log' ? 'border-red-600 text-red-600' : 'border-transparent text-gray-500'
+          className={`px-4 py-2 font-bold text-sm border-b-2 transition-colors ${
+            activeSection === 'log'
+              ? 'border-red-600 text-red-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
           }`}
         >
           Log Aktivitas
@@ -3060,7 +3259,7 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
         ) : (
           <div className="space-y-4">
             {submittedSubmissions.map((submission) => (
-              <div key={submission.id} className="bg-gradient-to-r from-red-50 to-white border border-red-200 rounded-xl p-6">
+              <div key={submission.id} className="bg-gradient-to-r from-red-50 to-white border border-red-200 rounded-xl p-6 hover:shadow-md transition-shadow">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
@@ -3077,20 +3276,27 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Aplikasi</p>
-                      {getAppBadge(submission.app)}
+                      <div className="flex flex-wrap gap-2">
+                        {getAppBadge(submission.app)}
+                      </div>
                     </div>
                     
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Pemohon</p>
                       <p className="font-bold text-gray-900">{submission.dataUmum?.nama}</p>
+                      <p className="text-xs text-gray-600">{submission.dataUmum?.institusi}</p>
                     </div>
                     
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Status</p>
+                      <p className="text-xs text-gray-500 mb-1">Status Persetujuan</p>
                       {submission.approvedBy ? (
-                        <p className="font-bold text-green-600">Disetujui oleh: {submission.approvedBy}</p>
+                        <p className="font-bold text-green-600">
+                          Disetujui oleh: {submission.approvedBy}
+                        </p>
                       ) : submission.rejectedBy ? (
-                        <p className="font-bold text-red-600">Ditolak oleh: {submission.rejectedBy}</p>
+                        <p className="font-bold text-red-600">
+                          Ditolak oleh: {submission.rejectedBy}
+                        </p>
                       ) : (
                         <p className="font-bold text-yellow-600">Menunggu Admin</p>
                       )}
@@ -3098,37 +3304,28 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
                   </div>
                 </div>
                 
+                {/* Tampilkan ARO untuk APOLO */}
                 {submission.app === 'apolo' && submission.aros && submission.aros.length > 0 && (
                   <div className="mt-4 pt-4 border-t border-red-100">
-                    <p className="text-xs font-bold text-gray-700 mb-2">Daftar ARO:</p>
-                    <div className="space-y-2">
+                    <p className="text-xs font-bold text-gray-700 mb-2">ARO yang Diajukan:</p>
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
                       {submission.aros.map((aro, idx) => (
-                        <div key={idx} className={`p-3 rounded border ${
-                          aro.status === 'approved' ? 'bg-green-50 border-green-200' :
-                          aro.status === 'pending' ? 'bg-yellow-50 border-yellow-200' :
-                          'bg-red-50 border-red-200'
-                        }`}>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium">ARO #{idx + 1}</span>
-                                <span className={`px-2 py-0.5 text-xs rounded-full ${
-                                  aro.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                  aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                  'bg-red-100 text-red-800'
-                                }`}>
-                                  {aro.status === 'approved' ? '✓ Disetujui' : 
-                                   aro.status === 'pending' ? '⏳ Menunggu' : '✗ Ditolak'}
-                                </span>
-                              </div>
-                              <p className="text-xs text-gray-600 mt-1">"{aro.keterangan}"</p>
-                              {aro.status === 'approved' && aro.modulDipilih && (
-                                <p className="text-xs text-green-600 mt-1">Modul: {aro.modulDipilih}</p>
-                              )}
-                              {aro.status === 'rejected' && aro.rejectionNote && (
-                                <p className="text-xs text-red-600 mt-1">Alasan: {aro.rejectionNote}</p>
-                              )}
-                            </div>
+                        <div key={idx} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                          <div>
+                            <p className="text-xs text-gray-600">{aro.nama || `ARO APOLO #${idx + 1}`}</p>
+                            <p className="text-xs text-gray-500">{aro.module || 'Modul APOLO'}</p>
+                            {aro.keterangan && (
+                              <p className="text-xs text-gray-400 mt-0.5 italic">"{aro.keterangan}"</p>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className={`px-2 py-1 text-xs rounded-full ${
+                              aro.status === 'approved' ? 'bg-green-100 text-green-800 font-bold' :
+                              aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800 font-bold' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {aro.status === 'approved' ? 'Disetujui' : aro.status === 'pending' ? 'Menunggu' : 'Ditolak'}
+                            </span>
                           </div>
                         </div>
                       ))}
@@ -3136,16 +3333,35 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
                   </div>
                 )}
                 
+                {/* TOMBOL UPDATE UNTUK STATUS DITOLAK */}
                 {submission.status === 'rejected' && (
                   <div className="mt-4 pt-4 border-t border-red-100">
                     <div className="flex items-center justify-between">
-                      <p className="text-xs text-red-600">Pengajuan ditolak. Silakan perbaiki data.</p>
+                      <div>
+                        <p className="text-xs font-bold text-red-600 mb-1">
+                          Pengajuan ditolak. Silakan perbaiki data.
+                        </p>
+                        {submission.rejectionReason && (
+                          <p className="text-xs text-gray-600">
+                            Alasan: {submission.rejectionReason}
+                          </p>
+                        )}
+                      </div>
                       <button
                         onClick={() => handleResubmit(submission)}
-                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-lg"
+                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-lg hover:from-red-600 hover:to-red-700"
                       >
                         Perbarui & Ajukan Kembali
                       </button>
+                    </div>
+                  </div>
+                )}
+                
+                {submission.log && submission.log.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-red-100">
+                    <p className="text-xs text-gray-500 mb-2">Aktivitas Terakhir</p>
+                    <div className="text-sm text-gray-700">
+                      {submission.log[0].action} - {formatDate(submission.log[0].timestamp)}
                     </div>
                   </div>
                 )}
@@ -3154,21 +3370,44 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
           </div>
         )
       ) : (
+        /* Log Aktivitas Section */
         <div className="space-y-4">
           {submittedSubmissions.flatMap(submission => 
             (submission.log || []).map((log, index) => (
-              <div key={`${submission.id}-${index}`} className="border border-red-200 rounded-xl p-6 bg-white">
-                <div className="flex flex-col md:flex-row justify-between gap-4">
-                  <div>
+              <div key={`${submission.id}-${index}`} className="border border-red-200 rounded-xl p-6 hover:shadow-sm transition-shadow bg-white">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+                  <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <span className="font-bold text-gray-900">{submission.trackingId}</span>
-                      {getAppBadge(submission.app)}
+                      <div className="flex flex-wrap gap-1">
+                        {getAppBadge(submission.app)}
+                      </div>
                     </div>
                     <p className="text-lg font-bold text-gray-900">{log.action}</p>
                     <p className="text-sm text-gray-600 mt-1">{log.description}</p>
+                    
+                    <div className="mt-2 flex items-center gap-4 text-sm text-gray-500">
+                      <span>Oleh: {submission.dataUmum?.nama}</span>
+                      <span>•</span>
+                      <span>{submission.dataUmum?.institusi}</span>
+                    </div>
                   </div>
+                  
                   <div className="text-right">
-                    <p className="text-sm text-gray-600">{formatDate(log.timestamp)}</p>
+                    <p className="text-sm text-gray-600">
+                      {formatDate(log.timestamp)}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="border-t border-red-100 pt-4">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className={`w-2 h-2 rounded-full ${
+                      log.status === 'approved' ? 'bg-green-500' :
+                      log.status === 'rejected' ? 'bg-red-500' :
+                      'bg-yellow-500'
+                    }`}></div>
+                    <span className="capitalize font-bold">{log.status || 'pending'}</span>
                   </div>
                 </div>
               </div>
@@ -3181,3 +3420,5 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
 };
 
 export default Profile;
+
+

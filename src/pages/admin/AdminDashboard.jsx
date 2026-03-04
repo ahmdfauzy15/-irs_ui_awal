@@ -1388,249 +1388,263 @@ STATUS: ${submission.status.toUpperCase()}
               
               {/* ARO untuk APOLO */}
               {submission.app === 'apolo' && (
-                <div className="border border-red-200 rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                      <Layers className="w-5 h-5 text-red-600" />
-                      ARO untuk APOLO
-                    </h4>
-                    
-                    {/* TOMBOL EDIT ARO */}
-                    {submission.aros && submission.aros.length > 0 && (
-                      <div className="flex gap-2">
-                        {editingAROs ? (
-                          <>
-                            <button
-                              onClick={() => {
-                                setEditingAROs(false);
-                                setSelectedAROs(submission.aros || []);
-                              }}
-                              className="px-3 py-1 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-                            >
-                              Batal
-                            </button>
-                            <button
-                              onClick={handleSaveAROs}
-                              className="px-3 py-1 text-sm bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700"
-                            >
-                              Simpan Perubahan
-                            </button>
-                          </>
-                        ) : (
-                          <button
-                            onClick={() => setEditingAROs(true)}
-                            className="px-3 py-1 text-sm bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 flex items-center gap-2"
-                          >
-                            <Edit className="w-3 h-3" />
-                            Edit ARO
-                          </button>
+  <div className="border border-red-200 rounded-xl p-6">
+    <div className="flex items-center justify-between mb-4">
+      <h4 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+        <Layers className="w-5 h-5 text-red-600" />
+        Review Permohonan ARO
+      </h4>
+      
+      {/* Notifikasi jika ada ARO pending */}
+      {submission.aros && submission.aros.some(aro => aro.status === 'pending') && (
+        <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full">
+          {submission.aros.filter(aro => aro.status === 'pending').length} ARO Baru
+        </span>
+      )}
+    </div>
+    
+    {/* Cek apakah ada ARO */}
+    {submission.aros && submission.aros.length > 0 ? (
+      <div className="space-y-4">
+        {submission.aros.map((aro, idx) => (
+          <div key={idx} className={`border rounded-lg p-4 ${
+            aro.status === 'pending' ? 'border-yellow-300 bg-yellow-50' :
+            aro.status === 'approved' ? 'border-green-300 bg-green-50' :
+            'border-red-300 bg-red-50'
+          }`}>
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+              <div className="flex-1">
+                {/* Header ARO */}
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <span className="font-bold text-gray-900">
+                    {aro.nama || `Permohonan ARO #${idx + 1}`}
+                  </span>
+                  <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${
+                    aro.status === 'approved' ? 'bg-green-100 text-green-800' :
+                    aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    {aro.status === 'approved' ? '✓ DISETUJUI' : 
+                     aro.status === 'pending' ? '⏳ MENUNGGU REVIEW' : 
+                     '✗ DITOLAK'}
+                  </span>
+                </div>
+                
+                {/* Keterangan dari User */}
+                {aro.keterangan && (
+                  <div className="mb-3">
+                    <p className="text-xs text-gray-500 mb-1">Keterangan Pemohon:</p>
+                    <p className="text-sm text-gray-700 bg-white p-2 rounded border border-gray-200">
+                      "{aro.keterangan}"
+                    </p>
+                  </div>
+                )}
+                
+                {/* Surat Permohonan */}
+                {aro.suratPermohonan && (
+                  <div className="mb-3">
+                    <p className="text-xs text-gray-500 mb-1">Surat Permohonan:</p>
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-red-500" />
+                      <span className="text-sm text-gray-700">{aro.suratPermohonan.name}</span>
+                      <button
+                        onClick={() => {
+                          // Simulasi download
+                          alert(`Download surat: ${aro.suratPermohonan.name}`);
+                        }}
+                        className="text-xs text-red-600 hover:text-red-700 ml-2"
+                      >
+                        <Download className="w-3 h-3 inline" /> Download
+                      </button>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Tanggal Pengajuan */}
+                {aro.tanggalDiajukan && (
+                  <p className="text-xs text-gray-500">
+                    Diajukan: {new Date(aro.tanggalDiajukan).toLocaleDateString('id-ID', {
+                      day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                    })}
+                  </p>
+                )}
+                
+                {/* Jika sudah direview */}
+                {aro.status !== 'pending' && (
+                  <div className="mt-3 pt-3 border-t border-gray-200">
+                    {aro.status === 'approved' && (
+                      <>
+                        <p className="text-xs text-green-600 font-bold">✓ DISETUJUI</p>
+                        {aro.approvedBy && (
+                          <p className="text-xs text-gray-500">
+                            Oleh: {aro.approvedBy} • {new Date(aro.approvedAt).toLocaleDateString('id-ID')}
+                          </p>
                         )}
-                      </div>
+                        {aro.modulDipilih && (
+                          <p className="text-xs text-gray-700 mt-1">
+                            Modul yang disetujui: <span className="font-bold">{aro.modulDipilih}</span>
+                          </p>
+                        )}
+                      </>
+                    )}
+                    {aro.status === 'rejected' && (
+                      <>
+                        <p className="text-xs text-red-600 font-bold">✗ DITOLAK</p>
+                        {aro.rejectedBy && (
+                          <p className="text-xs text-gray-500">
+                            Oleh: {aro.rejectedBy} • {new Date(aro.rejectedAt).toLocaleDateString('id-ID')}
+                          </p>
+                        )}
+                        {aro.rejectionNote && (
+                          <p className="text-xs text-red-600 mt-1 bg-red-50 p-2 rounded">
+                            Alasan: {aro.rejectionNote}
+                          </p>
+                        )}
+                      </>
                     )}
                   </div>
+                )}
+              </div>
+              
+              {/* Tombol Aksi untuk ARO PENDING */}
+              {aro.status === 'pending' && (
+                <div className="flex flex-col gap-2 min-w-[200px]">
+                  {/* Pilih Modul untuk Approval */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-gray-700">
+                      Pilih Modul yang Disetujui:
+                    </label>
+                    <select
+                      id={`modul-${aro.id}`}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500"
+                      defaultValue=""
+                    >
+                      <option value="" disabled>-- Pilih Modul --</option>
+                      <option value="Strategi Anti Fraud">Strategi Anti Fraud</option>
+                      <option value="AP/KAP">AP/KAP</option>
+                      <option value="TPPU/TPPT/PPSPM">TPPU/TPPT/PPSPM</option>
+                      <option value="Risk Management">Risk Management</option>
+                      <option value="Compliance">Compliance</option>
+                    </select>
+                  </div>
                   
-                  {/* Notifikasi ARO pending */}
-                  {submission.aros && submission.aros.length > 0 ? (
-                    <>
-                      {selectedAROs.some(aro => aro.status === 'pending') && (
-                        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                          <div className="flex items-center gap-2 mb-1">
-                            <AlertCircle className="w-4 h-4 text-yellow-600" />
-                            <p className="text-sm font-medium text-yellow-700">
-                              Ada {selectedAROs.filter(aro => aro.status === 'pending').length} ARO baru yang menunggu approval!
-                            </p>
-                          </div>
-                          <p className="text-xs text-yellow-600">
-                            Klik tombol "Edit ARO" untuk mengelola daftar, atau approve/reject langsung dari tombol di bawah.
-                          </p>
-                        </div>
-                      )}
-                      
-                      {editingAROs ? (
-                        // TAMPILAN EDITING ARO
-                        <div className="space-y-4">
-                          <div className="space-y-3">
-                            {selectedAROs.map((aro, idx) => (
-                              <div key={idx} className={`border rounded-lg p-4 ${
-                                aro.status === 'pending' ? 'border-yellow-300 bg-yellow-25' : ''
-                              }`}>
-                                <div className="flex items-start justify-between">
-                                  <div className="flex-1">
-                                    <div className="flex items-center gap-2 mb-2">
-                                      <span className="font-bold text-gray-900">{aro.nama}</span>
-                                      <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${
-                                        aro.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                        aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                        'bg-gray-100 text-gray-800'
-                                      }`}>
-                                        {aro.status === 'approved' ? '✓ Disetujui' : 
-                                         aro.status === 'pending' ? '⏳ Menunggu' : 
-                                         '🚫Ditolak'}
-                                      </span>
-                                      {aro.addedByAdmin && (
-                                        <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full">
-                                          Ditambahkan Admin
-                                        </span>
-                                      )}
-                                    </div>
-                                    <p className="text-sm text-gray-600">{aro.deskripsi || aro.module}</p>
-                                    {aro.tanggalDiajukan && (
-                                      <p className="text-xs text-gray-500 mt-2">
-                                        Diajukan: {formatDate(aro.tanggalDiajukan)}
-                                      </p>
-                                    )}
-                                    
-                                    {/* AKSI APPROVE/REJECT untuk ARO PENDING */}
-                                    {aro.status === 'pending' && (
-                                      <div className="mt-3 flex gap-2">
-                                        <button
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleApproveIndividualARO(aro);
-                                          }}
-                                          className="px-3 py-1 text-xs bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 flex items-center gap-1"
-                                        >
-                                          <CheckCircle className="w-3 h-3" />
-                                          Approve
-                                        </button>
-                                        <button
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleRejectIndividualARO(aro);
-                                          }}
-                                          className="px-3 py-1 text-xs border border-red-300 text-red-600 rounded-lg hover:bg-red-50 flex items-center gap-1"
-                                        >
-                                          <XCircle className="w-3 h-3" />
-                                          Reject
-                                        </button>
-                                      </div>
-                                    )}
-                                  </div>
-                                  {/* TOMBOL HAPUS ARO */}
-                                  <button
-                                    onClick={() => handleRemoveARO(aro.id)}
-                                    className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded ml-2"
-                                    title="Hapus ARO"
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                          
-                          {/* Tombol Tambah ARO */}
-                          <button
-                            onClick={() => setShowAddAROModal(true)}
-                            className="w-full p-4 border-2 border-dashed border-red-300 rounded-lg text-red-600 hover:bg-red-50 flex items-center justify-center gap-2"
-                          >
-                            <Plus className="w-4 h-4" />
-                            Tambah ARO Baru
-                          </button>
-                          
-                          {/* Statistik ARO */}
-                          <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
-                            <div className="grid grid-cols-2 gap-2">
-                              <div>
-                                <p className="text-xs text-gray-500">Total ARO</p>
-                                <p className="font-bold text-gray-900">{selectedAROs.length}</p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-gray-500">Approved</p>
-                                <p className="font-bold text-green-600">
-                                  {selectedAROs.filter(a => a.status === 'approved').length}
-                                </p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-gray-500">Pending</p>
-                                <p className="font-bold text-yellow-600">
-                                  {selectedAROs.filter(a => a.status === 'pending').length}
-                                </p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-gray-500">Ditambah Admin</p>
-                                <p className="font-bold text-blue-600">
-                                  {selectedAROs.filter(a => a.addedByAdmin).length}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        // TAMPILAN VIEW ARO
-                        <div className="space-y-3">
-                          {selectedAROs.map((aro, idx) => (
-                            <div key={idx} className={`border rounded-lg p-4 ${
-                              aro.status === 'pending' ? 'border-yellow-300 bg-yellow-25' : ''
-                            }`}>
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <span className="font-bold text-gray-900">{aro.nama}</span>
-                                    <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${
-                                      aro.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                      aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                      'bg-gray-100 text-gray-800'
-                                    }`}>
-                                      {aro.status === 'approved' ? '✓ Disetujui' : 
-                                       aro.status === 'pending' ? '⏳ Menunggu' : 
-                                       '🚫 Ditolak'}
-                                    </span>
-                                    {aro.addedByAdmin && (
-                                      <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full">
-                                        Ditambahkan Admin
-                                      </span>
-                                    )}
-                                  </div>
-                                  <p className="text-sm text-gray-600">{aro.deskripsi || aro.module}</p>
-                                  {aro.tanggalDiajukan && (
-                                    <p className="text-xs text-gray-500 mt-2">
-                                      Diajukan: {formatDate(aro.tanggalDiajukan)}
-                                    </p>
-                                  )}
-                                  {aro.approvedBy && aro.status === 'approved' && (
-                                    <p className="text-xs text-green-600 mt-1">
-                                      Disetujui oleh: {aro.approvedBy} ({formatDate(aro.approvedAt)})
-                                    </p>
-                                  )}
-                                  
-                                  {/* AKSI APPROVE/REJECT untuk ARO PENDING */}
-                                  {aro.status === 'pending' && (
-                                    <div className="mt-3 flex gap-2">
-                                      <button
-                                        onClick={() => handleApproveIndividualARO(aro)}
-                                        className="px-3 py-1 text-xs bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 flex items-center gap-1"
-                                      >
-                                        <CheckCircle className="w-3 h-3" />
-                                        Approve ARO ini
-                                      </button>
-                                      <button
-                                        onClick={() => handleRejectIndividualARO(aro)}
-                                        className="px-3 py-1 text-xs border border-red-300 text-red-600 rounded-lg hover:bg-red-50 flex items-center gap-1"
-                                      >
-                                        <XCircle className="w-3 h-3" />
-                                        Reject ARO ini
-                                      </button>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
-                      <Layers className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                      <p className="text-gray-600">User belum memiliki ARO</p>
-                      <p className="text-sm text-gray-500 mt-2">
-                        Setelah pengajuan disetujui, user dapat mengajukan ARO baru melalui dashboard mereka.
-                      </p>
-                    </div>
-                  )}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        const selectEl = document.getElementById(`modul-${aro.id}`);
+                        const modulDipilih = selectEl?.value;
+                        
+                        if (!modulDipilih) {
+                          alert('Pilih modul yang akan disetujui!');
+                          return;
+                        }
+                        
+                        // Approve ARO dengan modul yang dipilih
+                        const adminName = 'Admin IRS';
+                        const updatedAROs = selectedAROs.map(a => {
+                          if (a.id === aro.id) {
+                            return {
+                              ...a,
+                              status: 'approved',
+                              approvedAt: new Date().toISOString(),
+                              approvedBy: adminName,
+                              modulDipilih: modulDipilih,
+                              log: [...(a.log || []), {
+                                timestamp: new Date().toISOString(),
+                                action: 'ARO Disetujui',
+                                description: `ARO disetujui dengan modul: ${modulDipilih}`,
+                                status: 'approved'
+                              }]
+                            };
+                          }
+                          return a;
+                        });
+                        
+                        setSelectedAROs(updatedAROs);
+                        onUpdateAROs(submission.id, updatedAROs);
+                        alert(`✅ ARO disetujui dengan modul: ${modulDipilih}`);
+                      }}
+                      className="px-3 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-bold rounded-lg hover:from-green-600 hover:to-green-700"
+                    >
+                      <CheckCircle className="w-4 h-4 inline mr-1" />
+                      Setujui
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        const alasan = prompt('Masukkan alasan penolakan:');
+                        if (!alasan) return;
+                        
+                        // Reject ARO
+                        const adminName = 'Admin IRS';
+                        const updatedAROs = selectedAROs.map(a => {
+                          if (a.id === aro.id) {
+                            return {
+                              ...a,
+                              status: 'rejected',
+                              rejectedAt: new Date().toISOString(),
+                              rejectedBy: adminName,
+                              rejectionNote: alasan,
+                              log: [...(a.log || []), {
+                                timestamp: new Date().toISOString(),
+                                action: 'ARO Ditolak',
+                                description: `ARO ditolak dengan alasan: ${alasan}`,
+                                status: 'rejected'
+                              }]
+                            };
+                          }
+                          return a;
+                        });
+                        
+                        setSelectedAROs(updatedAROs);
+                        onUpdateAROs(submission.id, updatedAROs);
+                        alert(`❌ ARO ditolak: ${alasan}`);
+                      }}
+                      className="px-3 py-2 border border-red-300 text-red-600 text-sm font-bold rounded-lg hover:bg-red-50"
+                    >
+                      <XCircle className="w-4 h-4 inline mr-1" />
+                      Tolak
+                    </button>
+                  </div>
                 </div>
               )}
+            </div>
+          </div>
+        ))}
+        
+        {/* Ringkasan Status ARO */}
+        <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div>
+              <p className="text-xs text-gray-500">Total ARO</p>
+              <p className="font-bold text-gray-900">{submission.aros.length}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500">Disetujui</p>
+              <p className="font-bold text-green-600">
+                {submission.aros.filter(a => a.status === 'approved').length}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500">Pending</p>
+              <p className="font-bold text-yellow-600">
+                {submission.aros.filter(a => a.status === 'pending').length}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    ) : (
+      <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+        <Layers className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+        <p className="text-gray-600">Belum ada permohonan ARO</p>
+        <p className="text-sm text-gray-500 mt-2">
+          User akan mengajukan ARO setelah aplikasi disetujui
+        </p>
+      </div>
+    )}
+  </div>
+)}
             </div>
             
             {/* Kolom 2: Log & Aksi */}
