@@ -36,7 +36,10 @@ import {
   FolderOpen,
   FilePlus,
   Info,
-  ArrowRight
+  ArrowRight,
+  ChevronUp,
+  Download,
+  ExternalLink
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -413,7 +416,16 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     }
 
     const allSubmissions = savedSubmissions.map(sub => {
-      const status = 'pending';
+      // Auto-approve untuk E-Reporting
+      let status = 'pending';
+      let approvedBy = null;
+      let approvedAt = null;
+      
+      if (sub.app === 'ereporting') {
+        status = 'approved';
+        approvedBy = 'System Auto-Approval';
+        approvedAt = new Date().toISOString();
+      }
       
       // Buat data ARO jika ini adalah APOLO
       let aros = sub.aros || [];
@@ -435,19 +447,26 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
         aros = [newARO];
       }
       
+      const logAction = sub.isResubmit ? 'Diajukan Ulang' : 'Diajukan';
+      const logDescription = sub.isResubmit ? 'Pengajuan ulang setelah ditolak' : 'Pengajuan hak akses baru dibuat';
+      
+      const logEntries = [{
+        timestamp: new Date().toISOString(),
+        action: logAction,
+        description: logDescription,
+        status: status,
+        details: status === 'approved' ? 'Pengajuan E-Reporting otomatis disetujui' : 'Menunggu persetujuan admin'
+      }];
+      
       const submissionData = {
         ...sub,
         dataUmum,
         aros: aros,
         status: status,
+        approvedBy: approvedBy,
+        approvedAt: approvedAt,
         submittedAt: new Date().toISOString(),
-        log: [{
-          timestamp: new Date().toISOString(),
-          action: sub.isResubmit ? 'Diajukan Ulang' : 'Diajukan',
-          description: sub.isResubmit ? 'Pengajuan ulang setelah ditolak' : 'Pengajuan hak akses baru dibuat',
-          status: status,
-          details: 'Menunggu persetujuan admin'
-        }]
+        log: logEntries
       };
       
       return submissionData;
@@ -480,7 +499,10 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     });
     setAroData({ keterangan: '', suratPermohonan: null });
     
-    alert('✅ Pengajuan berhasil dikirim! Menunggu persetujuan admin.');
+    const hasEreporting = allSubmissions.some(s => s.app === 'ereporting');
+    alert(hasEreporting 
+      ? '✅ Pengajuan E-Reporting berhasil dan otomatis disetujui! Pengajuan lain menunggu persetujuan admin.' 
+      : '✅ Pengajuan berhasil dikirim! Menunggu persetujuan admin.');
   };
 
   // Handle tambah ARO baru (untuk pengajuan setelah APOLO disetujui)
@@ -1196,8 +1218,8 @@ const PilihAplikasiStep = ({
                 </div>
                 <h3 className="font-bold text-gray-900">{app.label}</h3>
                 <p className="text-sm text-gray-600 mt-1">{app.description}</p>
-                {app.id === 'apolo' && !isSubmitted && !isSelected && (
-                  <p className="text-xs text-red-500 mt-2"></p>
+                {app.id === 'ereporting' && !isSubmitted && !isSelected && (
+                  <p className="text-xs text-green-600 mt-2"></p>
                 )}
                 {isSubmitted && (
                   <p className="text-xs text-red-600 mt-2">Sudah diajukan</p>
@@ -2146,23 +2168,23 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   );
 };
 
-// FORM E-REPORTING
+// FORM E-REPORTING - DENGAN AUTO-FILL UNTUK SIPO
 const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   const [step, setStep] = useState(1); // 1: Pilih Metode, 2-5: Wizard
   const [metodePendaftaran, setMetodePendaftaran] = useState(null); // 'sipo' atau 'non-sipo'
   const [formData, setFormData] = useState({
-    // Step 1: Data Perusahaan (untuk SIPO akan auto-fill, untuk non-sipo diisi manual)
+    // Step 1: Data Perusahaan
     npwp: initialData.npwp || '',
     namaPerusahaan: initialData.namaPerusahaan || '',
     alamat: initialData.alamat || '',
     jenisUsaha: initialData.jenisUsaha || '',
     
-    // Step 2: Data User SIPO (hanya untuk metode sipo) - UNTUK VALIDASI
+    // Step 2: Data User SIPO (hanya untuk metode sipo)
     userIdSIPO: initialData.userIdSIPO || '',
     passwordSIPO: initialData.passwordSIPO || '',
     sipoValidated: initialData.sipoValidated || false,
     
-    // Data hasil validasi SIPO (akan ditampilkan setelah validasi berhasil)
+    // Data hasil validasi SIPO
     dataSIPO: initialData.dataSIPO || null,
     
     // Step 3: Email (User ID Aplikasi)
@@ -2173,6 +2195,53 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   const [sipoValidationMessage, setSipoValidationMessage] = useState('');
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [showCompanyData, setShowCompanyData] = useState(false);
+
+  // Database perusahaan berdasarkan NPWP
+  const databasePerusahaan = {
+    '011231234512345': {
+      namaPerusahaan: 'PT Bank Central Asia Tbk',
+      alamat: 'Menara BCA, Jl. MH Thamrin No. 1, Jakarta Pusat 10310',
+      npwp: '011231234512345',
+      jenisUsaha: 'Perbankan'
+    },
+    '021234567890123': {
+      namaPerusahaan: 'PT Astra Financial Services',
+      alamat: 'Astra Financial Tower, Jl. Gaya Motor Raya No. 8, Jakarta Utara 14350',
+      npwp: '021234567890123',
+      jenisUsaha: 'Fintech'
+    },
+    '031234567890123': {
+      namaPerusahaan: 'PT Asuransi Jiwa Manulife Indonesia',
+      alamat: 'Manulife Tower, Jl. Jend. Sudirman Kav. 76-78, Jakarta Selatan 12910',
+      npwp: '031234567890123',
+      jenisUsaha: 'Perusahaan Asuransi Jiwa'
+    },
+    '041234567890123': {
+      namaPerusahaan: 'PT Mandiri Sekuritas',
+      alamat: 'Plaza Mandiri, Jl. Jend. Gatot Subroto Kav. 36-38, Jakarta Selatan 12190',
+      npwp: '041234567890123',
+      jenisUsaha: 'Perbankan'
+    },
+    '051234567890123': {
+      namaPerusahaan: 'PT Indosat Tbk',
+      alamat: 'Indosat Tower, Jl. Medan Merdeka Barat No. 21, Jakarta Pusat 10110',
+      npwp: '051234567890123',
+      jenisUsaha: 'Lainnya'
+    },
+    '1123133': {
+      namaPerusahaan: 'PT. Contoh Perusahaan Indonesia',
+      alamat: 'Gedung Contoh Lt. 5, Jl. Sudirman No. 123, Jakarta Pusat',
+      npwp: '1123133',
+      jenisUsaha: 'Perusahaan Asuransi Umum'
+    },
+    '1234567': {
+      namaPerusahaan: 'PT. Asuransi Jaya Sejahtera',
+      alamat: 'Jl. Gatot Subroto No. 45, Jakarta Selatan',
+      npwp: '1234567',
+      jenisUsaha: 'Perusahaan Asuransi Umum'
+    }
+  };
 
   // Pre-fill data jika ada initialData dari resubmit
   useEffect(() => {
@@ -2187,85 +2256,22 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     }
   }, [initialData]);
 
-  // Auto-load data perusahaan berdasarkan NPWP untuk metode sipo (hanya preview sebelum validasi)
+  // Auto-load data perusahaan berdasarkan NPWP untuk metode sipo
   useEffect(() => {
-    if (metodePendaftaran === 'sipo' && formData.npwp && formData.npwp.length >= 8 && !formData.sipoValidated) {
-      // Data perusahaan berdasarkan NPWP
-      const databasePerusahaan = {
-        '011231234512345': {
-          namaPerusahaan: 'PT Bank Central Asia Tbk',
-          alamat: 'Menara BCA, Jl. MH Thamrin No. 1, Jakarta Pusat 10310',
-          npwp: '011231234512345'
-        },
-        '021234567890123': {
-          namaPerusahaan: 'PT Astra Financial Services',
-          alamat: 'Astra Financial Tower, Jl. Gaya Motor Raya No. 8, Jakarta Utara 14350',
-          npwp: '021234567890123'
-        },
-        '031234567890123': {
-          namaPerusahaan: 'PT Asuransi Jiwa Manulife Indonesia',
-          alamat: 'Manulife Tower, Jl. Jend. Sudirman Kav. 76-78, Jakarta Selatan 12910',
-          npwp: '031234567890123'
-        },
-        '041234567890123': {
-          namaPerusahaan: 'PT Mandiri Sekuritas',
-          alamat: 'Plaza Mandiri, Jl. Jend. Gatot Subroto Kav. 36-38, Jakarta Selatan 12190',
-          npwp: '041234567890123'
-        },
-        '051234567890123': {
-          namaPerusahaan: 'PT Indosat Tbk',
-          alamat: 'Indosat Tower, Jl. Medan Merdeka Barat No. 21, Jakarta Pusat 10110',
-          npwp: '051234567890123'
-        },
-        '1123133': {
-          namaPerusahaan: 'PT. Contoh Perusahaan Indonesia',
-          alamat: 'Gedung Contoh Lt. 5, Jl. Sudirman No. 123, Jakarta Pusat',
-          npwp: '1123133'
-        },
-        '1234567': {
-          namaPerusahaan: 'PT. Asuransi Jaya Sejahtera',
-          alamat: 'Jl. Gatot Subroto No. 45, Jakarta Selatan',
-          npwp: '1234567'
-        }
-      };
-      
+    if (metodePendaftaran === 'sipo' && formData.npwp && formData.npwp.length >= 7) {
       // Cari data berdasarkan NPWP
       const data = databasePerusahaan[formData.npwp];
       
       if (data) {
-        // Jika NPWP terdaftar, isi dengan data yang sesuai
         setFormData(prev => ({
           ...prev,
           namaPerusahaan: data.namaPerusahaan,
-          alamat: data.alamat
+          alamat: data.alamat,
+          jenisUsaha: data.jenisUsaha
         }));
+        setShowCompanyData(true);
       } else {
-        // Jika NPWP tidak terdaftar, isi dengan data default berdasarkan format NPWP
-        const npwpPrefix = formData.npwp.substring(0, 2);
-        
-        // Generate nama perusahaan berdasarkan format NPWP
-        let generatedNama = '';
-        let generatedAlamat = '';
-        
-        if (npwpPrefix === '01') {
-          generatedNama = `PT Bank ${formData.npwp.substring(2, 5)} Tbk`;
-          generatedAlamat = `Jl. Jenderal Sudirman Kav. ${formData.npwp.substring(5, 8)}, Jakarta Selatan`;
-        } else if (npwpPrefix === '02') {
-          generatedNama = `PT Asuransi ${formData.npwp.substring(2, 6)} Indonesia`;
-          generatedAlamat = `Gedung ${formData.npwp.substring(6, 9)}, Jl. HR Rasuna Said, Jakarta`;
-        } else if (npwpPrefix === '03') {
-          generatedNama = `PT Sekuritas ${formData.npwp.substring(2, 7)}`;
-          generatedAlamat = `Wisma ${formData.npwp.substring(7, 10)}, Kawasan Niaga Terpadu Sudirman`;
-        } else {
-          generatedNama = `PT Perusahaan ${formData.npwp.substring(0, 5)}`;
-          generatedAlamat = `Jl. Contoh Bisnis No. ${formData.npwp.substring(5, 8)}, Jakarta`;
-        }
-        
-        setFormData(prev => ({
-          ...prev,
-          namaPerusahaan: generatedNama,
-          alamat: generatedAlamat
-        }));
+        setShowCompanyData(false);
       }
     }
   }, [formData.npwp, metodePendaftaran]);
@@ -2337,13 +2343,13 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     
     // Simulasi validasi SIPO
     setTimeout(() => {
-      // Simulasi validasi berhasil
-      if (formData.userIdSIPO && formData.passwordSIPO) {
+      // Simulasi validasi berhasil jika ada data perusahaan yang sesuai
+      if (formData.userIdSIPO && formData.passwordSIPO && showCompanyData) {
         // Data hasil validasi SIPO
         const dataSIPO = {
-          namaPerusahaan: formData.namaPerusahaan || 'PT. Contoh Perusahaan Indonesia',
-          npwp: formData.npwp || '011231234512345',
-          alamat: formData.alamat || 'Jl. Jenderal Sudirman No. 123, Jakarta Selatan',
+          namaPerusahaan: formData.namaPerusahaan,
+          npwp: formData.npwp,
+          alamat: formData.alamat,
           userIdSIPO: formData.userIdSIPO,
           timestamp: new Date().toISOString()
         };
@@ -2355,7 +2361,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
         }));
         setSipoValidationMessage('Validasi SIPO berhasil. Data perusahaan telah diverifikasi.');
       } else {
-        setSipoValidationMessage('Validasi gagal. Periksa kembali User ID dan Password.');
+        setSipoValidationMessage('Validasi gagal. Periksa kembali User ID dan Password atau pastikan data perusahaan sesuai.');
       }
       setIsValidatingSIPO(false);
     }, 1500);
@@ -2498,64 +2504,81 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
                 value={formData.npwp}
                 onChange={(e) => setFormData({...formData, npwp: e.target.value})}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder={metodePendaftaran === 'sipo' ? "Masukkan NPWP" : "Masukkan NPWP Perusahaan"}
+                placeholder={metodePendaftaran === 'sipo' ? "Masukkan NPWP (data akan otomatis terisi)" : "Masukkan NPWP Perusahaan"}
                 required
               />
             </div>
             
-            {/* Nama Perusahaan */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nama Perusahaan <span className="text-red-600">*</span>
-              </label>
-              <input
-                type="text"
-                value={formData.namaPerusahaan}
-                onChange={(e) => setFormData({...formData, namaPerusahaan: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder={metodePendaftaran === 'sipo' ? "Akan otomatis terisi" : "Masukkan Nama Perusahaan"}
-                required
-                readOnly={metodePendaftaran === 'sipo'} // Read-only untuk sipo (auto-fill)
-              />
-            </div>
+            {/* Tampilkan data perusahaan jika ditemukan untuk SIPO */}
+            {metodePendaftaran === 'sipo' && showCompanyData && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle className="w-4 h-4 text-green-600" />
+                  <p className="text-sm font-medium text-green-700">Data perusahaan ditemukan!</p>
+                </div>
+                <div className="grid grid-cols-1 gap-2 text-sm">
+                  <div><span className="text-gray-600">Nama Perusahaan:</span> <span className="font-medium">{formData.namaPerusahaan}</span></div>
+                  <div><span className="text-gray-600">Alamat:</span> <span className="font-medium">{formData.alamat}</span></div>
+                  <div><span className="text-gray-600">Jenis Usaha:</span> <span className="font-medium">{formData.jenisUsaha}</span></div>
+                </div>
+              </div>
+            )}
             
-            {/* Alamat */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Alamat <span className="text-red-600">*</span>
-              </label>
-              <textarea
-                value={formData.alamat}
-                onChange={(e) => setFormData({...formData, alamat: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                rows="3"
-                placeholder={metodePendaftaran === 'sipo' ? "Akan otomatis terisi" : "Masukkan Alamat Perusahaan"}
-                required
-                readOnly={metodePendaftaran === 'sipo'} // Read-only untuk sipo (auto-fill)
-              />
-            </div>
-            
-            {/* Jenis Usaha */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Jenis Usaha <span className="text-red-600">*</span>
-              </label>
-              <select
-                value={formData.jenisUsaha}
-                onChange={(e) => setFormData({...formData, jenisUsaha: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                required
-              >
-                <option value="">Pilih Jenis Usaha</option>
-                <option value="Perusahaan Asuransi Umum">Perusahaan Asuransi Umum</option>
-                <option value="Perusahaan Asuransi Jiwa">Perusahaan Asuransi Jiwa</option>
-                <option value="Perusahaan Reasuransi">Perusahaan Reasuransi</option>
-                <option value="Perbankan">Perbankan</option>
-                <option value="Fintech">Fintech</option>
-                <option value="Dana Pensiun">Dana Pensiun</option>
-                <option value="Lainnya">Lainnya</option>
-              </select>
-            </div>
+            {/* Nama Perusahaan - untuk non-sipo atau jika data tidak ditemukan */}
+            {(!showCompanyData || metodePendaftaran === 'non-sipo') && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nama Perusahaan <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.namaPerusahaan}
+                    onChange={(e) => setFormData({...formData, namaPerusahaan: e.target.value})}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    placeholder="Masukkan Nama Perusahaan"
+                    required
+                  />
+                </div>
+                
+                {/* Alamat */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Alamat <span className="text-red-600">*</span>
+                  </label>
+                  <textarea
+                    value={formData.alamat}
+                    onChange={(e) => setFormData({...formData, alamat: e.target.value})}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    rows="3"
+                    placeholder="Masukkan Alamat Perusahaan"
+                    required
+                  />
+                </div>
+                
+                {/* Jenis Usaha */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Jenis Usaha <span className="text-red-600">*</span>
+                  </label>
+                  <select
+                    value={formData.jenisUsaha}
+                    onChange={(e) => setFormData({...formData, jenisUsaha: e.target.value})}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">Pilih Jenis Usaha</option>
+                    <option value="Perusahaan Asuransi Umum">Perusahaan Asuransi Umum</option>
+                    <option value="Perusahaan Asuransi Jiwa">Perusahaan Asuransi Jiwa</option>
+                    <option value="Perusahaan Reasuransi">Perusahaan Reasuransi</option>
+                    <option value="Perbankan">Perbankan</option>
+                    <option value="Fintech">Fintech</option>
+                    <option value="Dana Pensiun">Dana Pensiun</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
+              </>
+            )}
             
             {/* Tombol Berikut */}
             <div className="pt-6 border-t border-gray-200">
@@ -2997,10 +3020,11 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   );
 };
 
-// TAB STATUS & MONITORING
+// TAB STATUS & MONITORING - DENGAN DESAIN CARD MODERN UNTUK ARO
 const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('monitoring');
+  const [expandedCard, setExpandedCard] = useState(null);
   
   const submittedSubmissions = submissions.filter(s => s.status !== 'draft');
   
@@ -3018,6 +3042,10 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
     return date.toLocaleDateString('id-ID', {
       day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
     });
+  };
+
+  const toggleExpand = (id) => {
+    setExpandedCard(expandedCard === id ? null : id);
   };
 
   return (
@@ -3059,98 +3087,140 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
           </div>
         ) : (
           <div className="space-y-4">
-            {submittedSubmissions.map((submission) => (
-              <div key={submission.id} className="bg-gradient-to-r from-red-50 to-white border border-red-200 rounded-xl p-6">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="font-bold text-gray-900">{submission.trackingId}</span>
-                      {getStatusBadge(submission.status)}
+            {submittedSubmissions.map((submission) => {
+              const hasARO = submission.app === 'apolo' && submission.aros && submission.aros.length > 0;
+              const pendingAROCount = hasARO ? submission.aros.filter(a => a.status === 'pending').length : 0;
+              
+              return (
+                <div key={submission.id} className="bg-white border border-red-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                  {/* Header Card - Always Visible */}
+                  <div className="p-6 bg-gradient-to-r from-red-50 to-white border-b border-red-100">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="font-bold text-gray-900 text-lg">{submission.trackingId}</span>
+                          {getStatusBadge(submission.status)}
+                          {hasARO && pendingAROCount > 0 && (
+                            <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full">
+                              {pendingAROCount} ARO Baru
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-4 text-sm">
+                          <span className="text-gray-600">{formatDate(submission.submittedAt || submission.timestamp)}</span>
+                          <span className="text-gray-400">•</span>
+                          <span className="text-gray-600">{submission.dataUmum?.nama}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        {getAppBadge(submission.app)}
+                        {hasARO && (
+                          <button
+                            onClick={() => toggleExpand(submission.id)}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title={expandedCard === submission.id ? "Sembunyikan ARO" : "Lihat ARO"}
+                          >
+                            <Layers className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600">
-                      Diajukan pada {formatDate(submission.submittedAt || submission.timestamp)}
-                    </p>
                   </div>
-                </div>
-                
-                <div className="border-t border-red-100 pt-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Aplikasi</p>
-                      {getAppBadge(submission.app)}
-                    </div>
-                    
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Pemohon</p>
-                      <p className="font-bold text-gray-900">{submission.dataUmum?.nama}</p>
-                    </div>
-                    
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Status</p>
-                      {submission.approvedBy ? (
-                        <p className="font-bold text-green-600">Disetujui oleh: {submission.approvedBy}</p>
-                      ) : submission.rejectedBy ? (
-                        <p className="font-bold text-red-600">Ditolak oleh: {submission.rejectedBy}</p>
-                      ) : (
-                        <p className="font-bold text-yellow-600">Menunggu Admin</p>
-                      )}
+                  
+                  {/* Info Ringkas - Always Visible */}
+                  <div className="px-6 py-4 bg-white">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Aplikasi</p>
+                        <p className="font-medium text-gray-900">{submission.app?.toUpperCase()}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Pemohon</p>
+                        <p className="font-medium text-gray-900">{submission.dataUmum?.nama}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Instansi</p>
+                        <p className="font-medium text-gray-900 truncate">{submission.dataUmum?.institusi}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Status</p>
+                        {submission.approvedBy ? (
+                          <p className="font-medium text-green-600 text-sm">Disetujui oleh: {submission.approvedBy}</p>
+                        ) : submission.rejectedBy ? (
+                          <p className="font-medium text-red-600 text-sm">Ditolak oleh: {submission.rejectedBy}</p>
+                        ) : (
+                          <p className="font-medium text-yellow-600 text-sm">Menunggu Admin</p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                {submission.app === 'apolo' && submission.aros && submission.aros.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-red-100">
-                    <p className="text-xs font-bold text-gray-700 mb-2">Daftar ARO:</p>
-                    <div className="space-y-2">
-                      {submission.aros.map((aro, idx) => (
-                        <div key={idx} className={`p-3 rounded border ${
-                          aro.status === 'approved' ? 'bg-green-50 border-green-200' :
-                          aro.status === 'pending' ? 'bg-yellow-50 border-yellow-200' :
-                          'bg-red-50 border-red-200'
-                        }`}>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium">ARO #{idx + 1}</span>
-                                <span className={`px-2 py-0.5 text-xs rounded-full ${
-                                  aro.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                  aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                  'bg-red-100 text-red-800'
-                                }`}>
-                                  {aro.status === 'approved' ? '✓ Disetujui' : 
-                                   aro.status === 'pending' ? '⏳ Menunggu' : '✗ Ditolak'}
-                                </span>
+                  
+                  {/* Expanded ARO Section - Tampil hanya jika diklik */}
+                  {hasARO && expandedCard === submission.id && (
+                    <div className="px-6 py-4 bg-gray-50 border-t border-red-100">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Layers className="w-4 h-4 text-red-600" />
+                        <h4 className="font-bold text-gray-900">Daftar ARO ({submission.aros.length})</h4>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        {submission.aros.map((aro, idx) => (
+                          <div key={idx} className={`p-3 rounded-lg border ${
+                            aro.status === 'approved' ? 'bg-green-50 border-green-200' :
+                            aro.status === 'pending' ? 'bg-yellow-50 border-yellow-200' :
+                            'bg-red-50 border-red-200'
+                          }`}>
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-medium text-gray-900">ARO #{idx + 1}</span>
+                                  <span className={`px-2 py-0.5 text-xs rounded-full ${
+                                    aro.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                    aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                    'bg-red-100 text-red-800'
+                                  }`}>
+                                    {aro.status === 'approved' ? '✓ Disetujui' : 
+                                     aro.status === 'pending' ? '⏳ Menunggu' : '✗ Ditolak'}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-gray-700 mb-1 line-clamp-2">
+                                  "{aro.keterangan}"
+                                </p>
+                                <div className="flex items-center gap-3 text-xs text-gray-500">
+                                  <span>Diajukan: {formatDate(aro.tanggalDiajukan)}</span>
+                                  {aro.modulDipilih && (
+                                    <span className="text-green-600">Modul: {aro.modulDipilih}</span>
+                                  )}
+                                  {aro.rejectionNote && (
+                                    <span className="text-red-600">Alasan: {aro.rejectionNote}</span>
+                                  )}
+                                </div>
                               </div>
-                              <p className="text-xs text-gray-600 mt-1">"{aro.keterangan}"</p>
-                              {aro.status === 'approved' && aro.modulDipilih && (
-                                <p className="text-xs text-green-600 mt-1">Modul: {aro.modulDipilih}</p>
-                              )}
-                              {aro.status === 'rejected' && aro.rejectionNote && (
-                                <p className="text-xs text-red-600 mt-1">Alasan: {aro.rejectionNote}</p>
-                              )}
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-                
-                {submission.status === 'rejected' && (
-                  <div className="mt-4 pt-4 border-t border-red-100">
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs text-red-600">Pengajuan ditolak. Silakan perbaiki data.</p>
-                      <button
-                        onClick={() => handleResubmit(submission)}
-                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-lg"
-                      >
-                        Perbarui & Ajukan Kembali
-                      </button>
+                  )}
+                  
+                  {/* Footer Actions */}
+                  {submission.status === 'rejected' && (
+                    <div className="px-6 py-4 bg-red-50 border-t border-red-200">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-red-600">Pengajuan ditolak. Silakan perbaiki data.</p>
+                        <button
+                          onClick={() => handleResubmit(submission)}
+                          className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold rounded-lg hover:from-red-600 hover:to-red-700"
+                        >
+                          Perbarui & Ajukan Kembali
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              );
+            })}
           </div>
         )
       ) : (
