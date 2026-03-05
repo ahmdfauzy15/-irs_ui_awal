@@ -2168,9 +2168,9 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   );
 };
 
-// FORM E-REPORTING - DENGAN AUTO-FILL UNTUK SIPO
+// FORM E-REPORTING - DENGAN AUTO-FILL UNTUK SIPO DAN NON-SIPO + KONFIRMASI DATA
 const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
-  const [step, setStep] = useState(1); // 1: Pilih Metode, 2-5: Wizard
+  const [step, setStep] = useState(1); // 1: Pilih Metode, 2: Data Perusahaan, 3: Konfirmasi Data (khusus non-sipo), 4: Validasi SIPO (khusus sipo), 5: Email, 6: Selesai
   const [metodePendaftaran, setMetodePendaftaran] = useState(null); // 'sipo' atau 'non-sipo'
   const [formData, setFormData] = useState({
     // Step 1: Data Perusahaan
@@ -2195,53 +2195,8 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   const [sipoValidationMessage, setSipoValidationMessage] = useState('');
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
-  const [showCompanyData, setShowCompanyData] = useState(false);
-
-  // Database perusahaan berdasarkan NPWP
-  const databasePerusahaan = {
-    '011231234512345': {
-      namaPerusahaan: 'PT Bank Central Asia Tbk',
-      alamat: 'Menara BCA, Jl. MH Thamrin No. 1, Jakarta Pusat 10310',
-      npwp: '011231234512345',
-      jenisUsaha: 'Perbankan'
-    },
-    '021234567890123': {
-      namaPerusahaan: 'PT Astra Financial Services',
-      alamat: 'Astra Financial Tower, Jl. Gaya Motor Raya No. 8, Jakarta Utara 14350',
-      npwp: '021234567890123',
-      jenisUsaha: 'Fintech'
-    },
-    '031234567890123': {
-      namaPerusahaan: 'PT Asuransi Jiwa Manulife Indonesia',
-      alamat: 'Manulife Tower, Jl. Jend. Sudirman Kav. 76-78, Jakarta Selatan 12910',
-      npwp: '031234567890123',
-      jenisUsaha: 'Perusahaan Asuransi Jiwa'
-    },
-    '041234567890123': {
-      namaPerusahaan: 'PT Mandiri Sekuritas',
-      alamat: 'Plaza Mandiri, Jl. Jend. Gatot Subroto Kav. 36-38, Jakarta Selatan 12190',
-      npwp: '041234567890123',
-      jenisUsaha: 'Perbankan'
-    },
-    '051234567890123': {
-      namaPerusahaan: 'PT Indosat Tbk',
-      alamat: 'Indosat Tower, Jl. Medan Merdeka Barat No. 21, Jakarta Pusat 10110',
-      npwp: '051234567890123',
-      jenisUsaha: 'Lainnya'
-    },
-    '1123133': {
-      namaPerusahaan: 'PT. Contoh Perusahaan Indonesia',
-      alamat: 'Gedung Contoh Lt. 5, Jl. Sudirman No. 123, Jakarta Pusat',
-      npwp: '1123133',
-      jenisUsaha: 'Perusahaan Asuransi Umum'
-    },
-    '1234567': {
-      namaPerusahaan: 'PT. Asuransi Jaya Sejahtera',
-      alamat: 'Jl. Gatot Subroto No. 45, Jakarta Selatan',
-      npwp: '1234567',
-      jenisUsaha: 'Perusahaan Asuransi Umum'
-    }
-  };
+  const [isDataFromNPWP, setIsDataFromNPWP] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Pre-fill data jika ada initialData dari resubmit
   useEffect(() => {
@@ -2256,25 +2211,80 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     }
   }, [initialData]);
 
-  // Auto-load data perusahaan berdasarkan NPWP untuk metode sipo
+  // Auto-load data perusahaan berdasarkan NPWP untuk KEDUA METODE
   useEffect(() => {
-    if (metodePendaftaran === 'sipo' && formData.npwp && formData.npwp.length >= 7) {
-      // Cari data berdasarkan NPWP
-      const data = databasePerusahaan[formData.npwp];
+    if (formData.npwp && formData.npwp.length >= 5) {
+      // Generate data berdasarkan NPWP yang diinput
+      const generateDataFromNPWP = (npwp) => {
+        // Buat data yang konsisten berdasarkan NPWP
+        // Ini akan menghasilkan data yang sama setiap kali NPWP yang sama diinput
+        const hash = npwp.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        
+        const namaPerusahaanOptions = [
+          `PT. Bank ${npwp.substring(0, 4)} Indonesia Tbk`,
+          `PT. Asuransi ${npwp.substring(0, 4)} Sejahtera`,
+          `PT. Sekuritas ${npwp.substring(0, 4)} Mandiri`,
+          `PT. Fintech ${npwp.substring(0, 4)} Nusantara`,
+          `PT. Dana Pensiun ${npwp.substring(0, 4)}`,
+          `PT. Perusahaan Pembiayaan ${npwp.substring(0, 4)}`,
+          `PT. Bank Syariah ${npwp.substring(0, 4)}`,
+          `PT. Asuransi Jiwa ${npwp.substring(0, 4)}`,
+          `PT. Reasuransi ${npwp.substring(0, 4)} Indonesia`,
+          `PT. Perusahaan Efek ${npwp.substring(0, 4)}`
+        ];
+        
+        const alamatOptions = [
+          `Gedung ${npwp.substring(0, 4)} Tower, Jl. Jenderal Sudirman Kav. ${parseInt(npwp.substring(0, 3)) + 10}, Jakarta Pusat`,
+          `Plaza ${npwp.substring(0, 4)}, Jl. MH Thamrin No. ${parseInt(npwp.substring(0, 3)) + 20}, Jakarta Pusat`,
+          `Wisma ${npwp.substring(0, 4)}, Jl. Gatot Subroto Kav. ${parseInt(npwp.substring(0, 3)) + 30}, Jakarta Selatan`,
+          `Menara ${npwp.substring(0, 4)}, Jl. HR Rasuna Said Kav. ${parseInt(npwp.substring(0, 3)) + 40}, Jakarta Selatan`,
+          `Sentra ${npwp.substring(0, 4)}, Jl. MT Haryono No. ${parseInt(npwp.substring(0, 3)) + 50}, Jakarta Timur`,
+          `Gedung Perkantoran ${npwp.substring(0, 4)}, Jl. Ahmad Yani No. ${parseInt(npwp.substring(0, 3)) + 60}, Jakarta Pusat`,
+          `Kompleks Perkantoran ${npwp.substring(0, 4)}, Jl. Sisingamangaraja No. ${parseInt(npwp.substring(0, 3)) + 70}, Jakarta Selatan`,
+          `Graha ${npwp.substring(0, 4)}, Jl. Kebon Sirih No. ${parseInt(npwp.substring(0, 3)) + 80}, Jakarta Pusat`,
+          `The ${npwp.substring(0, 4)} Office Tower, Jl. Jend. Sudirman Kav. ${parseInt(npwp.substring(0, 3)) + 90}, Jakarta Selatan`,
+          `${npwp.substring(0, 4)} Financial Center, Jl. Thamrin No. ${parseInt(npwp.substring(0, 3)) + 100}, Jakarta Pusat`
+        ];
+        
+        const jenisUsahaOptions = [
+          'Perbankan',
+          'Perusahaan Asuransi Umum',
+          'Perusahaan Asuransi Jiwa',
+          'Perusahaan Reasuransi',
+          'Fintech',
+          'Dana Pensiun',
+          'Perusahaan Pembiayaan',
+          'Perusahaan Efek',
+          'Manajer Investasi',
+          'Lembaga Penunjang'
+        ];
+        
+        // Gunakan hash untuk memilih opsi secara konsisten
+        const namaIndex = hash % namaPerusahaanOptions.length;
+        const alamatIndex = (hash + 1) % alamatOptions.length;
+        const jenisIndex = (hash + 2) % jenisUsahaOptions.length;
+        
+        return {
+          namaPerusahaan: namaPerusahaanOptions[namaIndex],
+          alamat: alamatOptions[alamatIndex],
+          jenisUsaha: jenisUsahaOptions[jenisIndex]
+        };
+      };
       
-      if (data) {
-        setFormData(prev => ({
-          ...prev,
-          namaPerusahaan: data.namaPerusahaan,
-          alamat: data.alamat,
-          jenisUsaha: data.jenisUsaha
-        }));
-        setShowCompanyData(true);
-      } else {
-        setShowCompanyData(false);
-      }
+      const generatedData = generateDataFromNPWP(formData.npwp);
+      
+      setFormData(prev => ({
+        ...prev,
+        namaPerusahaan: generatedData.namaPerusahaan,
+        alamat: generatedData.alamat,
+        jenisUsaha: generatedData.jenisUsaha
+      }));
+      
+      setIsDataFromNPWP(true);
+    } else {
+      setIsDataFromNPWP(false);
     }
-  }, [formData.npwp, metodePendaftaran]);
+  }, [formData.npwp]); // Hanya depend pada npwp
 
   // Validasi email format
   const validateEmail = (email) => {
@@ -2290,10 +2300,12 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     if (metode === 'non-sipo') {
       setFormData(prev => ({
         ...prev,
-        npwp: '',
-        namaPerusahaan: '',
-        alamat: '',
-        jenisUsaha: '',
+        sipoValidated: false,
+        dataSIPO: null
+      }));
+    } else if (metode === 'sipo') {
+      setFormData(prev => ({
+        ...prev,
         sipoValidated: false,
         dataSIPO: null
       }));
@@ -2324,11 +2336,21 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     }
     
     if (metodePendaftaran === 'sipo') {
-      setStep(2); // Lanjut ke validasi SIPO
+      setStep(4); // Langsung ke validasi SIPO (skip konfirmasi untuk sipo)
     } else {
-      // Untuk Non-SIPO, langsung ke step 3 (Email)
-      setStep(3);
+      // Untuk Non-SIPO, tampilkan halaman konfirmasi data
+      setStep(2); // Halaman konfirmasi data
     }
+  };
+
+  // Handle konfirmasi data (untuk non-sipo)
+  const handleConfirmData = () => {
+    setStep(3); // Lanjut ke input email
+  };
+
+  // Handle edit data (kembali ke form data perusahaan)
+  const handleEditData = () => {
+    setStep(1);
   };
 
   // Handle validasi SIPO (untuk metode sipo)
@@ -2343,8 +2365,8 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     
     // Simulasi validasi SIPO
     setTimeout(() => {
-      // Simulasi validasi berhasil jika ada data perusahaan yang sesuai
-      if (formData.userIdSIPO && formData.passwordSIPO && showCompanyData) {
+      // Simulasi validasi berhasil
+      if (formData.userIdSIPO && formData.passwordSIPO) {
         // Data hasil validasi SIPO
         const dataSIPO = {
           namaPerusahaan: formData.namaPerusahaan,
@@ -2361,24 +2383,24 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
         }));
         setSipoValidationMessage('Validasi SIPO berhasil. Data perusahaan telah diverifikasi.');
       } else {
-        setSipoValidationMessage('Validasi gagal. Periksa kembali User ID dan Password atau pastikan data perusahaan sesuai.');
+        setSipoValidationMessage('Validasi gagal. Periksa kembali User ID dan Password.');
       }
       setIsValidatingSIPO(false);
     }, 1500);
   };
 
-  // Handle submit Step 2 (Validasi SIPO)
-  const handleStep2Submit = () => {
+  // Handle submit Step 4 (Validasi SIPO)
+  const handleStep4Submit = () => {
     if (!formData.sipoValidated) {
       alert('Harap validasi User ID dan Password SIPO terlebih dahulu!');
       return;
     }
     
-    setStep(3); // Lanjut ke input email
+    setStep(5); // Lanjut ke input email
   };
 
-  // Handle submit Step 3 (Email)
-  const handleStep3Submit = () => {
+  // Handle submit Step 5 (Email)
+  const handleStep5Submit = () => {
     if (!formData.email) {
       setEmailValidationMessage('Email harus diisi!');
       return;
@@ -2390,7 +2412,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     }
     
     setEmailValidationMessage('');
-    setStep(4); // Lanjut ke selesai
+    setStep(6); // Lanjut ke selesai
   };
 
   // Handle final registration
@@ -2417,13 +2439,17 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   const renderStep = () => {
     switch(step) {
       case 1:
-        return renderStep1();
+        return renderStep1(); // Pilih Metode & Input Data Perusahaan
       case 2:
-        return renderStep2();
+        return renderStep2(); // Konfirmasi Data (khusus non-sipo)
       case 3:
-        return renderStep3();
+        return renderStep3(); // Input Email (untuk non-sipo setelah konfirmasi)
       case 4:
-        return renderStep4();
+        return renderStep4(); // Validasi SIPO (khusus sipo)
+      case 5:
+        return renderStep5(); // Input Email (untuk sipo setelah validasi)
+      case 6:
+        return renderStep6(); // Selesai & Aktivasi
       default:
         return renderStep1();
     }
@@ -2473,7 +2499,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
                 </div>
                 <h4 className="font-bold text-gray-900 mb-2">Non-SIPO</h4>
                 <p className="text-sm text-gray-600">
-                  Isi manual data perusahaan. Tidak memerlukan validasi SIPO.
+                  Input NPWP (data akan otomatis terisi), konfirmasi data, lalu lanjut ke input email.
                 </p>
               </button>
             </div>
@@ -2482,9 +2508,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
           <div className="mb-4 p-3 bg-red-50 border border-red-300 rounded-lg shadow">
             <p className="text-sm text-red-700">
               Metode pendaftaran: <span className="font-bold">{metodePendaftaran === 'sipo' ? 'Menggunakan SIPO' : 'Non-SIPO'}</span>
-              {metodePendaftaran === 'sipo' && (
-                <span className="block text-xs mt-1">Data perusahaan akan otomatis terisi saat NPWP dimasukkan</span>
-              )}
+              <span className="block text-xs mt-1">Data perusahaan akan otomatis terisi saat NPWP dimasukkan</span>
             </p>
           </div>
         )}
@@ -2504,81 +2528,68 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
                 value={formData.npwp}
                 onChange={(e) => setFormData({...formData, npwp: e.target.value})}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder={metodePendaftaran === 'sipo' ? "Masukkan NPWP (data akan otomatis terisi)" : "Masukkan NPWP Perusahaan"}
+                placeholder="Masukkan NPWP (contoh: 11223344)"
                 required
               />
             </div>
             
-            {/* Tampilkan data perusahaan jika ditemukan untuk SIPO */}
-            {metodePendaftaran === 'sipo' && showCompanyData && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                  <p className="text-sm font-medium text-green-700">Data perusahaan ditemukan!</p>
-                </div>
-                <div className="grid grid-cols-1 gap-2 text-sm">
-                  <div><span className="text-gray-600">Nama Perusahaan:</span> <span className="font-medium">{formData.namaPerusahaan}</span></div>
-                  <div><span className="text-gray-600">Alamat:</span> <span className="font-medium">{formData.alamat}</span></div>
-                  <div><span className="text-gray-600">Jenis Usaha:</span> <span className="font-medium">{formData.jenisUsaha}</span></div>
-                </div>
-              </div>
-            )}
+            {/* Nama Perusahaan - BISA DIEDIT (tidak read-only) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nama Perusahaan <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="text"
+                value={formData.namaPerusahaan}
+                onChange={(e) => setFormData({...formData, namaPerusahaan: e.target.value})}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                placeholder="Masukkan Nama Perusahaan"
+                required
+              />
+              {isDataFromNPWP && (
+                <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                  <CheckCircle className="w-3 h-3" />
+                  Data otomatis dari NPWP (dapat diedit jika perlu)
+                </p>
+              )}
+            </div>
             
-            {/* Nama Perusahaan - untuk non-sipo atau jika data tidak ditemukan */}
-            {(!showCompanyData || metodePendaftaran === 'non-sipo') && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nama Perusahaan <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.namaPerusahaan}
-                    onChange={(e) => setFormData({...formData, namaPerusahaan: e.target.value})}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    placeholder="Masukkan Nama Perusahaan"
-                    required
-                  />
-                </div>
-                
-                {/* Alamat */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Alamat <span className="text-red-600">*</span>
-                  </label>
-                  <textarea
-                    value={formData.alamat}
-                    onChange={(e) => setFormData({...formData, alamat: e.target.value})}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    rows="3"
-                    placeholder="Masukkan Alamat Perusahaan"
-                    required
-                  />
-                </div>
-                
-                {/* Jenis Usaha */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Jenis Usaha <span className="text-red-600">*</span>
-                  </label>
-                  <select
-                    value={formData.jenisUsaha}
-                    onChange={(e) => setFormData({...formData, jenisUsaha: e.target.value})}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    required
-                  >
-                    <option value="">Pilih Jenis Usaha</option>
-                    <option value="Perusahaan Asuransi Umum">Perusahaan Asuransi Umum</option>
-                    <option value="Perusahaan Asuransi Jiwa">Perusahaan Asuransi Jiwa</option>
-                    <option value="Perusahaan Reasuransi">Perusahaan Reasuransi</option>
-                    <option value="Perbankan">Perbankan</option>
-                    <option value="Fintech">Fintech</option>
-                    <option value="Dana Pensiun">Dana Pensiun</option>
-                    <option value="Lainnya">Lainnya</option>
-                  </select>
-                </div>
-              </>
-            )}
+            {/* Alamat - BISA DIEDIT (tidak read-only) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Alamat <span className="text-red-600">*</span>
+              </label>
+              <textarea
+                value={formData.alamat}
+                onChange={(e) => setFormData({...formData, alamat: e.target.value})}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                rows="3"
+                placeholder="Masukkan Alamat Perusahaan"
+                required
+              />
+            </div>
+            
+            {/* Jenis Usaha - SELECT (tetap bisa dipilih) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Jenis Usaha <span className="text-red-600">*</span>
+              </label>
+              <select
+                value={formData.jenisUsaha}
+                onChange={(e) => setFormData({...formData, jenisUsaha: e.target.value})}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                required
+              >
+                <option value="">Pilih Jenis Usaha</option>
+                <option value="Perusahaan Asuransi Umum">Perusahaan Asuransi Umum</option>
+                <option value="Perusahaan Asuransi Jiwa">Perusahaan Asuransi Jiwa</option>
+                <option value="Perusahaan Reasuransi">Perusahaan Reasuransi</option>
+                <option value="Perbankan">Perbankan</option>
+                <option value="Fintech">Fintech</option>
+                <option value="Dana Pensiun">Dana Pensiun</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
             
             {/* Tombol Berikut */}
             <div className="pt-6 border-t border-gray-200">
@@ -2587,7 +2598,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
                 onClick={handleStep1Submit}
                 className="w-full py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md"
               >
-                {metodePendaftaran === 'sipo' ? 'Lanjut ke Validasi SIPO' : 'Lanjut ke Input Email'}
+                {metodePendaftaran === 'sipo' ? 'Lanjut ke Validasi SIPO' : 'Lanjut ke Konfirmasi Data'}
               </button>
             </div>
           </div>
@@ -2596,8 +2607,180 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     </div>
   );
 
-  // Step 2: Validasi User SIPO (Hanya untuk metode sipo)
+  // Step 2: Konfirmasi Data (khusus non-sipo)
   const renderStep2 = () => (
+    <div>
+      <div className="flex items-center gap-2 mb-6">
+        <button
+          onClick={() => setStep(1)}
+          className="p-2 text-gray-400 hover:text-gray-600"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
+          Konfirmasi Data Perusahaan
+        </h3>
+      </div>
+      
+      <div className="space-y-6">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-green-600" />
+            <p className="text-sm font-medium text-green-700">Data perusahaan berhasil diisi. Silakan periksa kembali sebelum melanjutkan.</p>
+          </div>
+        </div>
+        
+        {/* Ringkasan Data Perusahaan */}
+        <div className="border border-red-300 rounded-xl p-6 bg-white shadow">
+          <h4 className="font-bold text-gray-900 mb-4 pb-2 border-b border-red-100">Ringkasan Data Perusahaan</h4>
+          
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500 mb-1">NPWP Perusahaan</p>
+                <p className="font-medium text-gray-900 bg-gray-50 p-2 rounded">{formData.npwp}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Nama Perusahaan</p>
+                <p className="font-medium text-gray-900 bg-gray-50 p-2 rounded">{formData.namaPerusahaan}</p>
+              </div>
+            </div>
+            
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Alamat</p>
+              <p className="font-medium text-gray-900 bg-gray-50 p-2 rounded">{formData.alamat}</p>
+            </div>
+            
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Jenis Usaha</p>
+              <p className="font-medium text-gray-900 bg-gray-50 p-2 rounded">{formData.jenisUsaha}</p>
+            </div>
+          </div>
+          
+          {isDataFromNPWP && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-xs text-blue-700 flex items-center gap-1">
+                <Info className="w-3 h-3" />
+                Data ini dihasilkan secara otomatis berdasarkan NPWP yang Anda masukkan.
+              </p>
+            </div>
+          )}
+        </div>
+        
+        {/* Tombol Aksi */}
+        <div className="flex gap-3 pt-4">
+          <button
+            onClick={handleEditData}
+            className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2"
+          >
+            <Edit className="w-4 h-4" />
+            Edit Data
+          </button>
+          <button
+            onClick={handleConfirmData}
+            className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md flex items-center justify-center gap-2"
+          >
+            <CheckCircle className="w-4 h-4" />
+            Konfirmasi & Lanjut
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 3: Input Email (untuk non-sipo setelah konfirmasi)
+  const renderStep3 = () => (
+    <div>
+      <div className="flex items-center gap-2 mb-6">
+        <button
+          onClick={() => setStep(2)}
+          className="p-2 text-gray-400 hover:text-gray-600"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">3</span>
+          Input Email (User ID Aplikasi)
+        </h3>
+      </div>
+      
+      <div className="space-y-6 border border-red-300 rounded-xl p-6 bg-white shadow">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-sm text-gray-700">
+            Email ini akan digunakan sebagai identitas login utama aplikasi dan tujuan pengiriman link aktivasi.
+          </p>
+        </div>
+        
+        <div className="space-y-4">
+          {/* Email Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Alamat Email <span className="text-red-600">*</span>
+            </label>
+            <div className="relative">
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => {
+                  setFormData({...formData, email: e.target.value});
+                  setEmailValidationMessage('');
+                }}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent pr-12"
+                placeholder="contoh@perusahaan.co.id"
+                required
+              />
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <Mail className="w-5 h-5 text-red-500" />
+              </div>
+            </div>
+            {formData.email && validateEmail(formData.email) && (
+              <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                <CheckCircle className="w-3 h-3" />
+                Format email valid
+              </p>
+            )}
+          </div>
+          
+          {/* Informasi Email */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-blue-700">
+              <span className="font-medium">Informasi:</span> Pastikan email yang dimasukkan aktif dan dapat diakses. Link aktivasi akan dikirimkan ke email ini.
+            </p>
+          </div>
+          
+          {/* Pesan Validasi */}
+          {emailValidationMessage && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-700 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                {emailValidationMessage}
+              </p>
+            </div>
+          )}
+          
+          {/* Tombol Berikut */}
+          <div className="pt-6 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={handleStep5Submit}
+              disabled={!formData.email || !validateEmail(formData.email)}
+              className={`w-full py-3 font-bold rounded-lg ${
+                formData.email && validateEmail(formData.email)
+                  ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              Selesai
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 4: Validasi User SIPO (Hanya untuk metode sipo)
+  const renderStep4 = () => (
     <div>
       <div className="flex items-center gap-2 mb-6">
         <button
@@ -2753,7 +2936,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
             <div className="pt-6 border-t border-gray-200">
               <button
                 type="button"
-                onClick={handleStep2Submit}
+                onClick={handleStep4Submit}
                 disabled={!formData.sipoValidated}
                 className={`w-full py-3 font-bold rounded-lg ${
                   formData.sipoValidated
@@ -2770,12 +2953,12 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     </div>
   );
 
-  // Step 3: Input Email (User ID Aplikasi)
-  const renderStep3 = () => (
+  // Step 5: Input Email (untuk sipo setelah validasi)
+  const renderStep5 = () => (
     <div>
       <div className="flex items-center gap-2 mb-6">
         <button
-          onClick={() => metodePendaftaran === 'sipo' ? setStep(2) : setStep(1)}
+          onClick={() => setStep(4)}
           className="p-2 text-gray-400 hover:text-gray-600"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -2844,7 +3027,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
           <div className="pt-6 border-t border-gray-200">
             <button
               type="button"
-              onClick={handleStep3Submit}
+              onClick={handleStep5Submit}
               disabled={!formData.email || !validateEmail(formData.email)}
               className={`w-full py-3 font-bold rounded-lg ${
                 formData.email && validateEmail(formData.email)
@@ -2860,12 +3043,12 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     </div>
   );
 
-  // Step 4: Selesai & Aktivasi
-  const renderStep4 = () => (
+  // Step 6: Selesai & Aktivasi
+  const renderStep6 = () => (
     <div className="text-center">
       <div className="flex items-center gap-2 mb-6">
         <button
-          onClick={() => setStep(3)}
+          onClick={() => metodePendaftaran === 'sipo' ? setStep(5) : setStep(3)}
           className="p-2 text-gray-400 hover:text-gray-600"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -2935,38 +3118,97 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
             
             {/* Progress Steps */}
             <div className="flex items-center gap-2 mt-4">
-              {[1, 2, 3, 4].map((stepNum) => {
-                // Adjust step number untuk non-sipo
-                let adjustedStep = stepNum;
-                if (metodePendaftaran === 'non-sipo' && stepNum > 1) {
-                  adjustedStep = stepNum + 1;
-                }
-                
-                const isActive = metodePendaftaran === 'sipo' 
-                  ? step === stepNum 
-                  : step === (stepNum === 1 ? 1 : stepNum + 1);
-                
-                const isCompleted = metodePendaftaran === 'sipo'
-                  ? step > stepNum
-                  : step > (stepNum === 1 ? 1 : stepNum + 1);
-                
-                return (
-                  <div key={stepNum} className="flex items-center">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${
-                      isActive
-                        ? 'bg-red-600 text-white' 
-                        : isCompleted
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-gray-100 text-gray-500'
-                    }`}>
-                      {isCompleted ? <CheckCircle className="w-4 h-4" /> : stepNum}
+              {metodePendaftaran === 'sipo' ? (
+                // Progress steps untuk SIPO
+                [1, 2, 3, 4].map((stepNum) => {
+                  const stepMap = { 1: 1, 2: 4, 3: 5, 4: 6 };
+                  const currentStep = step;
+                  
+                  let isActive = false;
+                  let isCompleted = false;
+                  
+                  if (stepNum === 1) {
+                    isActive = currentStep === 1;
+                    isCompleted = currentStep > 1;
+                  } else if (stepNum === 2) {
+                    isActive = currentStep === 4;
+                    isCompleted = currentStep > 4;
+                  } else if (stepNum === 3) {
+                    isActive = currentStep === 5;
+                    isCompleted = currentStep > 5;
+                  } else if (stepNum === 4) {
+                    isActive = currentStep === 6;
+                    isCompleted = currentStep > 6;
+                  }
+                  
+                  return (
+                    <div key={stepNum} className="flex items-center">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${
+                        isActive
+                          ? 'bg-red-600 text-white' 
+                          : isCompleted
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-gray-100 text-gray-500'
+                      }`}>
+                        {isCompleted ? <CheckCircle className="w-4 h-4" /> : stepNum}
+                      </div>
+                      {stepNum < 4 && (
+                        <div className={`w-12 h-1 ${isCompleted ? 'bg-green-500' : 'bg-gray-200'}`}></div>
+                      )}
                     </div>
-                    {stepNum < 4 && (
-                      <div className={`w-12 h-1 ${isCompleted ? 'bg-green-500' : 'bg-gray-200'}`}></div>
-                    )}
+                  );
+                })
+              ) : metodePendaftaran === 'non-sipo' ? (
+                // Progress steps untuk Non-SIPO
+                [1, 2, 3, 4].map((stepNum) => {
+                  const stepMap = { 1: 1, 2: 2, 3: 3, 4: 6 };
+                  const currentStep = step;
+                  
+                  let isActive = false;
+                  let isCompleted = false;
+                  
+                  if (stepNum === 1) {
+                    isActive = currentStep === 1;
+                    isCompleted = currentStep > 1;
+                  } else if (stepNum === 2) {
+                    isActive = currentStep === 2;
+                    isCompleted = currentStep > 2;
+                  } else if (stepNum === 3) {
+                    isActive = currentStep === 3;
+                    isCompleted = currentStep > 3;
+                  } else if (stepNum === 4) {
+                    isActive = currentStep === 6;
+                    isCompleted = currentStep > 6;
+                  }
+                  
+                  return (
+                    <div key={stepNum} className="flex items-center">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${
+                        isActive
+                          ? 'bg-red-600 text-white' 
+                          : isCompleted
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-gray-100 text-gray-500'
+                      }`}>
+                        {isCompleted ? <CheckCircle className="w-4 h-4" /> : stepNum}
+                      </div>
+                      {stepNum < 4 && (
+                        <div className={`w-12 h-1 ${isCompleted ? 'bg-green-500' : 'bg-gray-200'}`}></div>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                // Default progress steps
+                [1, 2, 3, 4].map((stepNum) => (
+                  <div key={stepNum} className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-sm">
+                      {stepNum}
+                    </div>
+                    {stepNum < 4 && <div className="w-12 h-1 bg-gray-200"></div>}
                   </div>
-                );
-              })}
+                ))
+              )}
             </div>
           </div>
           <button
@@ -3019,7 +3261,6 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     </div>
   );
 };
-
 // TAB STATUS & MONITORING - DENGAN DESAIN CARD MODERN UNTUK ARO
 const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
   const navigate = useNavigate();
