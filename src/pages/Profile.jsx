@@ -826,173 +826,221 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
           </div>
         )}
 
-        {showAddAROModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
-              <div className="p-6 border-b border-red-200 bg-gradient-to-r from-red-50 to-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">Tambah ARO Baru</h3>
-                    <p className="text-gray-600 mt-1">
-                      {aroModalStep === 1 ? 'Isi keterangan permohonan' : 'Upload surat permohonan'}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setShowAddAROModal(false);
-                      setAroModalStep(1);
-                      setAroKeterangan('');
-                      setAroSuratPermohonan(null);
-                    }}
-                    className="p-2 text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-              
-              <div className="p-6 overflow-y-auto">
-                {aroModalStep === 1 ? (
-                  <div className="space-y-4">
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                      <p className="text-sm text-yellow-700 flex items-start gap-2">
-                        <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                        <span>
-                          <span className="font-medium">Informasi:</span> Jelaskan tujuan dan kebutuhan penambahan ARO ini.
-                        </span>
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Keterangan Permohonan ARO <span className="text-red-500">*</span>
-                      </label>
-                      <textarea
-                        value={aroKeterangan}
-                        onChange={(e) => setAroKeterangan(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                        rows="5"
-                        placeholder="Contoh: Membutuhkan akses modul Strategi Anti Fraud untuk keperluan pelaporan..."
-                        required
-                      />
-                      {!aroKeterangan && (
-                        <p className="text-xs text-red-600 mt-1">Keterangan wajib diisi</p>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                      <p className="text-sm text-yellow-700">
-                        <span className="font-medium">Perhatian:</span> Upload surat permohonan resmi.
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Surat Permohonan ARO <span className="text-red-500">*</span>
-                      </label>
-                      <div className={`border-2 border-dashed rounded-xl p-8 text-center ${
-                        aroSuratPermohonan ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'
-                      }`}>
-                        <input
-                          type="file"
-                          id="aroSurat"
-                          accept=".pdf"
-                          onChange={handleAroSuratUpload}
-                          className="hidden"
-                        />
-                        <label htmlFor="aroSurat" className="cursor-pointer">
-                          <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                            aroSuratPermohonan ? 'bg-green-100' : 'bg-red-100'
-                          }`}>
-                            {aroSuratPermohonan ? (
-                              <FileCheck className="w-8 h-8 text-green-600" />
-                            ) : (
-                              <UploadCloud className="w-8 h-8 text-red-600" />
-                            )}
-                          </div>
-                          <p className="text-gray-700 font-medium mb-2">
-                            {aroSuratPermohonan
-                              ? `✓ File: ${aroSuratPermohonan.name}`
-                              : 'Klik untuk upload surat permohonan'
-                            }
-                          </p>
-                          <p className="text-sm text-gray-500">Format: PDF (maks. 5MB)</p>
-                          {!aroSuratPermohonan && (
-                            <p className="text-xs text-red-500 mt-2">*Wajib diunggah</p>
-                          )}
-                        </label>
-                      </div>
-                    </div>
-                    
-                    {aroKeterangan && (
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <p className="text-sm font-medium text-gray-700 mb-2">Ringkasan Permohonan:</p>
-                        <p className="text-sm text-gray-600">"{aroKeterangan.substring(0, 100)}..."</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-              
-              <div className="p-6 border-t border-red-200 bg-red-50">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-600">
-                    {aroModalStep === 1 ? 'Langkah 1 dari 2' : 'Langkah 2 dari 2'}
-                  </p>
-                  <div className="flex gap-3">
-                    {aroModalStep === 1 ? (
-                      <>
-                        <button
-                          onClick={() => setShowAddAROModal(false)}
-                          className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
-                        >
-                          Batal
-                        </button>
-                        <button
-                          onClick={handleARONextStep}
-                          disabled={!aroKeterangan}
-                          className={`
-                            px-6 py-2 font-medium rounded-lg
-                            ${!aroKeterangan
-                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                              : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700'
-                            }
-                          `}
-                        >
-                          Lanjut
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          onClick={handleAROBack}
-                          className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
-                        >
-                          Kembali
-                        </button>
-                        <button
-                          onClick={handleSubmitARO}
-                          disabled={!aroSuratPermohonan}
-                          className={`
-                            px-6 py-2 font-medium rounded-lg
-                            ${!aroSuratPermohonan
-                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                              : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700'
-                            }
-                          `}
-                        >
-                          Ajukan ARO
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
+        
+{showAddAROModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+      {/* Header - Fixed */}
+      <div className="p-6 border-b border-red-200 bg-gradient-to-r from-red-50 to-white flex-shrink-0">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">Tambah ARO Baru</h3>
+            <p className="text-gray-600 mt-1">
+              {aroModalStep === 1 ? 'Isi keterangan permohonan' : 'Upload surat permohonan'}
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              setShowAddAROModal(false);
+              setAroModalStep(1);
+              setAroKeterangan('');
+              setAroSuratPermohonan(null);
+            }}
+            className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+      
+      {/* Content - Scrollable */}
+      <div className="p-6 overflow-y-auto flex-1">
+        {aroModalStep === 1 ? (
+          <div className="space-y-4">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <p className="text-sm text-yellow-700 flex items-start gap-2">
+                <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>
+                  <span className="font-medium">Informasi:</span> Jelaskan tujuan dan kebutuhan penambahan ARO ini.
+                </span>
+              </p>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Keterangan Permohonan ARO <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                value={aroKeterangan}
+                onChange={(e) => setAroKeterangan(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                rows="6"
+                placeholder="Contoh: Membutuhkan akses modul Strategi Anti Fraud untuk keperluan pelaporan..."
+                required
+              />
+              {!aroKeterangan && (
+                <p className="text-xs text-red-600 mt-2">Keterangan wajib diisi</p>
+              )}
             </div>
           </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <p className="text-sm text-yellow-700 flex items-start gap-2">
+                <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>
+                  <span className="font-medium">Perhatian:</span> Upload surat permohonan resmi dengan format PDF (maks. 5MB).
+                </span>
+              </p>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Surat Permohonan ARO <span className="text-red-500">*</span>
+              </label>
+              <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
+                aroSuratPermohonan ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50 hover:border-red-400 hover:bg-red-100'
+              }`}>
+                <input
+                  type="file"
+                  id="aroSurat"
+                  accept=".pdf"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      if (file.type === 'application/pdf') {
+                        if (file.size <= 5 * 1024 * 1024) { // 5MB limit
+                          setAroSuratPermohonan({
+                            name: file.name,
+                            size: file.size,
+                            type: file.type
+                          });
+                        } else {
+                          alert('Ukuran file maksimal 5MB');
+                        }
+                      } else {
+                        alert('Harap unggah file PDF');
+                      }
+                    }
+                  }}
+                  className="hidden"
+                />
+                <label htmlFor="aroSurat" className="cursor-pointer block">
+                  <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                    aroSuratPermohonan ? 'bg-green-100' : 'bg-red-100'
+                  }`}>
+                    {aroSuratPermohonan ? (
+                      <FileCheck className="w-10 h-10 text-green-600" />
+                    ) : (
+                      <UploadCloud className="w-10 h-10 text-red-600" />
+                    )}
+                  </div>
+                  
+                  {aroSuratPermohonan ? (
+                    <div className="space-y-2">
+                      <p className="text-gray-700 font-medium flex items-center justify-center gap-2">
+                        <FileText className="w-4 h-4" />
+                        {aroSuratPermohonan.name}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {(aroSuratPermohonan.size / 1024).toFixed(2)} KB
+                      </p>
+                      <p className="text-xs text-green-600 mt-2 flex items-center justify-center gap-1">
+                        <CheckCircle className="w-3 h-3" />
+                        File berhasil diunggah
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-gray-700 font-medium mb-2">
+                        Klik untuk upload atau drag & drop
+                      </p>
+                      <p className="text-sm text-gray-500">Format: PDF (maks. 5MB)</p>
+                      <p className="text-xs text-red-500 mt-4">*Wajib diunggah</p>
+                    </>
+                  )}
+                </label>
+              </div>
+            </div>
+            
+            {aroKeterangan && (
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <p className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-red-500" />
+                  Ringkasan Permohonan:
+                </p>
+                <p className="text-sm text-gray-600 bg-white p-3 rounded border border-gray-200">
+                  "{aroKeterangan}"
+                </p>
+              </div>
+            )}
+          </div>
         )}
+      </div>
+      
+      {/* Footer - Fixed */}
+      <div className="p-6 border-t border-red-200 bg-red-50 flex-shrink-0">
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-600 font-medium">
+            {aroModalStep === 1 ? 'Langkah 1 dari 2' : 'Langkah 2 dari 2'}
+          </p>
+          <div className="flex gap-3">
+            {aroModalStep === 1 ? (
+              <>
+                <button
+                  onClick={() => {
+                    setShowAddAROModal(false);
+                    setAroModalStep(1);
+                    setAroKeterangan('');
+                    setAroSuratPermohonan(null);
+                  }}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={handleARONextStep}
+                  disabled={!aroKeterangan}
+                  className={`
+                    px-6 py-2 font-medium rounded-lg transition-all duration-200
+                    ${!aroKeterangan
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-md hover:shadow-lg'
+                    }
+                  `}
+                >
+                  Lanjut
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={handleAROBack}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Kembali
+                </button>
+                <button
+                  onClick={handleSubmitARO}
+                  disabled={!aroSuratPermohonan}
+                  className={`
+                    px-6 py-2 font-medium rounded-lg transition-all duration-200
+                    ${!aroSuratPermohonan
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-md hover:shadow-lg'
+                    }
+                  `}
+                >
+                  Ajukan ARO
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
       </div>
     );
   }
