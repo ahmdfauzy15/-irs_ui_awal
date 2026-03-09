@@ -113,7 +113,7 @@ const AntiGratificationBanner = () => {
             <div className="bg-white/5 backdrop-blur-sm border-t border-white/10 py-2 px-4">
               <div className="flex items-center justify-between">
                 <p className="text-white/70 text-[10px]">Bersih • Transparan • Akuntabel</p>
-                <p className="text-white/70 text-[10px]">© 2024 OJK RI</p>
+                <p className="text-white/70 text-[10px]">© 2026 OJK</p>
               </div>
             </div>
           </div>

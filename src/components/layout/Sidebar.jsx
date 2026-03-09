@@ -467,7 +467,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
           ) : (
             <div className="flex items-center justify-between">
               <div className="text-xs text-gray-500">
-                <p>v1.0.0 • © 2025</p>
+                <p>© 2026 OJK</p>
                 {isNewUser && (
                   <p className="text-red-600 font-medium mt-1">Status: Menunggu Akses</p>
                 )}

@@ -367,7 +367,7 @@ const AdminLayout = ({ children }) => {
           {/* Sidebar Footer */}
           <div className="p-4 border-t border-red-100">
             <div className="text-xs text-gray-500">
-              <p>Admin Panel v1.0.0 • © 2025</p>
+              <p>Admin Panel© 2026</p>
               <p className="text-red-600 font-medium mt-1">Mode: Administrator</p>
             </div>
           </div>
