@@ -2717,7 +2717,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
                 </div>
                 <h4 className="font-bold text-gray-900 mb-2">Non-SIPO</h4>
                 <p className="text-sm text-gray-600">
-                  Input NPWP, konfirmasi data, lalu lanjut ke input email.
+                  Input Token, konfirmasi data, lalu lanjut ke input email.
                 </p>
               </button>
             </div>
@@ -2736,14 +2736,14 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                NPWP Perusahaan <span className="text-red-600">*</span>
+                Token <span className="text-red-600">*</span>
               </label>
               <input
                 type="text"
                 value={formData.npwp}
                 onChange={(e) => setFormData({...formData, npwp: e.target.value})}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                placeholder="Masukkan NPWP"
+                placeholder="Masukkan Token"
                 required
               />
             </div>
@@ -3065,11 +3065,11 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-xs text-gray-500 mb-1">NPWP Perusahaan</p>
+                <p className="text-xs text-gray-500 mb-1">Token </p>
                 <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.npwp}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 mb-1">Email (User ID)</p>
+                <p className="text-xs text-gray-500 mb-1">Email </p>
                 <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.email}</p>
               </div>
             </div>

@@ -86,8 +86,8 @@ const SimpleProfile = () => {
                       </label>
                     </div>
                     
-                    <div className="p-4 bg-gradient-to-r from-red-50 to-white rounded-xl border border-red-100 
-                                   group-hover:border-red-300 group-hover:shadow-md transition-all">
+                    {/* Perbaikan utama ada di baris className ini yang sebelumnya terputus enter */}
+                    <div className="p-4 bg-gradient-to-r from-red-50 to-white rounded-xl border border-red-100 group-hover:border-red-300 group-hover:shadow-md transition-all">
                       <p className="text-xl font-bold text-gray-900 mb-1">
                         {item.value}
                       </p>
