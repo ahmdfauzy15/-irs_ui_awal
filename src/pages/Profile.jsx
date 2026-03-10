@@ -1,4 +1,4 @@
-// Profile.jsx - Page Profile Sederhana dengan Hak Akses
+// Profile.jsx - Page Profile Sederhana dengan Hak Akses (MODIFIKASI APOLO)
 import React, { useState, useEffect } from 'react';
 import { 
   User, 
@@ -39,7 +39,10 @@ import {
   ArrowRight,
   ChevronUp,
   Download,
-  ExternalLink
+  ExternalLink,
+  Send,
+  Package, // <-- TAMBAHKAN INI
+  FolderTree // <-- TAMBAHKAN INI
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -59,6 +62,13 @@ const Profile = () => {
   const [submissions, setSubmissions] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showForumModal, setShowForumModal] = useState(false);
+  const [selectedForumSubmission, setSelectedForumSubmission] = useState(null);
+  const [forumMessage, setForumMessage] = useState('');
+  const [showAddAROModal, setShowAddAROModal] = useState(false);
+  const [aroKeterangan, setAroKeterangan] = useState('');
+  const [aroSuratPermohonan, setAroSuratPermohonan] = useState(null);
+  const [aroModalStep, setAroModalStep] = useState(1);
 
   useEffect(() => {
     setActiveTab(getActiveTabFromURL());
@@ -89,6 +99,134 @@ const Profile = () => {
     loadData();
   }, []);
 
+  // FUNGSI TANDAI PESAN SUDAH DIBACA
+  useEffect(() => {
+    if (activeTab === 'status') {
+      const markMessagesAsRead = () => {
+        const storedSubs = JSON.parse(localStorage.getItem('hakAksesSubmissions') || '[]');
+        let updated = false;
+        
+        const updatedSubs = storedSubs.map(sub => {
+          if (sub.forum) {
+            const hasUnread = sub.forum.some(m => m.sender === 'admin' && !m.read);
+            if (hasUnread) {
+              updated = true;
+              return {
+                ...sub,
+                forum: sub.forum.map(m => ({
+                  ...m,
+                  read: m.sender === 'admin' ? true : m.read
+                }))
+              };
+            }
+          }
+          return sub;
+        });
+        
+        if (updated) {
+          localStorage.setItem('hakAksesSubmissions', JSON.stringify(updatedSubs));
+          setSubmissions(updatedSubs);
+        }
+      };
+      
+      markMessagesAsRead();
+    }
+  }, [activeTab, submissions]);
+
+  // FUNGSI KIRIM PESAN FORUM
+  const handleSendForumMessage = () => {
+    if (!forumMessage.trim() || !selectedForumSubmission) return;
+    
+    const userName = userProfile?.nama || 'Pemohon';
+    
+    const storedSubs = JSON.parse(localStorage.getItem('hakAksesSubmissions') || '[]');
+    const updatedSubs = storedSubs.map(sub => {
+      if (sub.id === selectedForumSubmission.id) {
+        const forum = sub.forum || [];
+        
+        return {
+          ...sub,
+          forum: [...forum, {
+            id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            sender: 'user',
+            senderName: userName,
+            message: forumMessage,
+            timestamp: new Date().toISOString(),
+            read: false
+          }]
+        };
+      }
+      return sub;
+    });
+    
+    localStorage.setItem('hakAksesSubmissions', JSON.stringify(updatedSubs));
+    setSubmissions(updatedSubs);
+    setForumMessage('');
+    
+    const updated = updatedSubs.find(s => s.id === selectedForumSubmission.id);
+    setSelectedForumSubmission(updated);
+  };
+
+  // FUNGSI TAMBAH ARO - Membuat submission baru dengan ID tracking baru
+  const handleAddARO = () => {
+    if (!aroKeterangan) {
+      alert('Harap isi keterangan penambahan ARO!');
+      return false;
+    }
+
+    if (!aroSuratPermohonan) {
+      alert('Harap upload surat permohonan!');
+      return false;
+    }
+
+    // Cek apakah ada APOLO yang sudah disetujui
+    const approvedApolo = submissions.find(sub => sub.app === 'apolo' && sub.status === 'approved' && !sub.isARO);
+    
+    if (!approvedApolo) {
+      alert('Harap ajukan APOLO terlebih dahulu dan tunggu persetujuan sebelum menambah ARO!');
+      return false;
+    }
+
+    // Generate ID tracking baru untuk ARO
+    const newTrackingId = `IRS-ARO-${Date.now().toString().slice(-8)}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+    
+    // Buat submission ARO baru (bukan ARO di dalam submission APOLO)
+    const newAROSubmission = {
+      id: `aro-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      app: 'apolo',
+      isARO: true,
+      aroKeterangan: aroKeterangan,
+      aroSuratPermohonan: aroSuratPermohonan,
+      dataUmum: approvedApolo.dataUmum,
+      status: 'pending',
+      submittedAt: new Date().toISOString(),
+      timestamp: new Date().toISOString(),
+      trackingId: newTrackingId,
+      parentApoloId: approvedApolo.id,
+      log: [{
+        timestamp: new Date().toISOString(),
+        action: 'ARO Diajukan',
+        description: 'Permohonan ARO baru',
+        status: 'pending'
+      }]
+    };
+
+    const storedSubs = JSON.parse(localStorage.getItem('hakAksesSubmissions') || '[]');
+    const updatedSubmissions = [...storedSubs, newAROSubmission];
+    
+    localStorage.setItem('hakAksesSubmissions', JSON.stringify(updatedSubmissions));
+    setSubmissions(updatedSubmissions);
+    
+    // Reset state
+    setAroKeterangan('');
+    setAroSuratPermohonan(null);
+    setAroModalStep(1);
+    setShowAddAROModal(false);
+    
+    alert('✅ Permohonan ARO berhasil diajukan! ID Tracking: ' + newTrackingId);
+    return true;
+  };
+
   const getStatusBadge = (status) => {
     switch(status) {
       case 'pending':
@@ -102,18 +240,48 @@ const Profile = () => {
     }
   };
 
-  const getAppBadge = (app) => {
+  // MODIFIKASI getAppBadge untuk menangani APOLO dengan ARO
+  const getAppBadge = (app, isARO = false, hasAro = false) => {
     const appNames = {
       'sipina': 'SIPINA',
       'apolo': 'APOLO',
       'ereporting': 'E-Reporting'
     };
     
+    if (isARO) {
+      return (
+        <span className="px-3 py-1 bg-purple-100 text-red-800 text-xs font-bold rounded-full border border-purple-200 flex items-center gap-1">
+          <Layers className="w-3 h-3" />
+          ARO
+        </span>
+      );
+    }
+    
+    if (app === 'apolo' && hasAro) {
+      return (
+        <span className="px-3 py-1 bg-gradient-to-r from-red-600 to-purple-600 text-white text-xs font-bold rounded-full border border-purple-300 flex items-center gap-1">
+          <Package className="w-3 h-3" />
+          APOLO + ARO
+        </span>
+      );
+    }
+    
     return (
-      <span className="px-3 py-1 bg-red-100 text-red-800 text-xs font-bold rounded-full border border-red-200">
+      <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
+        app === 'sipina' ? 'bg-red-100 text-red-800 border-red-200' :
+        app === 'apolo' ? 'bg-red-100 text-red-800 border-red-200' :
+        'bg-blue-100 text-blue-800 border-blue-200'
+      }`}>
         {appNames[app] || app.toUpperCase()}
       </span>
     );
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', {
+      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
   };
 
   const tabs = [
@@ -124,6 +292,11 @@ const Profile = () => {
   const handleTabClick = (tabId, tabPath) => {
     setActiveTab(tabId);
     navigate(tabPath);
+  };
+
+  // Fungsi untuk mengecek apakah APOLO sudah disetujui
+  const isApoloApproved = () => {
+    return submissions.some(sub => sub.app === 'apolo' && sub.status === 'approved' && !sub.isARO);
   };
 
   return (
@@ -174,6 +347,9 @@ const Profile = () => {
               userProfile={userProfile}
               submissions={submissions}
               setSubmissions={setSubmissions}
+              onOpenAddARO={() => setShowAddAROModal(true)}
+              isApoloApproved={isApoloApproved()}
+              getAppBadge={getAppBadge} // <-- TAMBAHKAN INI
             />
           )}
           
@@ -182,16 +358,382 @@ const Profile = () => {
               submissions={submissions}
               getStatusBadge={getStatusBadge}
               getAppBadge={getAppBadge}
+              formatDate={formatDate}
+              userProfile={userProfile}
+              onOpenForum={(submission) => {
+                setSelectedForumSubmission(submission);
+                setShowForumModal(true);
+              }}
             />
           )}
+        </div>
+      </div>
+
+      {/* MODAL FORUM UNTUK USER */}
+      {showForumModal && selectedForumSubmission && (
+        <ForumModal
+          submission={selectedForumSubmission}
+          userProfile={userProfile}
+          onClose={() => {
+            setShowForumModal(false);
+            setSelectedForumSubmission(null);
+            setForumMessage('');
+          }}
+          onSendMessage={handleSendForumMessage}
+          message={forumMessage}
+          setMessage={setForumMessage}
+          formatDate={formatDate}
+        />
+      )}
+
+      {/* MODAL TAMBAH ARO */}
+      {showAddAROModal && (
+        <AddAROModal
+          onClose={() => {
+            setShowAddAROModal(false);
+            setAroKeterangan('');
+            setAroSuratPermohonan(null);
+            setAroModalStep(1);
+          }}
+          onSubmit={handleAddARO}
+          aroKeterangan={aroKeterangan}
+          setAroKeterangan={setAroKeterangan}
+          aroSuratPermohonan={aroSuratPermohonan}
+          setAroSuratPermohonan={setAroSuratPermohonan}
+          step={aroModalStep}
+          setStep={setAroModalStep}
+          formatDate={formatDate}
+        />
+      )}
+    </div>
+  );
+};
+
+// MODAL TAMBAH ARO - MODIFIKASI UNTUK SUBMISSION BARU
+const AddAROModal = ({ onClose, onSubmit, aroKeterangan, setAroKeterangan, aroSuratPermohonan, setAroSuratPermohonan, step, setStep }) => {
+  const handleNextStep = () => {
+    if (!aroKeterangan) {
+      alert('Harap isi keterangan penambahan ARO!');
+      return;
+    }
+    setStep(2);
+  };
+
+  const handleBack = () => {
+    setStep(1);
+  };
+
+  const handleSuratUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      if (file.size <= 5 * 1024 * 1024) { // 5MB limit
+        setAroSuratPermohonan({
+          name: file.name,
+          size: file.size,
+          type: file.type
+        });
+      } else {
+        alert('Ukuran file maksimal 5MB');
+      }
+    } else if (file) {
+      alert('Harap unggah file PDF');
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+        {/* Header */}
+        <div className="p-6 border-b border-red-200 bg-gradient-to-r from-red-50 to-white flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900">Tambah ARO Baru</h3>
+              <p className="text-gray-600 mt-1">
+                {step === 1 ? 'Isi keterangan permohonan' : 'Upload surat permohonan'}
+              </p>
+              <p className="text-xs text-red-600 mt-2">
+              </p>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-red-50"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+        
+        {/* Content */}
+        <div className="p-6 overflow-y-auto flex-1">
+          {step === 1 ? (
+            <div className="space-y-4">
+             
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Keterangan Permohonan ARO <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={aroKeterangan}
+                  onChange={(e) => setAroKeterangan(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                  rows="6"
+                  placeholder="Contoh: Membutuhkan akses modul Strategi Anti Fraud untuk keperluan pelaporan..."
+                  required
+                />
+                {!aroKeterangan && (
+                  <p className="text-xs text-red-600 mt-2">Keterangan wajib diisi</p>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <p className="text-sm text-yellow-700 flex items-start gap-2">
+                  <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>
+                    <span className="font-medium">Perhatian:</span> Upload surat permohonan resmi dengan format PDF (maks. 5MB).
+                  </span>
+                </p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Surat Permohonan ARO <span className="text-red-500">*</span>
+                </label>
+                <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
+                  aroSuratPermohonan ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50 hover:border-red-400 hover:bg-red-100'
+                }`}>
+                  <input
+                    type="file"
+                    id="aroSurat"
+                    accept=".pdf"
+                    onChange={handleSuratUpload}
+                    className="hidden"
+                  />
+                  <label htmlFor="aroSurat" className="cursor-pointer block">
+                    <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                      aroSuratPermohonan ? 'bg-green-100' : 'bg-red-100'
+                    }`}>
+                      {aroSuratPermohonan ? (
+                        <FileCheck className="w-10 h-10 text-green-600" />
+                      ) : (
+                        <UploadCloud className="w-10 h-10 text-red-600" />
+                      )}
+                    </div>
+                    
+                    {aroSuratPermohonan ? (
+                      <div className="space-y-2">
+                        <p className="text-gray-700 font-medium flex items-center justify-center gap-2">
+                          <FileText className="w-4 h-4" />
+                          {aroSuratPermohonan.name}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {(aroSuratPermohonan.size / 1024).toFixed(2)} KB
+                        </p>
+                        <p className="text-xs text-green-600 mt-2 flex items-center justify-center gap-1">
+                          <CheckCircle className="w-3 h-3" />
+                          File berhasil diunggah
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-gray-700 font-medium mb-2">
+                          Klik untuk upload atau drag & drop
+                        </p>
+                        <p className="text-sm text-gray-500">Format: PDF (maks. 5MB)</p>
+                        <p className="text-xs text-red-500 mt-4">*Wajib diunggah</p>
+                      </>
+                    )}
+                  </label>
+                </div>
+              </div>
+              
+              {aroKeterangan && (
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <p className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-red-500" />
+                    Ringkasan Permohonan:
+                  </p>
+                  <p className="text-sm text-gray-600 bg-white p-3 rounded border border-gray-200">
+                    "{aroKeterangan}"
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        
+        {/* Footer */}
+        <div className="p-6 border-t border-red-200 bg-red-50 flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-gray-600 font-medium">
+              {step === 1 ? 'Langkah 1 dari 2' : 'Langkah 2 dari 2'}
+            </p>
+            <div className="flex gap-3">
+              {step === 1 ? (
+                <>
+                  <button
+                    onClick={onClose}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={handleNextStep}
+                    disabled={!aroKeterangan}
+                    className={`
+                      px-6 py-2 font-medium rounded-lg transition-all duration-200
+                      ${!aroKeterangan
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-md hover:shadow-lg'
+                      }
+                    `}
+                  >
+                    Lanjut
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleBack}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
+                  >
+                    Kembali
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (onSubmit()) {
+                        // Reset form setelah submit sukses
+                        onClose();
+                      }
+                    }}
+                    disabled={!aroSuratPermohonan}
+                    className={`
+                      px-6 py-2 font-medium rounded-lg transition-all duration-200
+                      ${!aroSuratPermohonan
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-md hover:shadow-lg'
+                      }
+                    `}
+                  >
+                    Ajukan ARO
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-// KOMPONEN UTAMA: Alur Pengajuan Hak Akses
-const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) => {
+// KOMPONEN FORUM MODAL UNTUK USER
+const ForumModal = ({ submission, userProfile, onClose, onSendMessage, message, setMessage, formatDate }) => {
+  const handleSend = () => {
+    onSendMessage();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4">
+      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col">
+        {/* Header */}
+        <div className="p-6 border-b border-red-200 bg-gradient-to-r from-red-50 to-white flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <Mail className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">Forum Diskusi</h3>
+                <p className="text-sm text-gray-600">
+                  ID: {submission.trackingId} • {submission.app?.toUpperCase()}
+                  {submission.isARO && <span className="ml-2 text-red-600">(ARO)</span>}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+        
+        {/* Daftar Pesan */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {(!submission.forum || submission.forum.length === 0) ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-8 h-8 text-gray-400" />
+              </div>
+              <p className="text-gray-500">Belum ada pesan dalam forum diskusi</p>
+              <p className="text-sm text-gray-400 mt-2">Kirim pesan pertama untuk berkomunikasi dengan admin</p>
+            </div>
+          ) : (
+            submission.forum.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-[80%] rounded-xl p-4 ${
+                    msg.sender === 'user'
+                      ? 'bg-gradient-to-r from-red-500 to-red-600 text-white'
+                      : 'bg-gray-100 text-gray-900'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1 text-xs">
+                    <span className="font-bold">
+                      {msg.sender === 'user' ? (userProfile?.nama || 'Anda') : 'Admin'}
+                    </span>
+                    <span className={msg.sender === 'user' ? 'text-red-200' : 'text-gray-500'}>
+                      • {formatDate(msg.timestamp)}
+                    </span>
+                  </div>
+                  <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+        
+        {/* Input Pesan */}
+        <div className="p-6 border-t border-red-200 bg-gray-50 flex-shrink-0">
+          <div className="flex gap-3">
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Tulis pesan untuk admin..."
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+              rows="2"
+            />
+            <button
+              onClick={handleSend}
+              disabled={!message.trim()}
+              className={`px-6 py-3 font-bold rounded-lg flex items-center gap-2 ${
+                message.trim()
+                  ? 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              <Send className="w-4 h-4" />
+              Kirim
+            </button>
+          </div>
+          <p className="text-xs text-gray-500 mt-2">
+            Pesan akan terlihat oleh admin di halaman detail pengajuan
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// KOMPONEN UTAMA: Alur Pengajuan Hak Akses (MODIFIKASI)
+const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onOpenAddARO, isApoloApproved, getAppBadge }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [step, setStep] = useState(1); // 1: Halaman utama, 2: Data Umum, 3: Pilih Aplikasi, 4: Form Spesifik
@@ -205,7 +747,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
   });
   const [savedSubmissions, setSavedSubmissions] = useState([]);
   
-  // State untuk ARO - HANYA UNTUK APOLO
+  // State untuk ARO (tidak digunakan lagi, tapi tetap untuk backward compatibility)
   const [aroData, setAroData] = useState({
     keterangan: '',
     suratPermohonan: null
@@ -213,7 +755,6 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
   const [showAroForm, setShowAroForm] = useState(false);
 
   const [submittedApps, setSubmittedApps] = useState([]);
-  const [existingApoloSubmission, setExistingApoloSubmission] = useState(null);
 
   // Load data submitted apps
   useEffect(() => {
@@ -222,9 +763,8 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       const apps = [];
       
       storedSubs.forEach(sub => {
-        apps.push(sub.app);
-        if (sub.app === 'apolo') {
-          setExistingApoloSubmission(sub);
+        if (!sub.isARO) {
+          apps.push(sub.app);
         }
       });
       
@@ -327,7 +867,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     
     setActiveAppForm(app);
     
-    // Jika app adalah APOLO, tampilkan form ARO
+    // Jika app adalah APOLO, tampilkan form ARO (untuk pengajuan pertama kali)
     if (app === 'apolo') {
       setShowAroForm(true);
     } else {
@@ -362,6 +902,9 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       updatedSubmissions[existingIndex] = newSubmission;
       setSavedSubmissions(updatedSubmissions);
     } else {
+      // Generate ID tracking baru untuk pengajuan aplikasi
+      const newTrackingId = `IRS-${Date.now().toString().slice(-8)}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+      
       newSubmission = {
         id: Date.now(),
         app,
@@ -369,8 +912,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
         status: 'draft',
         timestamp: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        trackingId: `IRS-${Date.now().toString().slice(-8)}`,
-        aros: [] // Array untuk menyimpan ARO
+        trackingId: newTrackingId
       };
       
       setSavedSubmissions([...savedSubmissions, newSubmission]);
@@ -381,7 +923,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     setStep(3);
   };
 
-  // Handle simpan ARO untuk APOLO
+  // Handle simpan ARO untuk APOLO (pengajuan pertama)
   const handleSaveAro = () => {
     if (!aroData.keterangan) {
       alert('Harap isi keterangan ARO!');
@@ -403,11 +945,10 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
       return;
     }
 
-    // Validasi khusus untuk APOLO: pastikan ARO sudah diisi
+    // Validasi khusus untuk APOLO: pastikan ARO sudah diisi (untuk pengajuan pertama)
     const apoloSubmission = savedSubmissions.find(s => s.app === 'apolo');
     if (apoloSubmission && (!aroData.keterangan || !aroData.suratPermohonan)) {
       alert('Untuk pengajuan APOLO, Anda harus mengisi data ARO terlebih dahulu!');
-      // Kembalikan ke form APOLO
       const apoloIndex = savedSubmissions.findIndex(s => s.app === 'apolo');
       if (apoloIndex >= 0) {
         handleOpenAppForm('apolo');
@@ -427,26 +968,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
         approvedAt = new Date().toISOString();
       }
       
-      // Buat data ARO jika ini adalah APOLO
-      let aros = sub.aros || [];
-      if (sub.app === 'apolo' && aroData.keterangan && aroData.suratPermohonan) {
-        const newARO = {
-          id: `aro-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          nama: `ARO APOLO - ${new Date().toLocaleDateString('id-ID')}`,
-          keterangan: aroData.keterangan,
-          suratPermohonan: aroData.suratPermohonan,
-          status: 'pending',
-          tanggalDiajukan: new Date().toISOString(),
-          log: [{
-            timestamp: new Date().toISOString(),
-            action: 'ARO Diajukan',
-            description: 'Permohonan ARO untuk APOLO',
-            status: 'pending'
-          }]
-        };
-        aros = [newARO];
-      }
-      
+      // Buat log
       const logAction = sub.isResubmit ? 'Diajukan Ulang' : 'Diajukan';
       const logDescription = sub.isResubmit ? 'Pengajuan ulang setelah ditolak' : 'Pengajuan hak akses baru dibuat';
       
@@ -458,10 +980,19 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
         details: status === 'approved' ? 'Pengajuan E-Reporting otomatis disetujui' : 'Menunggu persetujuan admin'
       }];
       
+      // Untuk APOLO, simpan data ARO sebagai bagian dari submission (pengajuan pertama)
+      let aroDataToSave = null;
+      if (sub.app === 'apolo') {
+        aroDataToSave = {
+          keterangan: aroData.keterangan,
+          suratPermohonan: aroData.suratPermohonan
+        };
+      }
+      
       const submissionData = {
         ...sub,
         dataUmum,
-        aros: aros,
+        aroData: aroDataToSave, // Simpan data ARO untuk pengajuan pertama
         status: status,
         approvedBy: approvedBy,
         approvedAt: approvedAt,
@@ -503,116 +1034,6 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     alert(hasEreporting 
       ? '✅ Pengajuan E-Reporting berhasil dan otomatis disetujui! Pengajuan lain menunggu persetujuan admin.' 
       : '✅ Pengajuan berhasil dikirim! Menunggu persetujuan admin.');
-  };
-
-  // Handle tambah ARO baru (untuk pengajuan setelah APOLO disetujui)
-  const handleOpenAddAROModal = () => {
-    const storedSubs = JSON.parse(localStorage.getItem('hakAksesSubmissions') || '[]');
-    const apoloSubmission = storedSubs.find(sub => sub.app === 'apolo' && sub.status === 'approved');
-    
-    if (!apoloSubmission) {
-      alert('Aplikasi APOLO harus disetujui terlebih dahulu sebelum dapat menambah ARO!');
-      return;
-    }
-
-    setAroModalStep(1);
-    setAroKeterangan('');
-    setAroSuratPermohonan(null);
-    setShowAddAROModal(true);
-  };
-
-  const [showAddAROModal, setShowAddAROModal] = useState(false);
-  const [aroModalStep, setAroModalStep] = useState(1);
-  const [aroKeterangan, setAroKeterangan] = useState('');
-  const [aroSuratPermohonan, setAroSuratPermohonan] = useState(null);
-
-  const handleARONextStep = () => {
-    if (!aroKeterangan) {
-      alert('Harap isi keterangan penambahan ARO!');
-      return;
-    }
-    setAroModalStep(2);
-  };
-
-  const handleAROBack = () => {
-    setAroModalStep(1);
-  };
-
-  const handleAroSuratUpload = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type === 'application/pdf') {
-      setAroSuratPermohonan({
-        name: file.name,
-        size: file.size,
-        type: file.type
-      });
-    } else {
-      alert('Harap unggah file PDF');
-    }
-  };
-
-  const handleSubmitARO = () => {
-    if (!aroKeterangan) {
-      alert('Harap isi keterangan penambahan ARO!');
-      return;
-    }
-
-    if (!aroSuratPermohonan) {
-      alert('Harap upload surat permohonan!');
-      return;
-    }
-
-    const newAroId = `aro-${Date.now()}`;
-    
-    const newARO = {
-      id: newAroId,
-      nama: `Permohonan ARO ${new Date().toLocaleDateString('id-ID')}`,
-      keterangan: aroKeterangan,
-      suratPermohonan: aroSuratPermohonan,
-      status: 'pending',
-      tanggalDiajukan: new Date().toISOString(),
-      log: [{
-        timestamp: new Date().toISOString(),
-        action: 'ARO Diajukan',
-        description: 'Permohonan penambahan ARO baru',
-        status: 'pending'
-      }]
-    };
-
-    const storedSubs = JSON.parse(localStorage.getItem('hakAksesSubmissions') || '[]');
-    const updatedSubmissions = [...storedSubs];
-    
-    const apoloSubmissionIndex = updatedSubmissions.findIndex(sub => sub.app === 'apolo');
-    
-    if (apoloSubmissionIndex >= 0) {
-      if (!updatedSubmissions[apoloSubmissionIndex].aros) {
-        updatedSubmissions[apoloSubmissionIndex].aros = [];
-      }
-      
-      updatedSubmissions[apoloSubmissionIndex].aros.push(newARO);
-      
-      updatedSubmissions[apoloSubmissionIndex].log = updatedSubmissions[apoloSubmissionIndex].log || [];
-      updatedSubmissions[apoloSubmissionIndex].log.push({
-        timestamp: new Date().toISOString(),
-        action: 'ARO Baru Diajukan',
-        description: `Permohonan ARO baru: ${aroKeterangan.substring(0, 50)}...`,
-        status: 'pending'
-      });
-    }
-
-    localStorage.setItem('hakAksesSubmissions', JSON.stringify(updatedSubmissions));
-    setSubmissions(updatedSubmissions);
-    
-    if (apoloSubmissionIndex >= 0) {
-      setExistingApoloSubmission(updatedSubmissions[apoloSubmissionIndex]);
-    }
-    
-    setAroKeterangan('');
-    setAroSuratPermohonan(null);
-    setAroModalStep(1);
-    setShowAddAROModal(false);
-    
-    alert('✅ Permohonan ARO berhasil diajukan! Menunggu persetujuan admin.');
   };
 
   const handleBackToMain = () => {
@@ -667,11 +1088,11 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
           </button>
 
           <button
-            onClick={handleOpenAddAROModal}
-            disabled={!submittedApps.includes('apolo') || !existingApoloSubmission || existingApoloSubmission.status !== 'approved'}
+            onClick={onOpenAddARO}
+            disabled={!isApoloApproved}
             className={`
               w-full md:w-1/2 p-8 border-2 rounded-xl text-center transition-all duration-300
-              ${(!submittedApps.includes('apolo') || !existingApoloSubmission || existingApoloSubmission.status !== 'approved')
+              ${!isApoloApproved
                 ? 'border-gray-300 bg-gray-100 cursor-not-allowed' 
                 : 'border-dashed border-red-300 bg-red-50 hover:bg-red-100 hover:border-red-400'
               }
@@ -679,24 +1100,17 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
           >
             <div className="flex flex-col items-center justify-center">
               <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
-                (!submittedApps.includes('apolo') || !existingApoloSubmission || existingApoloSubmission.status !== 'approved')
-                  ? 'bg-gray-300' 
-                  : 'bg-gradient-to-r from-red-500 to-red-600'
+                !isApoloApproved ? 'bg-gray-300' : 'bg-gradient-to-r from-red-500 to-red-600'
               }`}>
                 <Layers className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">Tambah ARO</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Ajukan permohonan ARO baru untuk APOLO
+                Ajukan permohonan ARO lainya
               </p>
-              {!submittedApps.includes('apolo') && (
-                <p className="text-xs text-red-600 font-medium">
-                  Belum ada APOLO yang diajukan
-                </p>
-              )}
-              {submittedApps.includes('apolo') && existingApoloSubmission?.status !== 'approved' && (
+              {!isApoloApproved && (
                 <p className="text-xs text-yellow-600 font-medium">
-                  APOLO harus disetujui dulu
+                  Harus memiliki hak akses APOLO
                 </p>
               )}
             </div>
@@ -723,19 +1137,21 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
                     appInfo = { label: app.toUpperCase(), color: 'from-red-500 to-red-600' };
                 }
                 
-                const storedSubs = JSON.parse(localStorage.getItem('hakAksesSubmissions') || '[]');
-                const appSubmission = storedSubs.find(sub => sub.app === app);
-                const aroCount = app === 'apolo' ? (appSubmission?.aros?.length || 0) : 0;
+                const appSubmission = submissions.find(sub => sub.app === app && !sub.isARO);
+                const hasAro = appSubmission?.aroData && app === 'apolo';
                 
                 return (
                   <div key={index} className="border border-red-200 rounded-xl p-6 bg-white hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${appInfo.color} flex items-center justify-center`}>
-                        <Database className="w-6 h-6 text-white" />
+                      <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${hasAro ? 'from-red-600 to-purple-600' : appInfo.color} flex items-center justify-center`}>
+                        {hasAro ? <Package className="w-6 h-6 text-white" /> : <Database className="w-6 h-6 text-white" />}
                       </div>
                       <div>
                         <h4 className="font-bold text-gray-900">{appInfo.label}</h4>
                         <p className="text-sm text-gray-600">Submitted</p>
+                        {hasAro && (
+                          <p className="text-xs text-red-600 font-medium mt-1"></p>
+                        )}
                       </div>
                     </div>
                     
@@ -753,15 +1169,6 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
                         </span>
                       </div>
                       
-                      {app === 'apolo' && (
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Jumlah ARO:</span>
-                          <span className="font-medium text-gray-900">
-                            {aroCount} ARO
-                          </span>
-                        </div>
-                      )}
-                      
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">ID:</span>
                         <span className="font-mono text-gray-900 text-xs">
@@ -769,53 +1176,75 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
                         </span>
                       </div>
                     </div>
-                    
-                    {app === 'apolo' && appSubmission?.aros && appSubmission.aros.length > 0 && (
+
+                    {/* Tampilkan detail ARO untuk APOLO dengan ARO */}
+                    {/* {hasAro && appSubmission.aroData && (
+                      <div className="mt-4 pt-4 border-t border-purple-200 bg-purple-50 -mx-6 px-6 pb-2 rounded-b-xl">
+                        <p className="text-xs font-bold text-red-800 mb-2 flex items-center gap-1">
+                          <Package className="w-3 h-3" />
+                          Informasi Menyertai:
+                        </p>
+                        <div className="text-xs space-y-2">
+                          <div className="bg-white p-2 rounded border border-purple-200">
+                            <p className="text-gray-700 line-clamp-2">
+                              {appSubmission.aroData.keterangan}
+                            </p>
+                            {appSubmission.aroData.suratPermohonan && (
+                              <p className="text-ed-600 mt-1 flex items-center gap-1">
+                                <FileText className="w-3 h-3" />
+                                {appSubmission.aroData.suratPermohonan.name}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )} */}
+
+                    {/* Tampilkan daftar ARO yang sudah diajukan (sebagai submission terpisah) */}
+                    {app === 'apolo' && appSubmission?.status === 'approved' && !hasAro && (
                       <div className="mt-4 pt-4 border-t border-red-100">
                         <p className="text-xs font-bold text-gray-700 mb-3 flex items-center gap-1">
                           <Info className="w-3 h-3 text-red-500" />
-                          Daftar ARO:
+                          Daftar ARO yang Diajukan (Terpisah):
                         </p>
                         <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                          {appSubmission.aros.map((aro, idx) => (
-                            <div key={idx} className={`p-2 rounded border ${
-                              aro.status === 'approved' ? 'bg-green-50 border-green-200' :
-                              aro.status === 'pending' ? 'bg-yellow-50 border-yellow-200' :
-                              'bg-red-50 border-red-200'
-                            }`}>
-                              <div className="flex items-center justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2">
-                                    <p className="text-xs font-medium text-gray-800">
-                                      Permohonan ARO #{idx + 1}
+                          {submissions
+                            .filter(sub => sub.app === 'apolo' && sub.isARO)
+                            .map((aro, idx) => (
+                              <div key={idx} className={`p-2 rounded border ${
+                                aro.status === 'approved' ? 'bg-green-50 border-green-200' :
+                                aro.status === 'pending' ? 'bg-yellow-50 border-yellow-200' :
+                                'bg-red-50 border-red-200'
+                              }`}>
+                                <div className="flex items-center justify-between">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2">
+                                      <p className="text-xs font-medium text-gray-800">
+                                        ARO #{idx + 1}
+                                      </p>
+                                      <span className={`px-1.5 py-0.5 text-xs rounded-full ${
+                                        aro.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                        aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                        'bg-red-100 text-red-800'
+                                      }`}>
+                                        {aro.status === 'approved' ? '✓ Disetujui' : 
+                                         aro.status === 'pending' ? '⏳ Menunggu' : 
+                                         '✗ Ditolak'}
+                                      </span>
+                                    </div>
+                                    <p className="text-xs text-gray-600 mt-1">
+                                      ID: {aro.trackingId}
                                     </p>
-                                    <span className={`px-1.5 py-0.5 text-xs rounded-full ${
-                                      aro.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                      aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                      'bg-red-100 text-red-800'
-                                    }`}>
-                                      {aro.status === 'approved' ? '✓ Disetujui' : 
-                                       aro.status === 'pending' ? '⏳ Menunggu' : 
-                                       '✗ Ditolak'}
-                                    </span>
+                                    <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                                      "{aro.aroKeterangan?.substring(0, 50)}..."
+                                    </p>
                                   </div>
-                                  <p className="text-xs text-gray-600 mt-1">
-                                    "{aro.keterangan?.substring(0, 50)}..."
-                                  </p>
-                                  {aro.status === 'approved' && aro.modulDipilih && (
-                                    <p className="text-xs text-green-600 mt-1">
-                                      Modul: {aro.modulDipilih}
-                                    </p>
-                                  )}
-                                  {aro.status === 'rejected' && aro.rejectionNote && (
-                                    <p className="text-xs text-red-600 mt-1">
-                                      Alasan: {aro.rejectionNote}
-                                    </p>
-                                  )}
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
+                          {submissions.filter(sub => sub.app === 'apolo' && sub.isARO).length === 0 && (
+                            <p className="text-xs text-gray-500 italic">Belum ada ARO diajukan</p>
+                          )}
                         </div>
                       </div>
                     )}
@@ -825,222 +1254,6 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
             </div>
           </div>
         )}
-
-        
-{showAddAROModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col">
-      {/* Header - Fixed */}
-      <div className="p-6 border-b border-red-200 bg-gradient-to-r from-red-50 to-white flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-xl font-bold text-gray-900">Tambah ARO Baru</h3>
-            <p className="text-gray-600 mt-1">
-              {aroModalStep === 1 ? 'Isi keterangan permohonan' : 'Upload surat permohonan'}
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              setShowAddAROModal(false);
-              setAroModalStep(1);
-              setAroKeterangan('');
-              setAroSuratPermohonan(null);
-            }}
-            className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-red-50 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-      
-      {/* Content - Scrollable */}
-      <div className="p-6 overflow-y-auto flex-1">
-        {aroModalStep === 1 ? (
-          <div className="space-y-4">
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-sm text-yellow-700 flex items-start gap-2">
-                <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>
-                  <span className="font-medium">Informasi:</span> Jelaskan tujuan dan kebutuhan penambahan ARO ini.
-                </span>
-              </p>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Keterangan Permohonan ARO <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                value={aroKeterangan}
-                onChange={(e) => setAroKeterangan(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
-                rows="6"
-                placeholder="Contoh: Membutuhkan akses modul Strategi Anti Fraud untuk keperluan pelaporan..."
-                required
-              />
-              {!aroKeterangan && (
-                <p className="text-xs text-red-600 mt-2">Keterangan wajib diisi</p>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-sm text-yellow-700 flex items-start gap-2">
-                <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>
-                  <span className="font-medium">Perhatian:</span> Upload surat permohonan resmi dengan format PDF (maks. 5MB).
-                </span>
-              </p>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Surat Permohonan ARO <span className="text-red-500">*</span>
-              </label>
-              <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
-                aroSuratPermohonan ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50 hover:border-red-400 hover:bg-red-100'
-              }`}>
-                <input
-                  type="file"
-                  id="aroSurat"
-                  accept=".pdf"
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                      if (file.type === 'application/pdf') {
-                        if (file.size <= 5 * 1024 * 1024) { // 5MB limit
-                          setAroSuratPermohonan({
-                            name: file.name,
-                            size: file.size,
-                            type: file.type
-                          });
-                        } else {
-                          alert('Ukuran file maksimal 5MB');
-                        }
-                      } else {
-                        alert('Harap unggah file PDF');
-                      }
-                    }
-                  }}
-                  className="hidden"
-                />
-                <label htmlFor="aroSurat" className="cursor-pointer block">
-                  <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                    aroSuratPermohonan ? 'bg-green-100' : 'bg-red-100'
-                  }`}>
-                    {aroSuratPermohonan ? (
-                      <FileCheck className="w-10 h-10 text-green-600" />
-                    ) : (
-                      <UploadCloud className="w-10 h-10 text-red-600" />
-                    )}
-                  </div>
-                  
-                  {aroSuratPermohonan ? (
-                    <div className="space-y-2">
-                      <p className="text-gray-700 font-medium flex items-center justify-center gap-2">
-                        <FileText className="w-4 h-4" />
-                        {aroSuratPermohonan.name}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {(aroSuratPermohonan.size / 1024).toFixed(2)} KB
-                      </p>
-                      <p className="text-xs text-green-600 mt-2 flex items-center justify-center gap-1">
-                        <CheckCircle className="w-3 h-3" />
-                        File berhasil diunggah
-                      </p>
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-gray-700 font-medium mb-2">
-                        Klik untuk upload atau drag & drop
-                      </p>
-                      <p className="text-sm text-gray-500">Format: PDF (maks. 5MB)</p>
-                      <p className="text-xs text-red-500 mt-4">*Wajib diunggah</p>
-                    </>
-                  )}
-                </label>
-              </div>
-            </div>
-            
-            {aroKeterangan && (
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                <p className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-red-500" />
-                  Ringkasan Permohonan:
-                </p>
-                <p className="text-sm text-gray-600 bg-white p-3 rounded border border-gray-200">
-                  "{aroKeterangan}"
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-      
-      {/* Footer - Fixed */}
-      <div className="p-6 border-t border-red-200 bg-red-50 flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-600 font-medium">
-            {aroModalStep === 1 ? 'Langkah 1 dari 2' : 'Langkah 2 dari 2'}
-          </p>
-          <div className="flex gap-3">
-            {aroModalStep === 1 ? (
-              <>
-                <button
-                  onClick={() => {
-                    setShowAddAROModal(false);
-                    setAroModalStep(1);
-                    setAroKeterangan('');
-                    setAroSuratPermohonan(null);
-                  }}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Batal
-                </button>
-                <button
-                  onClick={handleARONextStep}
-                  disabled={!aroKeterangan}
-                  className={`
-                    px-6 py-2 font-medium rounded-lg transition-all duration-200
-                    ${!aroKeterangan
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-md hover:shadow-lg'
-                    }
-                  `}
-                >
-                  Lanjut
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={handleAROBack}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Kembali
-                </button>
-                <button
-                  onClick={handleSubmitARO}
-                  disabled={!aroSuratPermohonan}
-                  className={`
-                    px-6 py-2 font-medium rounded-lg transition-all duration-200
-                    ${!aroSuratPermohonan
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-md hover:shadow-lg'
-                    }
-                  `}
-                >
-                  Ajukan ARO
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
       </div>
     );
   }
@@ -1070,6 +1283,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions }) =
     );
   }
 
+  // Di dalam NewAccessSubmissionFlow, pada bagian step === 4
   if (step === 4 && activeAppForm) {
     const formProps = {
       dataUmum,
@@ -1232,8 +1446,6 @@ const PilihAplikasiStep = ({
         </div>
       </div>
 
-      
-
       <div className="mb-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {apps.map(app => {
@@ -1266,9 +1478,6 @@ const PilihAplikasiStep = ({
                 </div>
                 <h3 className="font-bold text-gray-900">{app.label}</h3>
                 <p className="text-sm text-gray-600 mt-1">{app.description}</p>
-                {app.id === 'ereporting' && !isSubmitted && !isSelected && (
-                  <p className="text-xs text-green-600 mt-2"></p>
-                )}
                 {isSubmitted && (
                   <p className="text-xs text-red-600 mt-2">Sudah diajukan</p>
                 )}
@@ -1380,14 +1589,14 @@ const PilihAplikasiStep = ({
   );
 };
 
-// FORM APOLO DENGAN ARO
-// FORM APOLO DENGAN ARO SEDERHANA (TANPA UPLOAD SURAT APOLO)
+// FORM APOLO DENGAN ARO (UNTUK PENGAJUAN PERTAMA)
 const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, aroData, setAroData }) => {
   const [formData, setFormData] = useState({
     nomorSurat: initialData.nomorSurat || '',
     tanggalSurat: initialData.tanggalSurat || '',
     perihal: initialData.perihal || '',
   });
+  const [step, setStep] = useState(1); // 1: Form APOLO, 2: Form ARO
 
   useEffect(() => {
     if (initialData && Object.keys(initialData).length > 0) {
@@ -1414,14 +1623,17 @@ const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, aroData, se
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
+  const handleNextStep = () => {
     // Validasi APOLO
     if (!formData.nomorSurat || !formData.tanggalSurat || !formData.perihal) {
       alert('Semua field APOLO wajib diisi!');
       return;
     }
+    setStep(2);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
     
     // Validasi ARO
     if (!aroData.keterangan) {
@@ -1441,156 +1653,202 @@ const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, aroData, se
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Form Pengajuan APOLO </h2>
-          {/* <p className="text-gray-600">Isi data APOLO dan ARO dalam satu alur</p> */}
+          <h2 className="text-2xl font-bold text-gray-900">Form Pengajuan APOLO</h2>
+          <p className="text-sm text-gray-600 mt-1">
+            {step === 1 ? 'Langkah 1: Isi data APOLO' : 'Langkah 2: Isi data ARO'}
+          </p>
         </div>
         <button onClick={onCancel} className="p-2 text-gray-400 hover:text-gray-600">
           <X className="w-5 h-5" />
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {/* BAGIAN 1: FORM APOLO */}
-        <div className="border border-red-200 rounded-xl p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-red-100 flex items-center gap-2">
-            <span className="bg-red-100 text-red-800 w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span>
-            Data Pengajuan APOLO
-          </h3>
-          
-          <div className="space-y-6">
-            {/* Nomor Surat */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nomor Surat <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={formData.nomorSurat}
-                onChange={(e) => setFormData({...formData, nomorSurat: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                placeholder="Masukkan nomor surat permohonan"
-                required
-              />
-            </div>
-            
-            {/* Tanggal Surat */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tanggal Surat <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="date"
-                value={formData.tanggalSurat}
-                onChange={(e) => setFormData({...formData, tanggalSurat: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                required
-              />
-            </div>
-            
-            {/* Perihal */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Perihal <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={formData.perihal}
-                onChange={(e) => setFormData({...formData, perihal: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                placeholder="Masukkan perihal surat"
-                required
-              />
-            </div>
+      <div className="mb-6">
+        <div className="flex items-center">
+          <div className={`flex items-center ${step >= 1 ? 'text-red-600' : 'text-gray-400'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
+              step >= 1 ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-500'
+            }`}>1</div>
+            <span className="ml-2 font-medium">Informasi APOLO</span>
+          </div>
+          <div className={`w-12 h-0.5 mx-2 ${step >= 2 ? 'bg-red-600' : 'bg-gray-300'}`}></div>
+          <div className={`flex items-center ${step >= 2 ? 'text-red-600' : 'text-gray-400'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
+              step >= 2 ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-500'
+            }`}>2</div>
+            <span className="ml-2 font-medium">Informasi ARO</span>
           </div>
         </div>
+      </div>
 
-        {/* BAGIAN 2: FORM ARO */}
-        <div className="border border-red-200 rounded-xl p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-red-100 flex items-center gap-2">
-            <span className="bg-red-100 text-red-800 w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
-            Data ARO 
-          </h3>
-          
-          <div className="space-y-6">
-       
-
-            {/* Keterangan ARO */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Keterangan ARO <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                value={aroData.keterangan}
-                onChange={(e) => setAroData(prev => ({...prev, keterangan: e.target.value}))}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                rows="3"
-                placeholder="Jelaskan tujuan dan kebutuhan ARO ini..."
-                required
-              />
-            </div>
-
-            {/* Upload Surat ARO */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Upload Surat Permohonan ARO <span className="text-red-500">*</span>
-              </label>
-              <div className={`border-2 border-dashed rounded-xl p-6 text-center ${
-                aroData.suratPermohonan ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'
-              }`}>
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {step === 1 ? (
+          // STEP 1: FORM APOLO
+          <div className="border border-red-200 rounded-xl p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-red-100">
+              Data Pengajuan APOLO
+            </h3>
+            
+            <div className="space-y-6">
+              {/* Nomor Surat */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nomor Surat <span className="text-red-500">*</span>
+                </label>
                 <input
-                  type="file"
-                  id="aroSurat"
-                  accept=".pdf"
-                  onChange={handleFileUpload}
-                  className="hidden"
+                  type="text"
+                  value={formData.nomorSurat}
+                  onChange={(e) => setFormData({...formData, nomorSurat: e.target.value})}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                  placeholder="Masukkan nomor surat permohonan"
                   required
                 />
-                <label htmlFor="aroSurat" className="cursor-pointer">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${
-                    aroData.suratPermohonan ? 'bg-green-100' : 'bg-red-100'
-                  }`}>
-                    {aroData.suratPermohonan ? (
-                      <FileCheck className="w-6 h-6 text-green-600" />
-                    ) : (
-                      <UploadCloud className="w-6 h-6 text-red-600" />
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-700 font-medium">
-                    {aroData.suratPermohonan
-                      ? aroData.suratPermohonan.name
-                      : 'Klik untuk upload surat ARO'
-                    }
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">Format: PDF</p>
+              </div>
+              
+              {/* Tanggal Surat */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tanggal Surat <span className="text-red-500">*</span>
                 </label>
+                <input
+                  type="date"
+                  value={formData.tanggalSurat}
+                  onChange={(e) => setFormData({...formData, tanggalSurat: e.target.value})}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                  required
+                />
+              </div>
+              
+              {/* Perihal */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Perihal <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.perihal}
+                  onChange={(e) => setFormData({...formData, perihal: e.target.value})}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                  placeholder="Masukkan perihal surat"
+                  required
+                />
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* TOMBOL SIMPAN */}
-        <div className="flex justify-between pt-6 border-t border-gray-200">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
-          >
-            Kembali
-          </button>
-          <button
-            type="submit"
-            className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 flex items-center gap-2"
-          >
-            <ArrowRight className="w-5 h-5" />
-            Simpan APOLO 
-          </button>
-        </div>
+            <div className="flex justify-between pt-6 border-t border-gray-200 mt-6">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleNextStep}
+                className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 flex items-center gap-2"
+              >
+                Lanjut ke Data ARO
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          // STEP 2: FORM ARO
+          <div className="border border-red-200 rounded-xl p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-red-100">
+              Informasi ARO 
+            </h3>
+            
+            <div className="space-y-6">
+              {/* Keterangan ARO */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Keterangan ARO <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={aroData.keterangan}
+                  onChange={(e) => setAroData(prev => ({...prev, keterangan: e.target.value}))}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                  rows="4"
+                  placeholder="Jelaskan tujuan dan kebutuhan ARO ini..."
+                  required
+                />
+              </div>
+
+              {/* Upload Surat ARO */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Upload Surat Permohonan ARO <span className="text-red-500">*</span>
+                </label>
+                <div className={`border-2 border-dashed rounded-xl p-6 text-center ${
+                  aroData.suratPermohonan ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'
+                }`}>
+                  <input
+                    type="file"
+                    id="aroSurat"
+                    accept=".pdf"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    required
+                  />
+                  <label htmlFor="aroSurat" className="cursor-pointer">
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 ${
+                      aroData.suratPermohonan ? 'bg-green-100' : 'bg-red-100'
+                    }`}>
+                      {aroData.suratPermohonan ? (
+                        <FileCheck className="w-8 h-8 text-green-600" />
+                      ) : (
+                        <UploadCloud className="w-8 h-8 text-red-600" />
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-700 font-medium">
+                      {aroData.suratPermohonan
+                        ? aroData.suratPermohonan.name
+                        : 'Klik untuk upload surat ARO'
+                      }
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">Format: PDF (maks. 5MB)</p>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Ringkasan Data APOLO */}
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <p className="text-sm font-medium text-gray-700 mb-2">Ringkasan Data APOLO:</p>
+              <div className="space-y-1 text-sm">
+                <p><span className="text-gray-500">Nomor Surat:</span> {formData.nomorSurat}</p>
+                <p><span className="text-gray-500">Tanggal Surat:</span> {formData.tanggalSurat}</p>
+                <p><span className="text-gray-500">Perihal:</span> {formData.perihal}</p>
+              </div>
+            </div>
+
+            <div className="flex justify-between pt-6 border-t border-gray-200 mt-6">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 flex items-center gap-2"
+              >
+                <ChevronLeft className="w-5 h-5" />
+                Kembali
+              </button>
+              <button
+                type="submit"
+                className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 flex items-center gap-2"
+              >
+                <CheckCircle className="w-5 h-5" />
+                Submit APOLO & ARO (ID Tracking baru)
+              </button>
+            </div>
+          </div>
+        )}
       </form>
     </div>
   );
 };
 
-// Form SIPINA 
+// Form SIPINA (TIDAK BERUBAH)
 const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
     kodeSIPO: initialData.kodeSIPO || '',
@@ -1742,6 +2000,7 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Form Pendaftaran SiPINA</h2>
             <p className="text-gray-600">Form aktivasi user SIPINA berdasarkan data dari SIPO</p>
+            <p className="text-sm text-gray-500 mt-1">ID Tracking baru akan dibuat setelah submit</p>
           </div>
           <button
             onClick={onCancel}
@@ -1875,7 +2134,7 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
                 readOnly
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 font-medium"
               />
-              <p className="text-xs text-gray-500 mt-1">Module CRS</p>
+              <p className="text-xs text-gray-500 mt-1">Modul CRS</p>
             </div>
             
             {/* GIN */}
@@ -2202,7 +2461,7 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
             disabled={!formData.npwpValidated || !formData.passwordTransferFile || !formData.suratPermohonan}
           >
             <Lock className="w-5 h-5" />
-            Register
+            Register (ID Tracking baru)
           </button>
         </div>
       </form>
@@ -2210,27 +2469,21 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   );
 };
 
-// FORM E-REPORTING - DENGAN AUTO-FILL UNTUK SIPO DAN NON-SIPO + KONFIRMASI DATA
+// FORM E-REPORTING - DENGAN AUTO-FILL UNTUK SIPO DAN NON-SIPO
 const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
-  const [step, setStep] = useState(1); // 1: Pilih Metode, 2: Data Perusahaan, 3: Konfirmasi Data (khusus non-sipo), 4: Validasi SIPO (khusus sipo), 5: Email, 6: Selesai
-  const [metodePendaftaran, setMetodePendaftaran] = useState(null); // 'sipo' atau 'non-sipo'
+  const [step, setStep] = useState(1); // 1: Pilih metode, 2: Input data, 3: Validasi jenis usaha, 4: Selesai
+  const [metodePendaftaran, setMetodePendaftaran] = useState(null);
   const [formData, setFormData] = useState({
-    // Step 1: Data Perusahaan
     npwp: initialData.npwp || '',
     namaPerusahaan: initialData.namaPerusahaan || '',
     alamat: initialData.alamat || '',
     jenisUsaha: initialData.jenisUsaha || '',
-    
-    // Step 2: Data User SIPO (hanya untuk metode sipo)
     userIdSIPO: initialData.userIdSIPO || '',
     passwordSIPO: initialData.passwordSIPO || '',
     sipoValidated: initialData.sipoValidated || false,
-    
-    // Data hasil validasi SIPO
     dataSIPO: initialData.dataSIPO || null,
-    
-    // Step 3: Email (User ID Aplikasi)
-    email: initialData.email || dataUmum?.email || ''
+    email: initialData.email || dataUmum?.email || '',
+    jenisUsahaValidated: initialData.jenisUsahaValidated || false
   });
 
   const [isValidatingSIPO, setIsValidatingSIPO] = useState(false);
@@ -2238,9 +2491,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [isDataFromNPWP, setIsDataFromNPWP] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
 
-  // Pre-fill data jika ada initialData dari resubmit
   useEffect(() => {
     if (initialData && Object.keys(initialData).length > 0) {
       setFormData(prev => ({
@@ -2253,13 +2504,10 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     }
   }, [initialData]);
 
-  // Auto-load data perusahaan berdasarkan NPWP untuk KEDUA METODE
+  // Auto-load data perusahaan berdasarkan NPWP (nama & alamat tidak bisa diedit, jenis usaha bisa diedit)
   useEffect(() => {
     if (formData.npwp && formData.npwp.length >= 5) {
-      // Generate data berdasarkan NPWP yang diinput
       const generateDataFromNPWP = (npwp) => {
-        // Buat data yang konsisten berdasarkan NPWP
-        // Ini akan menghasilkan data yang sama setiap kali NPWP yang sama diinput
         const hash = npwp.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
         
         const namaPerusahaanOptions = [
@@ -2267,49 +2515,21 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
           `PT. Asuransi ${npwp.substring(0, 4)} Sejahtera`,
           `PT. Sekuritas ${npwp.substring(0, 4)} Mandiri`,
           `PT. Fintech ${npwp.substring(0, 4)} Nusantara`,
-          `PT. Dana Pensiun ${npwp.substring(0, 4)}`,
-          `PT. Perusahaan Pembiayaan ${npwp.substring(0, 4)}`,
-          `PT. Bank Syariah ${npwp.substring(0, 4)}`,
-          `PT. Asuransi Jiwa ${npwp.substring(0, 4)}`,
-          `PT. Reasuransi ${npwp.substring(0, 4)} Indonesia`,
-          `PT. Perusahaan Efek ${npwp.substring(0, 4)}`
+          `PT. Dana Pensiun ${npwp.substring(0, 4)}`
         ];
         
         const alamatOptions = [
-          `Gedung ${npwp.substring(0, 4)} Tower, Jl. Jenderal Sudirman Kav. ${parseInt(npwp.substring(0, 3)) + 10}, Jakarta Pusat`,
-          `Plaza ${npwp.substring(0, 4)}, Jl. MH Thamrin No. ${parseInt(npwp.substring(0, 3)) + 20}, Jakarta Pusat`,
-          `Wisma ${npwp.substring(0, 4)}, Jl. Gatot Subroto Kav. ${parseInt(npwp.substring(0, 3)) + 30}, Jakarta Selatan`,
-          `Menara ${npwp.substring(0, 4)}, Jl. HR Rasuna Said Kav. ${parseInt(npwp.substring(0, 3)) + 40}, Jakarta Selatan`,
-          `Sentra ${npwp.substring(0, 4)}, Jl. MT Haryono No. ${parseInt(npwp.substring(0, 3)) + 50}, Jakarta Timur`,
-          `Gedung Perkantoran ${npwp.substring(0, 4)}, Jl. Ahmad Yani No. ${parseInt(npwp.substring(0, 3)) + 60}, Jakarta Pusat`,
-          `Kompleks Perkantoran ${npwp.substring(0, 4)}, Jl. Sisingamangaraja No. ${parseInt(npwp.substring(0, 3)) + 70}, Jakarta Selatan`,
-          `Graha ${npwp.substring(0, 4)}, Jl. Kebon Sirih No. ${parseInt(npwp.substring(0, 3)) + 80}, Jakarta Pusat`,
-          `The ${npwp.substring(0, 4)} Office Tower, Jl. Jend. Sudirman Kav. ${parseInt(npwp.substring(0, 3)) + 90}, Jakarta Selatan`,
-          `${npwp.substring(0, 4)} Financial Center, Jl. Thamrin No. ${parseInt(npwp.substring(0, 3)) + 100}, Jakarta Pusat`
+          `Gedung ${npwp.substring(0, 4)} Tower, Jl. Sudirman No. ${hash % 100}, Jakarta Pusat`,
+          `Plaza ${npwp.substring(0, 4)}, Jl. Thamrin Kav. ${hash % 50}, Jakarta Pusat`,
+          `Wisma ${npwp.substring(0, 4)}, Jl. Gatot Subroto No. ${hash % 200}, Jakarta Selatan`
         ];
         
-        const jenisUsahaOptions = [
-          'Perbankan',
-          'Perusahaan Asuransi Umum',
-          'Perusahaan Asuransi Jiwa',
-          'Perusahaan Reasuransi',
-          'Fintech',
-          'Dana Pensiun',
-          'Perusahaan Pembiayaan',
-          'Perusahaan Efek',
-          'Manajer Investasi',
-          'Lembaga Penunjang'
-        ];
-        
-        // Gunakan hash untuk memilih opsi secara konsisten
         const namaIndex = hash % namaPerusahaanOptions.length;
         const alamatIndex = (hash + 1) % alamatOptions.length;
-        const jenisIndex = (hash + 2) % jenisUsahaOptions.length;
         
         return {
           namaPerusahaan: namaPerusahaanOptions[namaIndex],
-          alamat: alamatOptions[alamatIndex],
-          jenisUsaha: jenisUsahaOptions[jenisIndex]
+          alamat: alamatOptions[alamatIndex]
         };
       };
       
@@ -2318,84 +2538,44 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
       setFormData(prev => ({
         ...prev,
         namaPerusahaan: generatedData.namaPerusahaan,
-        alamat: generatedData.alamat,
-        jenisUsaha: generatedData.jenisUsaha
+        alamat: generatedData.alamat
+        // jenisUsaha TIDAK diisi otomatis - bisa diedit oleh user
       }));
       
       setIsDataFromNPWP(true);
     } else {
       setIsDataFromNPWP(false);
     }
-  }, [formData.npwp]); // Hanya depend pada npwp
+  }, [formData.npwp]);
 
-  // Validasi email format
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  // Handle pilih metode pendaftaran
   const handlePilihMetode = (metode) => {
     setMetodePendaftaran(metode);
-    
-    // Reset data jika berganti metode
-    if (metode === 'non-sipo') {
-      setFormData(prev => ({
-        ...prev,
-        sipoValidated: false,
-        dataSIPO: null
-      }));
-    } else if (metode === 'sipo') {
-      setFormData(prev => ({
-        ...prev,
-        sipoValidated: false,
-        dataSIPO: null
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      sipoValidated: false,
+      dataSIPO: null
+    }));
   };
 
-  // Handle submit Step 1 (Data Perusahaan)
   const handleStep1Submit = () => {
-    // Validasi data perusahaan
-    if (!formData.npwp) {
-      alert('Harap masukkan NPWP Perusahaan!');
-      return;
-    }
-    
-    if (!formData.namaPerusahaan) {
-      alert('Harap masukkan Nama Perusahaan!');
-      return;
-    }
-    
-    if (!formData.alamat) {
-      alert('Harap masukkan Alamat Perusahaan!');
-      return;
-    }
-    
-    if (!formData.jenisUsaha) {
-      alert('Harap pilih Jenis Usaha!');
+    if (!formData.npwp || !formData.namaPerusahaan || !formData.alamat || !formData.jenisUsaha) {
+      alert('Semua field wajib diisi!');
       return;
     }
     
     if (metodePendaftaran === 'sipo') {
-      setStep(4); // Langsung ke validasi SIPO (skip konfirmasi untuk sipo)
+      setStep(2); // Langsung ke validasi SIPO
     } else {
-      // Untuk Non-SIPO, tampilkan halaman konfirmasi data
-      setStep(2); // Halaman konfirmasi data
+      // Non-SIPO: langsung ke input email
+      setStep(3);
     }
   };
 
-  // Handle konfirmasi data (untuk non-sipo)
-  const handleConfirmData = () => {
-    setStep(3); // Lanjut ke input email
-  };
-
-  // Handle edit data (kembali ke form data perusahaan)
-  const handleEditData = () => {
-    setStep(1);
-  };
-
-  // Handle validasi SIPO (untuk metode sipo)
   const handleValidateSIPO = () => {
     if (!formData.userIdSIPO || !formData.passwordSIPO) {
       setSipoValidationMessage('User ID dan Password SIPO harus diisi!');
@@ -2405,11 +2585,8 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     setIsValidatingSIPO(true);
     setSipoValidationMessage('');
     
-    // Simulasi validasi SIPO
     setTimeout(() => {
-      // Simulasi validasi berhasil
       if (formData.userIdSIPO && formData.passwordSIPO) {
-        // Data hasil validasi SIPO
         const dataSIPO = {
           namaPerusahaan: formData.namaPerusahaan,
           npwp: formData.npwp,
@@ -2431,18 +2608,15 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     }, 1500);
   };
 
-  // Handle submit Step 4 (Validasi SIPO)
-  const handleStep4Submit = () => {
+  const handleStep2Submit = () => {
     if (!formData.sipoValidated) {
       alert('Harap validasi User ID dan Password SIPO terlebih dahulu!');
       return;
     }
-    
-    setStep(5); // Lanjut ke input email
+    setStep(3); // Lanjut ke input email
   };
 
-  // Handle submit Step 5 (Email)
-  const handleStep5Submit = () => {
+  const handleStep3Submit = () => {
     if (!formData.email) {
       setEmailValidationMessage('Email harus diisi!');
       return;
@@ -2454,12 +2628,19 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     }
     
     setEmailValidationMessage('');
-    setStep(6); // Lanjut ke selesai
+    setStep(4); // Lanjut ke validasi jenis usaha
   };
 
-  // Handle final registration
+  // STEP 4: Validasi Jenis Usaha (tidak bisa diedit lagi)
+  const handleValidateJenisUsaha = () => {
+    setFormData(prev => ({
+      ...prev,
+      jenisUsahaValidated: true
+    }));
+    setStep(5); // Lanjut ke halaman sukses
+  };
+
   const handleFinalRegistration = () => {
-    // Simpan data dan tampilkan konfirmasi
     const completeData = {
       ...formData,
       metode: metodePendaftaran,
@@ -2471,33 +2652,29 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     onSave(completeData);
     setRegistrationSuccess(true);
     
-    // Auto-reset setelah 3 detik
+    // Tampilkan pesan sukses selama 5 detik sebelum kembali
     setTimeout(() => {
       onCancel();
-    }, 3000);
+    }, 5000);
   };
 
-  // Render berdasarkan step
   const renderStep = () => {
     switch(step) {
       case 1:
-        return renderStep1(); // Pilih Metode & Input Data Perusahaan
+        return renderStep1();
       case 2:
-        return renderStep2(); // Konfirmasi Data (khusus non-sipo)
+        return renderStep2();
       case 3:
-        return renderStep3(); // Input Email (untuk non-sipo setelah konfirmasi)
+        return renderStep3();
       case 4:
-        return renderStep4(); // Validasi SIPO (khusus sipo)
+        return renderStep4();
       case 5:
-        return renderStep5(); // Input Email (untuk sipo setelah validasi)
-      case 6:
-        return renderStep6(); // Selesai & Aktivasi
+        return renderStep5();
       default:
         return renderStep1();
     }
   };
 
-  // Step 1: Pilih Metode Pendaftaran & Input Data Perusahaan
   const renderStep1 = () => (
     <div>
       <div className="flex items-center gap-2 mb-6">
@@ -2514,7 +2691,6 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
       </div>
       
       <div className="space-y-6">
-        {/* Pilihan Metode */}
         {!metodePendaftaran ? (
           <div className="space-y-4 mb-6">
             <h4 className="font-medium text-gray-900">Pilih Metode Pendaftaran:</h4>
@@ -2528,7 +2704,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
                 </div>
                 <h4 className="font-bold text-gray-900 mb-2">Menggunakan SIPO</h4>
                 <p className="text-sm text-gray-600">
-                  Input NPWP (data akan otomatis terisi), lalu lakukan validasi dengan User ID dan Password SIPO.
+                  Input NPWP, lalu lakukan validasi dengan User ID dan Password SIPO.
                 </p>
               </button>
               
@@ -2541,7 +2717,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
                 </div>
                 <h4 className="font-bold text-gray-900 mb-2">Non-SIPO</h4>
                 <p className="text-sm text-gray-600">
-                  Input NPWP (data akan otomatis terisi), konfirmasi data, lalu lanjut ke input email.
+                  Input NPWP, konfirmasi data, lalu lanjut ke input email.
                 </p>
               </button>
             </div>
@@ -2550,17 +2726,14 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
           <div className="mb-4 p-3 bg-red-50 border border-red-300 rounded-lg shadow">
             <p className="text-sm text-red-700">
               Metode pendaftaran: <span className="font-bold">{metodePendaftaran === 'sipo' ? 'Menggunakan SIPO' : 'Non-SIPO'}</span>
-              <span className="block text-xs mt-1">Data perusahaan akan otomatis terisi saat NPWP dimasukkan</span>
             </p>
           </div>
         )}
         
-        {/* Form Data Perusahaan (selalu ditampilkan setelah pilih metode) */}
         {metodePendaftaran && (
           <div className="space-y-4 border border-red-300 rounded-xl p-6 bg-white shadow">
             <h4 className="font-bold text-gray-900 mb-2">Data Perusahaan</h4>
             
-            {/* NPWP */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 NPWP Perusahaan <span className="text-red-600">*</span>
@@ -2569,13 +2742,12 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
                 type="text"
                 value={formData.npwp}
                 onChange={(e) => setFormData({...formData, npwp: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder="Masukkan NPWP (contoh: 11223344)"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                placeholder="Masukkan NPWP"
                 required
               />
             </div>
             
-            {/* Nama Perusahaan - BISA DIEDIT (tidak read-only) */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Nama Perusahaan <span className="text-red-600">*</span>
@@ -2583,35 +2755,29 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
               <input
                 type="text"
                 value={formData.namaPerusahaan}
-                onChange={(e) => setFormData({...formData, namaPerusahaan: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder="Masukkan Nama Perusahaan"
-                required
+                readOnly
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-100 text-gray-700"
               />
               {isDataFromNPWP && (
                 <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
                   <CheckCircle className="w-3 h-3" />
-                  Data otomatis dari NPWP (dapat diedit jika perlu)
+                  Data otomatis dari NPWP (tidak dapat diedit)
                 </p>
               )}
             </div>
             
-            {/* Alamat - BISA DIEDIT (tidak read-only) */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Alamat <span className="text-red-600">*</span>
               </label>
               <textarea
                 value={formData.alamat}
-                onChange={(e) => setFormData({...formData, alamat: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                readOnly
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-100 text-gray-700"
                 rows="3"
-                placeholder="Masukkan Alamat Perusahaan"
-                required
               />
             </div>
             
-            {/* Jenis Usaha - SELECT (tetap bisa dipilih) */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Jenis Usaha <span className="text-red-600">*</span>
@@ -2619,7 +2785,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
               <select
                 value={formData.jenisUsaha}
                 onChange={(e) => setFormData({...formData, jenisUsaha: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
                 required
               >
                 <option value="">Pilih Jenis Usaha</option>
@@ -2629,18 +2795,17 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
                 <option value="Perbankan">Perbankan</option>
                 <option value="Fintech">Fintech</option>
                 <option value="Dana Pensiun">Dana Pensiun</option>
-                <option value="Lainnya">Lainnya</option>
               </select>
+            
             </div>
             
-            {/* Tombol Berikut */}
             <div className="pt-6 border-t border-gray-200">
               <button
                 type="button"
                 onClick={handleStep1Submit}
                 className="w-full py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md"
               >
-                {metodePendaftaran === 'sipo' ? 'Lanjut ke Validasi SIPO' : 'Lanjut ke Konfirmasi Data'}
+                {metodePendaftaran === 'sipo' ? 'Lanjut ke Validasi SIPO' : 'Lanjut ke Input Email'}
               </button>
             </div>
           </div>
@@ -2649,180 +2814,7 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     </div>
   );
 
-  // Step 2: Konfirmasi Data (khusus non-sipo)
   const renderStep2 = () => (
-    <div>
-      <div className="flex items-center gap-2 mb-6">
-        <button
-          onClick={() => setStep(1)}
-          className="p-2 text-gray-400 hover:text-gray-600"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
-          Konfirmasi Data Perusahaan
-        </h3>
-      </div>
-      
-      <div className="space-y-6">
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-          <div className="flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-green-600" />
-            <p className="text-sm font-medium text-green-700">Data perusahaan berhasil diisi. Silakan periksa kembali sebelum melanjutkan.</p>
-          </div>
-        </div>
-        
-        {/* Ringkasan Data Perusahaan */}
-        <div className="border border-red-300 rounded-xl p-6 bg-white shadow">
-          <h4 className="font-bold text-gray-900 mb-4 pb-2 border-b border-red-100">Ringkasan Data Perusahaan</h4>
-          
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-500 mb-1">NPWP Perusahaan</p>
-                <p className="font-medium text-gray-900 bg-gray-50 p-2 rounded">{formData.npwp}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500 mb-1">Nama Perusahaan</p>
-                <p className="font-medium text-gray-900 bg-gray-50 p-2 rounded">{formData.namaPerusahaan}</p>
-              </div>
-            </div>
-            
-            <div>
-              <p className="text-sm text-gray-500 mb-1">Alamat</p>
-              <p className="font-medium text-gray-900 bg-gray-50 p-2 rounded">{formData.alamat}</p>
-            </div>
-            
-            <div>
-              <p className="text-sm text-gray-500 mb-1">Jenis Usaha</p>
-              <p className="font-medium text-gray-900 bg-gray-50 p-2 rounded">{formData.jenisUsaha}</p>
-            </div>
-          </div>
-          
-          {isDataFromNPWP && (
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-xs text-blue-700 flex items-center gap-1">
-                <Info className="w-3 h-3" />
-                Data ini dihasilkan secara otomatis berdasarkan NPWP yang Anda masukkan.
-              </p>
-            </div>
-          )}
-        </div>
-        
-        {/* Tombol Aksi */}
-        <div className="flex gap-3 pt-4">
-          <button
-            onClick={handleEditData}
-            className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2"
-          >
-            <Edit className="w-4 h-4" />
-            Edit Data
-          </button>
-          <button
-            onClick={handleConfirmData}
-            className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md flex items-center justify-center gap-2"
-          >
-            <CheckCircle className="w-4 h-4" />
-            Konfirmasi & Lanjut
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Step 3: Input Email (untuk non-sipo setelah konfirmasi)
-  const renderStep3 = () => (
-    <div>
-      <div className="flex items-center gap-2 mb-6">
-        <button
-          onClick={() => setStep(2)}
-          className="p-2 text-gray-400 hover:text-gray-600"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">3</span>
-          Input Email (User ID Aplikasi)
-        </h3>
-      </div>
-      
-      <div className="space-y-6 border border-red-300 rounded-xl p-6 bg-white shadow">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-sm text-gray-700">
-            Email ini akan digunakan sebagai identitas login utama aplikasi dan tujuan pengiriman link aktivasi.
-          </p>
-        </div>
-        
-        <div className="space-y-4">
-          {/* Email Input */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Alamat Email <span className="text-red-600">*</span>
-            </label>
-            <div className="relative">
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => {
-                  setFormData({...formData, email: e.target.value});
-                  setEmailValidationMessage('');
-                }}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent pr-12"
-                placeholder="contoh@perusahaan.co.id"
-                required
-              />
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <Mail className="w-5 h-5 text-red-500" />
-              </div>
-            </div>
-            {formData.email && validateEmail(formData.email) && (
-              <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
-                <CheckCircle className="w-3 h-3" />
-                Format email valid
-              </p>
-            )}
-          </div>
-          
-          {/* Informasi Email */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-sm text-blue-700">
-              <span className="font-medium">Informasi:</span> Pastikan email yang dimasukkan aktif dan dapat diakses. Link aktivasi akan dikirimkan ke email ini.
-            </p>
-          </div>
-          
-          {/* Pesan Validasi */}
-          {emailValidationMessage && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-700 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4" />
-                {emailValidationMessage}
-              </p>
-            </div>
-          )}
-          
-          {/* Tombol Berikut */}
-          <div className="pt-6 border-t border-gray-200">
-            <button
-              type="button"
-              onClick={handleStep5Submit}
-              disabled={!formData.email || !validateEmail(formData.email)}
-              className={`w-full py-3 font-bold rounded-lg ${
-                formData.email && validateEmail(formData.email)
-                  ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              Selesai
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Step 4: Validasi User SIPO (Hanya untuk metode sipo)
-  const renderStep4 = () => (
     <div>
       <div className="flex items-center gap-2 mb-6">
         <button
@@ -2837,176 +2829,138 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
         </h3>
       </div>
       
-      <div className="space-y-6">
-        {/* Data Perusahaan yang akan divalidasi */}
-        <div className="bg-red-50 border border-red-300 rounded-lg p-4 shadow">
-          <h4 className="font-bold text-gray-900 mb-3">Data Perusahaan yang Akan Divalidasi:</h4>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Nama Perusahaan:</span>
-              <span className="font-medium text-gray-900">{formData.namaPerusahaan}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">NPWP:</span>
-              <span className="font-medium text-gray-900">{formData.npwp}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Alamat:</span>
-              <span className="font-medium text-gray-900 truncate max-w-xs">{formData.alamat}</span>
+      <div className="space-y-6 border border-red-300 rounded-xl p-6 bg-white shadow">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-sm text-gray-700">
+            Masukkan User ID dan Password SIPO yang valid untuk memverifikasi data perusahaan.
+          </p>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            User ID SIPO <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            value={formData.userIdSIPO}
+            onChange={(e) => {
+              setFormData({...formData, userIdSIPO: e.target.value, sipoValidated: false});
+              setSipoValidationMessage('');
+            }}
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+            required
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Password SIPO <span className="text-red-600">*</span>
+          </label>
+          <div className="relative">
+            <input
+              type="password"
+              value={formData.passwordSIPO}
+              onChange={(e) => {
+                setFormData({...formData, passwordSIPO: e.target.value, sipoValidated: false});
+                setSipoValidationMessage('');
+              }}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 pr-12"
+              required
+            />
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <Lock className="w-5 h-5 text-red-500" />
             </div>
           </div>
         </div>
         
-        <div className="border border-red-300 rounded-xl p-6 bg-white shadow">
-          <p className="text-sm text-gray-700 mb-4">
-            Masukkan User ID dan Password SIPO yang valid untuk memverifikasi data perusahaan.
-          </p>
-          
-          <div className="space-y-4">
-            {/* User ID SIPO */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                User ID SIPO <span className="text-red-600">*</span>
-              </label>
-              <input
-                type="text"
-                value={formData.userIdSIPO}
-                onChange={(e) => {
-                  setFormData({...formData, userIdSIPO: e.target.value, sipoValidated: false, dataSIPO: null});
-                  setSipoValidationMessage('');
-                }}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder="Masukkan User ID SIPO"
-                required
-              />
+        <button
+          type="button"
+          onClick={handleValidateSIPO}
+          disabled={isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO}
+          className={`w-full py-3 font-bold rounded-lg ${
+            formData.sipoValidated
+              ? 'bg-green-100 text-green-800 border border-green-300'
+              : 'bg-red-600 text-white hover:bg-red-700'
+          } ${isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+          {isValidatingSIPO ? (
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Memvalidasi...
             </div>
-            
-            {/* Password SIPO */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password SIPO <span className="text-red-600">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="password"
-                  value={formData.passwordSIPO}
-                  onChange={(e) => {
-                    setFormData({...formData, passwordSIPO: e.target.value, sipoValidated: false, dataSIPO: null});
-                    setSipoValidationMessage('');
-                  }}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent pr-12"
-                  placeholder="Masukkan Password SIPO"
-                  required
-                />
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <Lock className="w-5 h-5 text-red-500" />
-                </div>
-              </div>
+          ) : formData.sipoValidated ? (
+            <div className="flex items-center justify-center gap-2">
+              <CheckCircle className="w-5 h-5" />
+              Tervalidasi
             </div>
-            
-            {/* Tombol Validasi */}
-            <div className="pt-4">
-              <button
-                type="button"
-                onClick={handleValidateSIPO}
-                disabled={isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO}
-                className={`w-full py-3 font-bold rounded-lg flex items-center justify-center gap-2 ${
-                  formData.sipoValidated
-                    ? 'bg-green-100 text-green-800 border border-green-300'
-                    : 'bg-red-600 text-white hover:bg-red-700'
-                } ${(isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO) ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {isValidatingSIPO ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Memvalidasi...
-                  </>
-                ) : formData.sipoValidated ? (
-                  <>
-                    <CheckCircle className="w-5 h-5" />
-                    Tervalidasi
-                  </>
-                ) : (
-                  'Validasi SIPO'
-                )}
-              </button>
-            </div>
-            
-            {/* Pesan Validasi */}
-            {sipoValidationMessage && (
-              <div className={`p-3 rounded-lg ${formData.sipoValidated ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-                <p className={`text-sm ${formData.sipoValidated ? 'text-green-700' : 'text-red-700'} flex items-center gap-2`}>
-                  {formData.sipoValidated ? (
-                    <CheckCircle className="w-4 h-4" />
-                  ) : (
-                    <AlertCircle className="w-4 h-4" />
-                  )}
-                  {sipoValidationMessage}
-                </p>
+          ) : (
+            'Validasi SIPO'
+          )}
+        </button>
+        
+        {sipoValidationMessage && (
+          <div className={`p-3 rounded-lg ${formData.sipoValidated ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+            <p className={`text-sm ${formData.sipoValidated ? 'text-green-700' : 'text-red-700'} flex items-center gap-2`}>
+              {formData.sipoValidated ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+              {sipoValidationMessage}
+            </p>
+          </div>
+        )}
+        
+        {formData.sipoValidated && formData.dataSIPO && (
+          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <h5 className="font-bold text-green-800 mb-3 flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              Hasil Validasi SIPO:
+            </h5>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Nama Perusahaan:</span>
+                <span className="font-medium text-gray-900">{formData.dataSIPO.namaPerusahaan}</span>
               </div>
-            )}
-            
-            {/* Hasil Validasi SIPO */}
-            {formData.sipoValidated && formData.dataSIPO && (
-              <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <h5 className="font-bold text-green-800 mb-3 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4" />
-                  Hasil Validasi SIPO:
-                </h5>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Nama Perusahaan:</span>
-                    <span className="font-medium text-gray-900">{formData.dataSIPO.namaPerusahaan}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">NPWP:</span>
-                    <span className="font-medium text-gray-900">{formData.dataSIPO.npwp}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Alamat:</span>
-                    <span className="font-medium text-gray-900">{formData.dataSIPO.alamat}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">User ID SIPO:</span>
-                    <span className="font-medium text-gray-900">{formData.dataSIPO.userIdSIPO}</span>
-                  </div>
-                </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">NPWP:</span>
+                <span className="font-medium text-gray-900">{formData.dataSIPO.npwp}</span>
               </div>
-            )}
-            
-            {/* Tombol Berikut */}
-            <div className="pt-6 border-t border-gray-200">
-              <button
-                type="button"
-                onClick={handleStep4Submit}
-                disabled={!formData.sipoValidated}
-                className={`w-full py-3 font-bold rounded-lg ${
-                  formData.sipoValidated
-                    ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                Lanjut ke Input Email
-              </button>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Alamat:</span>
+                <span className="font-medium text-gray-900">{formData.dataSIPO.alamat}</span>
+              </div>
             </div>
           </div>
+        )}
+        
+        <div className="pt-6 border-t border-gray-200">
+          <button
+            type="button"
+            onClick={handleStep2Submit}
+            disabled={!formData.sipoValidated}
+            className={`w-full py-3 font-bold rounded-lg ${
+              formData.sipoValidated
+                ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            Lanjut ke Input Email
+          </button>
         </div>
       </div>
     </div>
   );
 
-  // Step 5: Input Email (untuk sipo setelah validasi)
-  const renderStep5 = () => (
+  const renderStep3 = () => (
     <div>
       <div className="flex items-center gap-2 mb-6">
         <button
-          onClick={() => setStep(4)}
+          onClick={() => setStep(metodePendaftaran === 'sipo' ? 2 : 1)}
           className="p-2 text-gray-400 hover:text-gray-600"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
         <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">3</span>
+          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
+            {metodePendaftaran === 'sipo' ? '3' : '2'}
+          </span>
           Input Email (User ID Aplikasi)
         </h3>
       </div>
@@ -3014,269 +2968,204 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
       <div className="space-y-6 border border-red-300 rounded-xl p-6 bg-white shadow">
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <p className="text-sm text-gray-700">
-            Email ini akan digunakan sebagai identitas login utama aplikasi dan tujuan pengiriman link aktivasi.
+            Email ini akan digunakan sebagai identitas login utama aplikasi.
           </p>
         </div>
         
-        <div className="space-y-4">
-          {/* Email Input */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Alamat Email <span className="text-red-600">*</span>
-            </label>
-            <div className="relative">
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => {
-                  setFormData({...formData, email: e.target.value});
-                  setEmailValidationMessage('');
-                }}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent pr-12"
-                placeholder="contoh@perusahaan.co.id"
-                required
-              />
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <Mail className="w-5 h-5 text-red-500" />
-              </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Alamat Email <span className="text-red-600">*</span>
+          </label>
+          <div className="relative">
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => {
+                setFormData({...formData, email: e.target.value});
+                setEmailValidationMessage('');
+              }}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 pr-12"
+              placeholder="contoh@perusahaan.co.id"
+              required
+            />
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <Mail className="w-5 h-5 text-red-500" />
             </div>
-            {formData.email && validateEmail(formData.email) && (
-              <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
-                <CheckCircle className="w-3 h-3" />
-                Format email valid
-              </p>
-            )}
           </div>
-          
-          {/* Informasi Email */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-sm text-blue-700">
-              <span className="font-medium">Informasi:</span> Pastikan email yang dimasukkan aktif dan dapat diakses. Link aktivasi akan dikirimkan ke email ini.
+          {formData.email && validateEmail(formData.email) && (
+            <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+              <CheckCircle className="w-3 h-3" />
+              Format email valid
+            </p>
+          )}
+        </div>
+        
+        {emailValidationMessage && (
+          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-700 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              {emailValidationMessage}
             </p>
           </div>
-          
-          {/* Pesan Validasi */}
-          {emailValidationMessage && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-700 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4" />
-                {emailValidationMessage}
-              </p>
-            </div>
-          )}
-          
-          {/* Tombol Berikut */}
-          <div className="pt-6 border-t border-gray-200">
-            <button
-              type="button"
-              onClick={handleStep5Submit}
-              disabled={!formData.email || !validateEmail(formData.email)}
-              className={`w-full py-3 font-bold rounded-lg ${
-                formData.email && validateEmail(formData.email)
-                  ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              Selesai
-            </button>
-          </div>
+        )}
+        
+        <div className="pt-6 border-t border-gray-200">
+          <button
+            type="button"
+            onClick={handleStep3Submit}
+            disabled={!formData.email || !validateEmail(formData.email)}
+            className={`w-full py-3 font-bold rounded-lg ${
+              formData.email && validateEmail(formData.email)
+                ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            Lanjut ke Validasi Jenis Usaha
+          </button>
         </div>
       </div>
     </div>
   );
 
-  // Step 6: Selesai & Aktivasi
-  const renderStep6 = () => (
-    <div className="text-center">
+  const renderStep4 = () => (
+    <div>
       <div className="flex items-center gap-2 mb-6">
         <button
-          onClick={() => metodePendaftaran === 'sipo' ? setStep(5) : setStep(3)}
+          onClick={() => setStep(3)}
           className="p-2 text-gray-400 hover:text-gray-600"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
         <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">4</span>
-          Selesai & Aktivasi
+          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
+            {metodePendaftaran === 'sipo' ? '4' : '3'}
+          </span>
+          Validasi Jenis Usaha
         </h3>
       </div>
       
-      <div className="space-y-8 border border-red-300 rounded-xl p-8 bg-white shadow">
-        {/* Ikon Sukses */}
-        <div className="flex justify-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
-            <CheckCircle className="w-12 h-12 text-green-600" />
+      <div className="space-y-6 border border-red-300 rounded-xl p-6 bg-white shadow">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-start gap-2">
+            <Info className="w-5 h-5 text-yellow-600 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-yellow-800">
+                Tahap Validasi Jenis Usaha
+              </p>
+              <p className="text-xs text-yellow-700 mt-1">
+                Pada tahap ini, jenis usaha tidak dapat diubah lagi. Pastikan data sudah benar sebelum melanjutkan.
+              </p>
+            </div>
           </div>
         </div>
         
-        {/* Pesan Sukses */}
-        <div className="space-y-4">
-          <h4 className="text-2xl font-bold text-gray-900">Pendaftaran Berhasil!</h4>
-          <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-            <p className="text-lg text-green-700 font-medium">
-              Email aktivasi telah dikirim ke:
-            </p>
-            <p className="text-xl font-bold text-gray-900 mt-2">{formData.email}</p>
+        <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
+          <h4 className="font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Data Perusahaan (Final)</h4>
+          
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs text-gray-500 mb-1">NPWP Perusahaan</p>
+                <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.npwp}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Email (User ID)</p>
+                <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.email}</p>
+              </div>
+            </div>
+            
+            <div>
+              <p className="text-xs text-gray-500 mb-1">Nama Perusahaan</p>
+              <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.namaPerusahaan}</p>
+            </div>
+            
+            <div>
+              <p className="text-xs text-gray-500 mb-1">Alamat</p>
+              <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.alamat}</p>
+            </div>
+            
+            <div>
+              <p className="text-xs text-gray-500 mb-1">Jenis Usaha</p>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="font-bold text-red-800 text-center">{formData.jenisUsaha}</p>
+                <p className="text-xs text-red-600 mt-1 text-center">(Tidak dapat diubah pada tahap ini)</p>
+              </div>
+            </div>
           </div>
-          <p className="text-gray-600">
-            Silakan periksa kotak masuk email Anda untuk melakukan aktivasi akun.
-          </p>
         </div>
         
-        {/* Instruksi Aktivasi */}
-        <div className="bg-red-50 border border-red-300 rounded-lg p-6 text-left">
-          <h5 className="font-bold text-gray-900 mb-3">Instruksi Aktivasi:</h5>
-          <ol className="list-decimal pl-5 space-y-2 text-sm text-gray-700">
-            <li>Buka email yang telah dikirim ke <strong>{formData.email}</strong></li>
-            <li>Cari email dengan subjek: "Aktivasi Akun E-Reporting OJK"</li>
-            <li>Klik link aktivasi yang terdapat dalam email</li>
-            <li>Ikuti petunjuk untuk menyelesaikan aktivasi akun</li>
-            <li>Setelah aktivasi, Anda dapat login menggunakan email ini</li>
-          </ol>
-        </div>
-        
-        {/* Tombol Selesai */}
         <div className="pt-6 border-t border-gray-200">
           <button
             type="button"
-            onClick={handleFinalRegistration}
-            className="w-full py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md"
+            onClick={handleValidateJenisUsaha}
+            className="w-full py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md flex items-center justify-center gap-2"
           >
-            Selesai
+            <CheckCircle className="w-5 h-5" />
+            Konfirmasi & Selesai
           </button>
         </div>
       </div>
     </div>
   );
 
-  return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="mb-8 bg-gradient-to-r from-red-50 to-white border-l-4 border-red-700 p-6 rounded-r-lg shadow">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Form Pendaftaran E-Reporting</h2>
-            <p className="text-gray-600">Form registrasi akun pelaporan elektronik OJK</p>
-            
-            {/* Progress Steps */}
-            <div className="flex items-center gap-2 mt-4">
-              {metodePendaftaran === 'sipo' ? (
-                // Progress steps untuk SIPO
-                [1, 2, 3, 4].map((stepNum) => {
-                  const stepMap = { 1: 1, 2: 4, 3: 5, 4: 6 };
-                  const currentStep = step;
-                  
-                  let isActive = false;
-                  let isCompleted = false;
-                  
-                  if (stepNum === 1) {
-                    isActive = currentStep === 1;
-                    isCompleted = currentStep > 1;
-                  } else if (stepNum === 2) {
-                    isActive = currentStep === 4;
-                    isCompleted = currentStep > 4;
-                  } else if (stepNum === 3) {
-                    isActive = currentStep === 5;
-                    isCompleted = currentStep > 5;
-                  } else if (stepNum === 4) {
-                    isActive = currentStep === 6;
-                    isCompleted = currentStep > 6;
-                  }
-                  
-                  return (
-                    <div key={stepNum} className="flex items-center">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${
-                        isActive
-                          ? 'bg-red-600 text-white' 
-                          : isCompleted
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-gray-100 text-gray-500'
-                      }`}>
-                        {isCompleted ? <CheckCircle className="w-4 h-4" /> : stepNum}
-                      </div>
-                      {stepNum < 4 && (
-                        <div className={`w-12 h-1 ${isCompleted ? 'bg-green-500' : 'bg-gray-200'}`}></div>
-                      )}
-                    </div>
-                  );
-                })
-              ) : metodePendaftaran === 'non-sipo' ? (
-                // Progress steps untuk Non-SIPO
-                [1, 2, 3, 4].map((stepNum) => {
-                  const stepMap = { 1: 1, 2: 2, 3: 3, 4: 6 };
-                  const currentStep = step;
-                  
-                  let isActive = false;
-                  let isCompleted = false;
-                  
-                  if (stepNum === 1) {
-                    isActive = currentStep === 1;
-                    isCompleted = currentStep > 1;
-                  } else if (stepNum === 2) {
-                    isActive = currentStep === 2;
-                    isCompleted = currentStep > 2;
-                  } else if (stepNum === 3) {
-                    isActive = currentStep === 3;
-                    isCompleted = currentStep > 3;
-                  } else if (stepNum === 4) {
-                    isActive = currentStep === 6;
-                    isCompleted = currentStep > 6;
-                  }
-                  
-                  return (
-                    <div key={stepNum} className="flex items-center">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${
-                        isActive
-                          ? 'bg-red-600 text-white' 
-                          : isCompleted
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-gray-100 text-gray-500'
-                      }`}>
-                        {isCompleted ? <CheckCircle className="w-4 h-4" /> : stepNum}
-                      </div>
-                      {stepNum < 4 && (
-                        <div className={`w-12 h-1 ${isCompleted ? 'bg-green-500' : 'bg-gray-200'}`}></div>
-                      )}
-                    </div>
-                  );
-                })
-              ) : (
-                // Default progress steps
-                [1, 2, 3, 4].map((stepNum) => (
-                  <div key={stepNum} className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-sm">
-                      {stepNum}
-                    </div>
-                    {stepNum < 4 && <div className="w-12 h-1 bg-gray-200"></div>}
-                  </div>
-                ))
-              )}
-            </div>
+  const renderStep5 = () => (
+    <div className="text-center">
+      <div className="mb-6">
+        <h3 className="text-lg font-bold text-gray-900 flex items-center justify-center gap-2">
+          <span className="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
+            ✓
+          </span>
+          Pendaftaran Berhasil
+        </h3>
+      </div>
+      
+      <div className="space-y-8 border-2 border-green-300 rounded-xl p-8 bg-gradient-to-b from-green-50 to-white shadow-lg">
+        <div className="flex justify-center">
+          <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center border-4 border-green-200">
+            <CheckCircle className="w-14 h-14 text-green-600" />
           </div>
-          <button
-            onClick={onCancel}
-            className="p-2 text-gray-400 hover:text-gray-600"
-          >
-            <X className="w-5 h-5" />
-          </button>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white p-3 rounded-lg border border-red-200">
-            <p className="text-xs text-gray-500 mb-1">Nama Pemohon</p>
-            <p className="font-medium text-gray-900">{dataUmum?.nama}</p>
+        <div className="space-y-4">
+          <h4 className="text-2xl font-bold text-gray-900">Pendaftaran Berhasil!</h4>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <p className="text-lg text-red-700 font-medium mb-2">
+              Email aktivasi telah dikirim ke:
+            </p>
+            <p className="text-xl font-bold text-red-800 bg-white p-3 rounded border border-red-200">
+              {formData.email}
+            </p>
           </div>
-          <div className="bg-white p-3 rounded-lg border border-red-200">
-            <p className="text-xs text-gray-500 mb-1">Instansi</p>
-            <p className="font-medium text-gray-900">{dataUmum?.institusi}</p>
-          </div>
+          <p className="text-gray-600">
+            Silakan periksa kotak masuk email Anda untuk melakukan aktivasi akun.
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            Jika tidak menerima email, periksa folder spam atau klik tombol di bawah untuk mengirim ulang.
+          </p>
+        </div>
+        
+        <div className="flex gap-3 pt-4">
+          <button
+            type="button"
+            onClick={() => {
+              alert('Email aktivasi telah dikirim ulang ke: ' + formData.email);
+            }}
+            className="flex-1 px-6 py-3 border border-red-300 text-red-700 font-medium rounded-lg hover:bg-red-50 flex items-center justify-center gap-2"
+          >
+            <Send className="w-4 h-4" />
+            Kirim Ulang Email
+          </button>
+          <button
+            type="button"
+            onClick={handleFinalRegistration}
+            className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md flex items-center justify-center gap-2"
+          >
+            <CheckCircle className="w-5 h-5" />
+            Selesai
+          </button>
         </div>
       </div>
-
-      {/* Step Content */}
-      {renderStep()}
       
-      {/* Registration Success Modal */}
       {registrationSuccess && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-md mx-4 border-2 border-red-300 shadow-xl">
@@ -3286,15 +3175,15 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Registrasi Berhasil!</h3>
               <p className="text-gray-600 mb-4">
-                Data pendaftaran E-Reporting telah disimpan. Link aktivasi telah dikirim ke email Anda.
+                Data pendaftaran E-Reporting telah disimpan.
               </p>
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
                 <p className="text-sm text-red-700">
                   Email aktivasi dikirim ke: <strong>{formData.email}</strong>
                 </p>
               </div>
-              <p className="text-sm text-gray-500">
-                Form akan ditutup otomatis dalam 3 detik...
+              <p className="text-xs text-gray-500">
+                Mengalihkan kembali ke halaman utama...
               </p>
             </div>
           </div>
@@ -3302,9 +3191,28 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
       )}
     </div>
   );
+
+  return (
+    <div className="p-6">
+      <div className="mb-8 bg-gradient-to-r from-red-50 to-white border-l-4 border-red-700 p-6 rounded-r-lg shadow">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Form Pendaftaran E-Reporting</h2>
+            <p className="text-gray-600">Form registrasi</p>
+          </div>
+          <button onClick={onCancel} className="p-2 text-gray-400 hover:text-gray-600">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      {renderStep()}
+    </div>
+  );
 };
-// TAB STATUS & MONITORING - DENGAN DESAIN CARD MODERN UNTUK ARO
-const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
+
+// TAB STATUS & MONITORING - MODIFIKASI UNTUK MENAMPILKAN ARO PADA PENGAJUAN APOLO PERTAMA
+const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge, formatDate, userProfile, onOpenForum }) => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('monitoring');
   const [expandedCard, setExpandedCard] = useState(null);
@@ -3320,15 +3228,18 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
     });
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-    });
-  };
-
   const toggleExpand = (id) => {
     setExpandedCard(expandedCard === id ? null : id);
+  };
+
+  const getUnreadAdminMessages = (submission) => {
+    if (!submission.forum) return 0;
+    return submission.forum.filter(m => m.sender === 'admin' && !m.read).length;
+  };
+
+  // Cek apakah submission APOLO memiliki ARO (pengajuan pertama)
+  const hasAro = (submission) => {
+    return submission.app === 'apolo' && submission.aroData && !submission.isARO;
   };
 
   return (
@@ -3371,21 +3282,30 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
         ) : (
           <div className="space-y-4">
             {submittedSubmissions.map((submission) => {
-              const hasARO = submission.app === 'apolo' && submission.aros && submission.aros.length > 0;
-              const pendingAROCount = hasARO ? submission.aros.filter(a => a.status === 'pending').length : 0;
+              const unreadMessages = getUnreadAdminMessages(submission);
+              const isApoloWithAro = hasAro(submission);
               
               return (
                 <div key={submission.id} className="bg-white border border-red-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   {/* Header Card - Always Visible */}
-                  <div className="p-6 bg-gradient-to-r from-red-50 to-white border-b border-red-100">
+                  <div className={`p-6 bg-gradient-to-r ${
+                    isApoloWithAro 
+                      ? 'from-red-50 to-purple-50 border-b border-purple-200' 
+                      : 'from-red-50 to-white border-b border-red-100'
+                  }`}>
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
+                        <div className="flex items-center gap-3 mb-2 flex-wrap">
                           <span className="font-bold text-gray-900 text-lg">{submission.trackingId}</span>
                           {getStatusBadge(submission.status)}
-                          {hasARO && pendingAROCount > 0 && (
-                            <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full">
-                              {pendingAROCount} ARO Baru
+                          
+                      
+                          
+                         
+                          {unreadMessages > 0 && (
+                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full flex items-center gap-1">
+                              <Mail className="w-3 h-3" />
+                              {unreadMessages} Pesan
                             </span>
                           )}
                         </div>
@@ -3397,26 +3317,36 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
                       </div>
                       
                       <div className="flex items-center gap-2">
-                        {getAppBadge(submission.app)}
-                        {hasARO && (
-                          <button
-                            onClick={() => toggleExpand(submission.id)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title={expandedCard === submission.id ? "Sembunyikan ARO" : "Lihat ARO"}
-                          >
-                            <Layers className="w-4 h-4" />
-                          </button>
-                        )}
+                        {getAppBadge(submission.app, submission.isARO, isApoloWithAro)}
+                        <button
+                          onClick={() => onOpenForum(submission)}
+                          className={`p-2 rounded-lg transition-colors relative ${
+                            unreadMessages > 0 
+                              ? 'bg-blue-100 text-blue-600 hover:bg-blue-200' 
+                              : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50'
+                          }`}
+                          title="Forum Diskusi"
+                        >
+                          <Mail className="w-4 h-4" />
+                          {unreadMessages > 0 && (
+                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                              {unreadMessages}
+                            </span>
+                          )}
+                        </button>
                       </div>
                     </div>
                   </div>
                   
-                  {/* Info Ringkas - Always Visible */}
+                  {/* Info Ringkas */}
                   <div className="px-6 py-4 bg-white">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Aplikasi</p>
-                        <p className="font-medium text-gray-900">{submission.app?.toUpperCase()}</p>
+                        <p className="font-medium text-gray-900">
+                          {submission.app?.toUpperCase()}
+                          {submission.isARO && <span className="ml-1 text-red-600">(ARO)</span>}
+                        </p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Pemohon</p>
@@ -3439,59 +3369,94 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
                     </div>
                   </div>
                   
-                  {/* Expanded ARO Section - Tampil hanya jika diklik */}
-                  {hasARO && expandedCard === submission.id && (
-                    <div className="px-6 py-4 bg-gray-50 border-t border-red-100">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Layers className="w-4 h-4 text-red-600" />
-                        <h4 className="font-bold text-gray-900">Daftar ARO ({submission.aros.length})</h4>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        {submission.aros.map((aro, idx) => (
-                          <div key={idx} className={`p-3 rounded-lg border ${
-                            aro.status === 'approved' ? 'bg-green-50 border-green-200' :
-                            aro.status === 'pending' ? 'bg-yellow-50 border-yellow-200' :
-                            'bg-red-50 border-red-200'
-                          }`}>
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1">
-                                  <span className="font-medium text-gray-900">ARO #{idx + 1}</span>
-                                  <span className={`px-2 py-0.5 text-xs rounded-full ${
-                                    aro.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                    aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                    'bg-red-100 text-red-800'
-                                  }`}>
-                                    {aro.status === 'approved' ? '✓ Disetujui' : 
-                                     aro.status === 'pending' ? '⏳ Menunggu' : '✗ Ditolak'}
-                                  </span>
-                                </div>
-                                <p className="text-sm text-gray-700 mb-1 line-clamp-2">
-                                  "{aro.keterangan}"
-                                </p>
-                                <div className="flex items-center gap-3 text-xs text-gray-500">
-                                  <span>Diajukan: {formatDate(aro.tanggalDiajukan)}</span>
-                                  {aro.modulDipilih && (
-                                    <span className="text-green-600">Modul: {aro.modulDipilih}</span>
-                                  )}
-                                  {aro.rejectionNote && (
-                                    <span className="text-red-600">Alasan: {aro.rejectionNote}</span>
-                                  )}
-                                </div>
-                              </div>
+                  {/* Tampilkan detail ARO untuk APOLO dengan ARO (pengajuan pertama) */}
+                  {isApoloWithAro && submission.aroData && (
+                    <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-white border-t border-purple-200">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                          <Package className="w-4 h-4 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-bold text-red-800 mb-2 flex items-center gap-1">
+                            Informasi ARO
+                          </p>
+                          <div className="bg-white p-4 rounded-lg border border-purple-200 shadow-sm">
+                            <div className="mb-3">
+                              <p className="text-xs text-gray-500 mb-1">Keterangan ARO:</p>
+                              <p className="text-sm text-gray-800 font-medium bg-purple-50 p-2 rounded">
+                                {submission.aroData.keterangan}
+                              </p>
                             </div>
+                            {submission.aroData.suratPermohonan && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <FileText className="w-4 h-4 text-red-600" />
+                                <span className="text-gray-700">{submission.aroData.suratPermohonan.name}</span>
+                                <span className="text-xs text-gray-500">
+                                  ({(submission.aroData.suratPermohonan.size / 1024).toFixed(2)} KB)
+                                </span>
+                              </div>
+                            )}
                           </div>
-                        ))}
+                        </div>
                       </div>
                     </div>
                   )}
                   
-                  {/* Footer Actions */}
+                  {/* Tampilkan detail ARO jika ini adalah submission ARO terpisah */}
+                  {submission.isARO && (
+                    <div className="px-6 py-4 bg-purple-50 border-t border-purple-200">
+                      <div className="flex items-start gap-2">
+                        <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Layers className="w-3 h-3 text-red-600" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-xs font-bold text-red-800 mb-2">Informasi ARO:</p>
+                          <div className="bg-white p-3 rounded border border-purple-200">
+                            <p className="text-sm text-gray-700 mb-2">{submission.aroKeterangan}</p>
+                            {submission.aroSuratPermohonan && (
+                              <p className="text-xs text-red-600 flex items-center gap-1">
+                                <FileText className="w-3 h-3" />
+                                {submission.aroSuratPermohonan.name}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Tampilkan pesan admin terakhir */}
+                  {submission.forum && submission.forum.filter(m => m.sender === 'admin').length > 0 && (
+                    <div className="px-6 py-3 bg-blue-50 border-t border-blue-200">
+                      <div className="flex items-start gap-2">
+                        <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Mail className="w-3 h-3 text-red-600" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-xs font-bold text-red-800 mb-1">Pesan dari Admin:</p>
+                          {submission.forum
+                            .filter(m => m.sender === 'admin')
+                            .slice(-1)
+                            .map((msg, idx) => (
+                              <div key={idx} className="bg-white p-2 rounded border border-blue-200">
+                                <p className="text-sm text-gray-700">{msg.message}</p>
+                                <p className="text-xs text-gray-500 mt-1">{formatDate(msg.timestamp)}</p>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Footer Actions untuk yang ditolak */}
                   {submission.status === 'rejected' && (
                     <div className="px-6 py-4 bg-red-50 border-t border-red-200">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm text-red-600">Pengajuan ditolak. Silakan perbaiki data.</p>
+                        <p className="text-sm text-red-600">
+                          {isApoloWithAro 
+                            ? 'Pengajuan APOLO & ARO ditolak. Silakan perbaiki data.' 
+                            : 'Pengajuan ditolak. Silakan perbaiki data.'}
+                        </p>
                         <button
                           onClick={() => handleResubmit(submission)}
                           className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold rounded-lg hover:from-red-600 hover:to-red-700"
@@ -3515,7 +3480,8 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <span className="font-bold text-gray-900">{submission.trackingId}</span>
-                      {getAppBadge(submission.app)}
+                      {getAppBadge(submission.app, submission.isARO, submission.app === 'apolo' && submission.aroData && !submission.isARO)}
+                      
                     </div>
                     <p className="text-lg font-bold text-gray-900">{log.action}</p>
                     <p className="text-sm text-gray-600 mt-1">{log.description}</p>
@@ -3532,5 +3498,4 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge }) => {
     </div>
   );
 };
-
 export default Profile;
