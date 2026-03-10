@@ -1442,7 +1442,7 @@ const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, aroData, se
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Form Pengajuan APOLO </h2>
-          <p className="text-gray-600">Isi data APOLO dan ARO dalam satu alur</p>
+          {/* <p className="text-gray-600">Isi data APOLO dan ARO dalam satu alur</p> */}
         </div>
         <button onClick={onCancel} className="p-2 text-gray-400 hover:text-gray-600">
           <X className="w-5 h-5" />
@@ -1512,13 +1512,7 @@ const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, aroData, se
           </h3>
           
           <div className="space-y-6">
-            {/* Informasi ARO */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-              <p className="text-xs text-yellow-700 flex items-start gap-2">
-                <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>ARO akan diajukan bersamaan dengan APOLO dan menunggu persetujuan admin.</span>
-              </p>
-            </div>
+       
 
             {/* Keterangan ARO */}
             <div>
@@ -1604,7 +1598,7 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     namaSebutanLJK: initialData.namaSebutanLJK || '',
     sektor: initialData.sektor || '',
     subSektor: initialData.subSektor || '',
-    tipePelapor: 'FATCA',
+    tipePelapor: 'CRS',
     gin: initialData.gin || '',
     npwpPerusahaan: initialData.npwpPerusahaan || '',
     npwpValidated: initialData.npwpValidated || false,
@@ -1625,11 +1619,11 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   const [showValidationSuccess, setShowValidationSuccess] = useState(false);
   const [isValidatingNPWP, setIsValidatingNPWP] = useState(false);
 
-  // Auto-set tipePelapor ke FATCA
+  // Auto-set tipePelapor ke CRS
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
-      tipePelapor: 'FATCA'
+      tipePelapor: 'CRS'
     }));
   }, []);
 
@@ -1870,18 +1864,18 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
               </select>
             </div>
             
-            {/* Tipe Pelapor (Read-only, selalu FATCA) */}
+            {/* Tipe Pelapor (Read-only, selalu CRS) */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Tipe Pelapor <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                value="FATCA"
+                value="CRS"
                 readOnly
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 font-medium"
               />
-              <p className="text-xs text-gray-500 mt-1">Otomatis di-set ke FATCA</p>
+              <p className="text-xs text-gray-500 mt-1">Module CRS</p>
             </div>
             
             {/* GIN */}
