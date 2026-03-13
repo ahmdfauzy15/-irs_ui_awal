@@ -99,7 +99,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     toggle: () => setSettingsOpen(!settingsOpen),
     subItems: [
       { 
-        path: '/accessmanagement', 
+        path: '/access-management', 
         icon: User, 
         label: 'Lihat Profil',
         exact: true 
