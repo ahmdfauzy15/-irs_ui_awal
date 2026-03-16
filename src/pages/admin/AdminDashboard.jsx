@@ -1157,7 +1157,7 @@ const DetailModal = ({ submission, onClose, onApprove, onReject, onOpenForum, on
             <div className="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
               <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
                 <Info className="w-4 h-4 text-blue-600" />
-                Informasi Pendaftaran E-Reporting (Auto-Approved)
+                Informasi Pendaftaran E-Reporting 
               </h4>
               <div className="grid grid-cols-1 gap-2 text-sm bg-white p-3 rounded-lg">
                 <div><span className="text-gray-500">Email Pendaftaran:</span> <span className="font-medium">{submission.data?.email || submission.dataUmum?.email}</span></div>
