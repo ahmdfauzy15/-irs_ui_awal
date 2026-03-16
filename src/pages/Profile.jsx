@@ -2566,6 +2566,7 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel, hideCancel }) => 
 };
 
 // ==================== FORM E-REPORTING DENGAN ACCORDION ====================
+// ==================== FORM E-REPORTING DENGAN ACCORDION (URUTAN BENAR) ====================
 const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hideCancel }) => {
   const [metodePendaftaran, setMetodePendaftaran] = useState(null);
   const [formData, setFormData] = useState({
@@ -2592,7 +2593,15 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
     dataPerusahaan: false,
     validasiSIPO: false,
     email: false,
+    validasiJenisUsaha: false,
     konfirmasi: false
+  });
+
+  const [savedSteps, setSavedSteps] = useState({
+    dataPerusahaan: false,
+    validasiSIPO: false,
+    email: false,
+    validasiJenisUsaha: false
   });
 
   useEffect(() => {
@@ -2603,6 +2612,18 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
       }));
       if (initialData.metode) {
         setMetodePendaftaran(initialData.metode);
+      }
+      if (initialData.dataPerusahaanSaved) {
+        setSavedSteps(prev => ({...prev, dataPerusahaan: true}));
+      }
+      if (initialData.sipoValidated) {
+        setSavedSteps(prev => ({...prev, validasiSIPO: true}));
+      }
+      if (initialData.email) {
+        setSavedSteps(prev => ({...prev, email: true}));
+      }
+      if (initialData.jenisUsahaValidated) {
+        setSavedSteps(prev => ({...prev, validasiJenisUsaha: true}));
       }
     }
   }, [initialData]);
@@ -2695,8 +2716,12 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
         }));
         setSipoValidationMessage('Validasi SIPO berhasil. Data perusahaan telah diverifikasi.');
         
-        // Setelah validasi berhasil, buka section email
+        // Tandai step validasi SIPO sudah selesai
+        setSavedSteps(prev => ({...prev, validasiSIPO: true}));
+        
+        // Tutup section validasiSIPO dan buka section email
         setTimeout(() => {
+          toggleSection('validasiSIPO');
           toggleSection('email');
         }, 500);
       } else {
@@ -2711,6 +2736,9 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
       alert('Semua field data perusahaan wajib diisi!');
       return;
     }
+    
+    // Tandai step data perusahaan sudah selesai
+    setSavedSteps(prev => ({...prev, dataPerusahaan: true}));
     
     // Tutup section dataPerusahaan
     toggleSection('dataPerusahaan');
@@ -2736,8 +2764,28 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
     
     setEmailValidationMessage('');
     
+    // Tandai step email sudah selesai
+    setSavedSteps(prev => ({...prev, email: true}));
+    
     // Tutup section email
     toggleSection('email');
+    
+    // Buka section validasi jenis usaha
+    toggleSection('validasiJenisUsaha');
+  };
+
+  const handleValidasiJenisUsaha = () => {
+    // Validasi jenis usaha (tidak bisa diedit lagi di sini)
+    setFormData(prev => ({
+      ...prev,
+      jenisUsahaValidated: true
+    }));
+    
+    // Tandai step validasi jenis usaha sudah selesai
+    setSavedSteps(prev => ({...prev, validasiJenisUsaha: true}));
+    
+    // Tutup section validasi jenis usaha
+    toggleSection('validasiJenisUsaha');
     
     // Buka section konfirmasi
     toggleSection('konfirmasi');
@@ -2763,24 +2811,30 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
       return;
     }
     
+    if (!formData.jenisUsahaValidated) {
+      alert('Harap validasi jenis usaha terlebih dahulu!');
+      toggleSection('validasiJenisUsaha');
+      return;
+    }
+    
     const completeData = {
       ...formData,
       metode: metodePendaftaran,
       dataUmum: dataUmum,
       registrationDate: new Date().toISOString(),
-      activationEmailSent: true
+      activationEmailSent: true,
+      dataPerusahaanSaved: savedSteps.dataPerusahaan
     };
     
     onSave(completeData);
     setRegistrationSuccess(true);
-    
-    // Tampilkan pesan sukses selama 5 detik
-    setTimeout(() => {
-      setRegistrationSuccess(false);
-      if (!hideCancel) {
-        onCancel();
-      }
-    }, 5000);
+  };
+
+  const handleCloseSuccess = () => {
+    setRegistrationSuccess(false);
+    if (!hideCancel) {
+      onCancel();
+    }
   };
 
   const toggleSection = (section) => {
@@ -2790,26 +2844,73 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
     }));
   };
 
-  const isSectionValid = (section) => {
-    switch(section) {
-      case 'dataPerusahaan':
-        return formData.npwp && formData.namaPerusahaan && formData.alamat && formData.jenisUsaha;
-      case 'validasiSIPO':
-        return formData.sipoValidated;
-      case 'email':
-        return formData.email && validateEmail(formData.email);
-      case 'konfirmasi':
-        return true;
-      default:
-        return false;
+  const getSectionNumber = (section) => {
+    const order = {
+      pilihMetode: 1,
+      dataPerusahaan: 2,
+      validasiSIPO: 3,
+      email: 4,
+      validasiJenisUsaha: 5,
+      konfirmasi: 6
+    };
+    
+    if (section === 'validasiSIPO' && metodePendaftaran !== 'sipo') {
+      return null; // Skip untuk non-SIPO
     }
+    
+    // Adjust numbering untuk non-SIPO
+    if (metodePendaftaran !== 'sipo') {
+      if (section === 'email') return 3;
+      if (section === 'validasiJenisUsaha') return 4;
+      if (section === 'konfirmasi') return 5;
+    }
+    
+    return order[section];
+  };
+
+  const isSectionAccessible = (section) => {
+    // Section pilihMetode selalu accessible
+    if (section === 'pilihMetode') return true;
+    
+    // Jika metode belum dipilih, section lain tidak bisa diakses
+    if (!metodePendaftaran) return false;
+    
+    // Data perusahaan hanya bisa diakses jika metode sudah dipilih
+    if (section === 'dataPerusahaan') return true;
+    
+    // Validasi SIPO hanya untuk metode sipo dan setelah data perusahaan selesai
+    if (section === 'validasiSIPO') {
+      return metodePendaftaran === 'sipo' && savedSteps.dataPerusahaan;
+    }
+    
+    // Email bisa diakses setelah data perusahaan selesai (untuk non-sipo) 
+    // atau setelah validasi SIPO selesai (untuk sipo)
+    if (section === 'email') {
+      if (metodePendaftaran === 'sipo') {
+        return savedSteps.validasiSIPO;
+      } else {
+        return savedSteps.dataPerusahaan;
+      }
+    }
+    
+    // Validasi jenis usaha bisa diakses setelah email selesai
+    if (section === 'validasiJenisUsaha') {
+      return savedSteps.email;
+    }
+    
+    // Konfirmasi bisa diakses setelah validasi jenis usaha selesai
+    if (section === 'konfirmasi') {
+      return savedSteps.validasiJenisUsaha;
+    }
+    
+    return false;
   };
 
   return (
     <div className="p-4">
       <div className="mb-6 bg-gradient-to-r from-red-50 to-white border-l-4 border-red-700 p-4 rounded-r-lg shadow">
         <h3 className="text-lg font-bold text-gray-900">Form Pendaftaran E-Reporting</h3>
-        <p className="text-sm text-gray-600">Isi semua bagian form di bawah ini</p>
+        <p className="text-sm text-gray-600">Isi semua bagian form secara berurutan</p>
       </div>
 
       <div className="space-y-4">
@@ -2820,12 +2921,15 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
             className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                metodePendaftaran ? 'bg-green-500' : 'bg-red-600'
-              } text-white`}>
-                {metodePendaftaran ? <CheckCircle className="w-4 h-4" /> : '1'}
+              <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold">
+                {getSectionNumber('pilihMetode')}
               </div>
               <span className="font-bold text-gray-900">Pilih Metode Pendaftaran</span>
+              {metodePendaftaran && (
+                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                  {metodePendaftaran === 'sipo' ? 'Menggunakan SIPO' : 'Non-SIPO'}
+                </span>
+              )}
             </div>
             {expandedSections.pilihMetode ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
           </button>
@@ -2880,18 +2984,22 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
 
         {/* Section 2: Data Perusahaan (hanya muncul jika metode sudah dipilih) */}
         {metodePendaftaran && (
-          <div className="border border-red-200 rounded-xl overflow-hidden">
+          <div className={`border border-red-200 rounded-xl overflow-hidden ${!isSectionAccessible('dataPerusahaan') ? 'opacity-50' : ''}`}>
             <button
-              onClick={() => toggleSection('dataPerusahaan')}
-              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors"
+              onClick={() => isSectionAccessible('dataPerusahaan') && toggleSection('dataPerusahaan')}
+              disabled={!isSectionAccessible('dataPerusahaan')}
+              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors disabled:hover:bg-red-50"
             >
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  isSectionValid('dataPerusahaan') ? 'bg-green-500' : 'bg-red-600'
-                } text-white`}>
-                  {isSectionValid('dataPerusahaan') ? <CheckCircle className="w-4 h-4" /> : '2'}
+                <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold">
+                  {getSectionNumber('dataPerusahaan')}
                 </div>
                 <span className="font-bold text-gray-900">Data Perusahaan</span>
+                {savedSteps.dataPerusahaan && (
+                  <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                    Tersimpan
+                  </span>
+                )}
               </div>
               {expandedSections.dataPerusahaan ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
             </button>
@@ -2908,6 +3016,7 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
                     onChange={(e) => setFormData({...formData, npwp: e.target.value, sipoValidated: false})}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
                     placeholder="Masukkan Token/NPWP"
+                    disabled={savedSteps.dataPerusahaan}
                   />
                 </div>
                 
@@ -2949,6 +3058,7 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
                     value={formData.jenisUsaha}
                     onChange={(e) => setFormData({...formData, jenisUsaha: e.target.value})}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                    disabled={savedSteps.dataPerusahaan}
                   >
                     <option value="">Pilih Jenis Usaha</option>
                     <option value="Perusahaan Asuransi Umum">Perusahaan Asuransi Umum</option>
@@ -2960,39 +3070,45 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
                   </select>
                 </div>
                 
-                <div className="pt-4">
-                  <button
-                    type="button"
-                    onClick={handleDataPerusahaanSubmit}
-                    disabled={!formData.npwp || !formData.jenisUsaha}
-                    className={`w-full py-3 font-bold rounded-lg ${
-                      formData.npwp && formData.jenisUsaha
-                        ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    Simpan Data Perusahaan
-                  </button>
-                </div>
+                {!savedSteps.dataPerusahaan && (
+                  <div className="pt-4">
+                    <button
+                      type="button"
+                      onClick={handleDataPerusahaanSubmit}
+                      disabled={!formData.npwp || !formData.jenisUsaha}
+                      className={`w-full py-3 font-bold rounded-lg ${
+                        formData.npwp && formData.jenisUsaha
+                          ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      Simpan Data Perusahaan
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
         )}
 
         {/* Section 3: Validasi SIPO (hanya untuk metode SIPO) */}
-        {metodePendaftaran === 'sipo' && isSectionValid('dataPerusahaan') && (
-          <div className="border border-red-200 rounded-xl overflow-hidden">
+        {metodePendaftaran === 'sipo' && (
+          <div className={`border border-red-200 rounded-xl overflow-hidden ${!isSectionAccessible('validasiSIPO') ? 'opacity-50' : ''}`}>
             <button
-              onClick={() => toggleSection('validasiSIPO')}
-              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors"
+              onClick={() => isSectionAccessible('validasiSIPO') && toggleSection('validasiSIPO')}
+              disabled={!isSectionAccessible('validasiSIPO')}
+              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors disabled:hover:bg-red-50"
             >
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  formData.sipoValidated ? 'bg-green-500' : 'bg-red-600'
-                } text-white`}>
-                  {formData.sipoValidated ? <CheckCircle className="w-4 h-4" /> : '3'}
+                <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold">
+                  {getSectionNumber('validasiSIPO')}
                 </div>
                 <span className="font-bold text-gray-900">Validasi SIPO</span>
+                {savedSteps.validasiSIPO && (
+                  <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                    Tervalidasi
+                  </span>
+                )}
               </div>
               {expandedSections.validasiSIPO ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
             </button>
@@ -3017,6 +3133,7 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
                       setSipoValidationMessage('');
                     }}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                    disabled={savedSteps.validasiSIPO}
                   />
                 </div>
                 
@@ -3033,6 +3150,7 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
                         setSipoValidationMessage('');
                       }}
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 pr-12"
+                      disabled={savedSteps.validasiSIPO}
                     />
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <Lock className="w-5 h-5 text-red-500" />
@@ -3040,30 +3158,27 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
                   </div>
                 </div>
                 
-                <button
-                  type="button"
-                  onClick={handleValidateSIPO}
-                  disabled={isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO}
-                  className={`w-full py-3 font-bold rounded-lg ${
-                    formData.sipoValidated
-                      ? 'bg-green-100 text-green-800 border border-green-300'
-                      : 'bg-red-600 text-white hover:bg-red-700'
-                  } ${isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {isValidatingSIPO ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Memvalidasi...
-                    </div>
-                  ) : formData.sipoValidated ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <CheckCircle className="w-5 h-5" />
-                      Tervalidasi
-                    </div>
-                  ) : (
-                    'Validasi SIPO'
-                  )}
-                </button>
+                {!savedSteps.validasiSIPO && (
+                  <button
+                    type="button"
+                    onClick={handleValidateSIPO}
+                    disabled={isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO}
+                    className={`w-full py-3 font-bold rounded-lg ${
+                      isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-red-600 text-white hover:bg-red-700'
+                    }`}
+                  >
+                    {isValidatingSIPO ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Memvalidasi...
+                      </div>
+                    ) : (
+                      'Validasi SIPO'
+                    )}
+                  </button>
+                )}
                 
                 {sipoValidationMessage && (
                   <div className={`p-3 rounded-lg ${formData.sipoValidated ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
@@ -3102,21 +3217,23 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
         )}
 
         {/* Section 4: Email (untuk semua metode) */}
-        {((metodePendaftaran === 'sipo' && isSectionValid('validasiSIPO')) || 
-          (metodePendaftaran === 'non-sipo' && isSectionValid('dataPerusahaan'))) && (
-          <div className="border border-red-200 rounded-xl overflow-hidden">
+        {metodePendaftaran && (
+          <div className={`border border-red-200 rounded-xl overflow-hidden ${!isSectionAccessible('email') ? 'opacity-50' : ''}`}>
             <button
-              onClick={() => toggleSection('email')}
-              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors"
+              onClick={() => isSectionAccessible('email') && toggleSection('email')}
+              disabled={!isSectionAccessible('email')}
+              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors disabled:hover:bg-red-50"
             >
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  formData.email && validateEmail(formData.email) ? 'bg-green-500' : 'bg-red-600'
-                } text-white`}>
-                  {formData.email && validateEmail(formData.email) ? <CheckCircle className="w-4 h-4" /> : 
-                    (metodePendaftaran === 'sipo' ? '4' : '3')}
+                <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold">
+                  {getSectionNumber('email')}
                 </div>
-                <span className="font-bold text-gray-900">Email (User ID Aplikasi)</span>
+                <span className="font-bold text-gray-900">Input Email</span>
+                {savedSteps.email && (
+                  <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                    Tersimpan
+                  </span>
+                )}
               </div>
               {expandedSections.email ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
             </button>
@@ -3143,6 +3260,7 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
                       }}
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 pr-12"
                       placeholder="contoh@perusahaan.co.id"
+                      disabled={savedSteps.email}
                     />
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <Mail className="w-5 h-5 text-red-500" />
@@ -3165,36 +3283,128 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
                   </div>
                 )}
                 
-                <div className="pt-4">
-                  <button
-                    type="button"
-                    onClick={handleEmailSubmit}
-                    disabled={!formData.email || !validateEmail(formData.email)}
-                    className={`w-full py-3 font-bold rounded-lg ${
-                      formData.email && validateEmail(formData.email)
-                        ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    Simpan Email
-                  </button>
-                </div>
+                {!savedSteps.email && (
+                  <div className="pt-4">
+                    <button
+                      type="button"
+                      onClick={handleEmailSubmit}
+                      disabled={!formData.email || !validateEmail(formData.email)}
+                      className={`w-full py-3 font-bold rounded-lg ${
+                        formData.email && validateEmail(formData.email)
+                          ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      Simpan Email
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
         )}
 
-        {/* Section 5: Konfirmasi & Submit */}
-        {((metodePendaftaran === 'sipo' && isSectionValid('email')) || 
-          (metodePendaftaran === 'non-sipo' && isSectionValid('email'))) && (
-          <div className="border border-red-200 rounded-xl overflow-hidden">
+        {/* Section 5: Validasi Jenis Usaha */}
+        {metodePendaftaran && (
+          <div className={`border border-red-200 rounded-xl overflow-hidden ${!isSectionAccessible('validasiJenisUsaha') ? 'opacity-50' : ''}`}>
             <button
-              onClick={() => toggleSection('konfirmasi')}
-              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors"
+              onClick={() => isSectionAccessible('validasiJenisUsaha') && toggleSection('validasiJenisUsaha')}
+              disabled={!isSectionAccessible('validasiJenisUsaha')}
+              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors disabled:hover:bg-red-50"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center">
-                  {metodePendaftaran === 'sipo' ? '5' : '4'}
+                <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold">
+                  {getSectionNumber('validasiJenisUsaha')}
+                </div>
+                <span className="font-bold text-gray-900">Validasi Jenis Usaha</span>
+                {savedSteps.validasiJenisUsaha && (
+                  <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                    Tervalidasi
+                  </span>
+                )}
+              </div>
+              {expandedSections.validasiJenisUsaha ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
+            
+            {expandedSections.validasiJenisUsaha && (
+              <div className="p-6 border-t border-red-200 space-y-4">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <div className="flex items-start gap-2">
+                    <Info className="w-5 h-5 text-yellow-600 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-yellow-800">
+                        Tahap Validasi Jenis Usaha
+                      </p>
+                      <p className="text-xs text-yellow-700 mt-1">
+                        Pada tahap ini, jenis usaha tidak dapat diubah lagi. Pastikan data sudah benar sebelum melanjutkan.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
+                  <h4 className="font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Data Perusahaan (Final)</h4>
+                  
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Token/NPWP </p>
+                        <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.npwp}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Email </p>
+                        <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.email}</p>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Nama Perusahaan</p>
+                      <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.namaPerusahaan}</p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Alamat</p>
+                      <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.alamat}</p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Jenis Usaha</p>
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                        <p className="font-bold text-red-800 text-center">{formData.jenisUsaha}</p>
+                        <p className="text-xs text-red-600 mt-1 text-center">(Tidak dapat diubah pada tahap ini)</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {!savedSteps.validasiJenisUsaha && (
+                  <div className="pt-4">
+                    <button
+                      type="button"
+                      onClick={handleValidasiJenisUsaha}
+                      className="w-full py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md flex items-center justify-center gap-2"
+                    >
+                      <CheckCircle className="w-5 h-5" />
+                      Validasi & Lanjutkan
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Section 6: Konfirmasi & Submit */}
+        {metodePendaftaran && savedSteps.validasiJenisUsaha && (
+          <div className={`border border-red-200 rounded-xl overflow-hidden ${!isSectionAccessible('konfirmasi') ? 'opacity-50' : ''}`}>
+            <button
+              onClick={() => isSectionAccessible('konfirmasi') && toggleSection('konfirmasi')}
+              disabled={!isSectionAccessible('konfirmasi')}
+              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors disabled:hover:bg-red-50"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold">
+                  {getSectionNumber('konfirmasi')}
                 </div>
                 <span className="font-bold text-gray-900">Konfirmasi & Submit</span>
               </div>
@@ -3244,7 +3454,7 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
                   onClick={handleFinalSubmit}
                   className="w-full py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md flex items-center justify-center gap-2"
                 >
-                  <CheckCircle className="w-5 h-5" />
+                  <Send className="w-5 h-5" />
                   Submit Pendaftaran E-Reporting
                 </button>
               </div>
@@ -3253,10 +3463,16 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
         )}
       </div>
 
-      {/* Modal Sukses */}
+      {/* Modal Sukses dengan Tombol Close */}
       {registrationSuccess && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-md mx-4 border-2 border-red-300 shadow-xl">
+          <div className="bg-white rounded-2xl p-8 max-w-md mx-4 border-2 border-red-300 shadow-xl relative">
+            <button
+              onClick={handleCloseSuccess}
+              className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100"
+            >
+              <X className="w-5 h-5" />
+            </button>
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-8 h-8 text-green-600" />
@@ -3270,9 +3486,14 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
                   Email aktivasi dikirim ke: <strong>{formData.email}</strong>
                 </p>
               </div>
-              <p className="text-xs text-gray-500">
-                Mengalihkan kembali ke halaman utama...
-              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleCloseSuccess}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md"
+                >
+                  Tutup
+                </button>
+              </div>
             </div>
           </div>
         </div>
