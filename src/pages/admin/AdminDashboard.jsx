@@ -1,4 +1,4 @@
-// pages/admin/AdminDashboard.jsx (bagian APOLO yang dimodifikasi)
+// pages/admin/AdminDashboard.jsx
 import React, { useState, useEffect } from 'react';
 import {
   Users,
@@ -81,16 +81,42 @@ const AdminDashboard = () => {
   const [documentLoading, setDocumentLoading] = useState(false);
   const [expandedAro, setExpandedAro] = useState(null);
 
-  // Set default date range ke 1 tahun kebelakang dari 10 Maret 2026
+  // Fungsi untuk mendapatkan batasan tanggal (real-time)
+  const getDateLimits = () => {
+    const today = new Date(); // Tanggal real-time saat ini
+    
+    // 1 tahun kebelakang dari hari ini
+    const minDate = new Date(today);
+    minDate.setFullYear(today.getFullYear() - 1);
+    
+    // 1 tahun kedepan dari hari ini
+    const maxDate = new Date(today);
+    maxDate.setFullYear(today.getFullYear() + 1);
+    
+    return {
+      minDate: minDate.toISOString().split('T')[0],
+      maxDate: maxDate.toISOString().split('T')[0],
+      today: today.toISOString().split('T')[0]
+    };
+  };
+
+  // Set default date range ke 1 tahun kebelakang dari 16 Maret 2026
   useEffect(() => {
-    const today = new Date('2026-03-10');
-    const oneYearAgo = new Date(today);
-    oneYearAgo.setFullYear(today.getFullYear() - 1);
+    // Base date: 16 Maret 2026
+    const baseDate = new Date('2026-03-16');
+    
+    // 1 tahun kebelakang dari base date
+    const oneYearAgo = new Date(baseDate);
+    oneYearAgo.setFullYear(baseDate.getFullYear() - 1);
+    
+    // 1 tahun kedepan dari base date
+    const oneYearAhead = new Date(baseDate);
+    oneYearAhead.setFullYear(baseDate.getFullYear() + 1);
     
     setFilters(prev => ({
       ...prev,
       startDate: oneYearAgo.toISOString().split('T')[0],
-      endDate: today.toISOString().split('T')[0]
+      endDate: oneYearAhead.toISOString().split('T')[0]
     }));
   }, []);
 
@@ -601,8 +627,10 @@ Tanggal: ${new Date().toLocaleDateString('id-ID', {
                   value={filters.startDate}
                   onChange={(e) => setFilters({...filters, startDate: e.target.value})}
                   max={filters.endDate}
+                  min={getDateLimits().minDate}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
+             
               </div>
               
               <div>
@@ -615,9 +643,10 @@ Tanggal: ${new Date().toLocaleDateString('id-ID', {
                   value={filters.endDate}
                   onChange={(e) => setFilters({...filters, endDate: e.target.value})}
                   min={filters.startDate}
-                  max="2026-03-10"
+                  max={getDateLimits().maxDate}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
+              
               </div>
             </div>
           </div>
@@ -1090,11 +1119,11 @@ const DetailModal = ({ submission, onClose, onApprove, onReject, onOpenForum, on
               </div>
               <div>
                 <span className="text-gray-500">Jenis:</span>
-                <span className="ml-2 px-2 py-1 text-xs font-bold rounded-full ${
+                <span className={`ml-2 px-2 py-1 text-xs font-bold rounded-full ${
                   submission.isARO ? 'bg-purple-100 text-purple-800' : 
                   hasAro ? 'bg-gradient-to-r from-red-100 to-purple-100 text-gray-800' :
                   'bg-blue-100 text-blue-800'
-                }">
+                }`}>
                   {submission.isARO ? 'Permohonan ARO (Terpisah)' : 
                    hasAro ? 'APOLO + ARO (Pengajuan Pertama)' : 
                    'Pengajuan Aplikasi'}
@@ -1277,12 +1306,12 @@ const DetailModal = ({ submission, onClose, onApprove, onReject, onOpenForum, on
             </div>
           )}
 
-          {/* Forum Diskusi */}
+          {/* Konfirmasi */}
           {submission.forum && submission.forum.length > 0 && (
             <div className="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
               <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
                 <Mail className="w-4 h-4 text-blue-600" />
-                Forum Diskusi
+                Konfirmasi
               </h4>
               <div className="space-y-3 max-h-60 overflow-y-auto">
                 {submission.forum.map((msg, idx) => (
@@ -1338,7 +1367,7 @@ const DetailModal = ({ submission, onClose, onApprove, onReject, onOpenForum, on
         {/* Footer dengan Tombol Aksi - Fixed di Bawah */}
         <div className="p-6 border-t border-red-200 bg-gradient-to-r from-red-50 to-white flex-shrink-0">
           <div className="flex flex-wrap items-center justify-end gap-3">
-            {/* Tombol Forum Diskusi */}
+            {/* Tombol Konfirmasi */}
             <button
               onClick={onOpenForum}
               className={`px-4 py-2.5 border rounded-lg flex items-center gap-2 relative ${
@@ -1348,7 +1377,7 @@ const DetailModal = ({ submission, onClose, onApprove, onReject, onOpenForum, on
               }`}
             >
               <Mail className="w-4 h-4" />
-              Forum Diskusi
+              Konfirmasi
               {unreadUserMessages > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold">
                   {unreadUserMessages}
@@ -1584,7 +1613,7 @@ const ForumModal = ({ submission, onClose, onSendMessage, message, setMessage, f
                 <Mail className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">Forum Diskusi</h3>
+                <h3 className="text-xl font-bold text-gray-900">Konfirmasi</h3>
                 <p className="text-sm text-gray-600">
                   ID: {submission.trackingId} • {submission.app?.toUpperCase()}
                   {submission.isARO && <span className="ml-2 text-purple-600">(ARO)</span>}
@@ -1608,7 +1637,7 @@ const ForumModal = ({ submission, onClose, onSendMessage, message, setMessage, f
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Mail className="w-8 h-8 text-gray-400" />
               </div>
-              <p className="text-gray-500">Belum ada pesan dalam forum diskusi</p>
+              <p className="text-gray-500">Belum ada pesan dalam Konfirmasi</p>
               <p className="text-sm text-gray-400 mt-2">Kirim pesan pertama untuk berkomunikasi dengan pemohon</p>
             </div>
           ) : (

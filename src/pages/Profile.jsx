@@ -41,8 +41,8 @@ import {
   Download,
   ExternalLink,
   Send,
-  Package, // <-- TAMBAHKAN INI
-  FolderTree // <-- TAMBAHKAN INI
+  Package,
+  FolderTree
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -190,7 +190,7 @@ const Profile = () => {
     // Generate ID tracking baru untuk ARO
     const newTrackingId = `IRS-ARO-${Date.now().toString().slice(-8)}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
     
-    // Buat submission ARO baru (bukan ARO di dalam submission APOLO)
+    // Buat submission ARO baru
     const newAROSubmission = {
       id: `aro-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       app: 'apolo',
@@ -349,7 +349,7 @@ const Profile = () => {
               setSubmissions={setSubmissions}
               onOpenAddARO={() => setShowAddAROModal(true)}
               isApoloApproved={isApoloApproved()}
-              getAppBadge={getAppBadge} // <-- TAMBAHKAN INI
+              getAppBadge={getAppBadge}
             />
           )}
           
@@ -409,7 +409,7 @@ const Profile = () => {
   );
 };
 
-// MODAL TAMBAH ARO - MODIFIKASI UNTUK SUBMISSION BARU
+// ==================== MODAL TAMBAH ARO ====================
 const AddAROModal = ({ onClose, onSubmit, aroKeterangan, setAroKeterangan, aroSuratPermohonan, setAroSuratPermohonan, step, setStep }) => {
   const handleNextStep = () => {
     if (!aroKeterangan) {
@@ -451,8 +451,6 @@ const AddAROModal = ({ onClose, onSubmit, aroKeterangan, setAroKeterangan, aroSu
               <p className="text-gray-600 mt-1">
                 {step === 1 ? 'Isi keterangan permohonan' : 'Upload surat permohonan'}
               </p>
-              <p className="text-xs text-red-600 mt-2">
-              </p>
             </div>
             <button
               onClick={onClose}
@@ -467,8 +465,6 @@ const AddAROModal = ({ onClose, onSubmit, aroKeterangan, setAroKeterangan, aroSu
         <div className="p-6 overflow-y-auto flex-1">
           {step === 1 ? (
             <div className="space-y-4">
-             
-              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Keterangan Permohonan ARO <span className="text-red-500">*</span>
@@ -604,7 +600,6 @@ const AddAROModal = ({ onClose, onSubmit, aroKeterangan, setAroKeterangan, aroSu
                   <button
                     onClick={() => {
                       if (onSubmit()) {
-                        // Reset form setelah submit sukses
                         onClose();
                       }
                     }}
@@ -629,7 +624,7 @@ const AddAROModal = ({ onClose, onSubmit, aroKeterangan, setAroKeterangan, aroSu
   );
 };
 
-// KOMPONEN FORUM MODAL UNTUK USER
+// ==================== KOMPONEN FORUM MODAL ====================
 const ForumModal = ({ submission, userProfile, onClose, onSendMessage, message, setMessage, formatDate }) => {
   const handleSend = () => {
     onSendMessage();
@@ -646,7 +641,7 @@ const ForumModal = ({ submission, userProfile, onClose, onSendMessage, message, 
                 <Mail className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">Forum Diskusi</h3>
+                <h3 className="text-xl font-bold text-gray-900">Konfirmasi</h3>
                 <p className="text-sm text-gray-600">
                   ID: {submission.trackingId} • {submission.app?.toUpperCase()}
                   {submission.isARO && <span className="ml-2 text-red-600">(ARO)</span>}
@@ -669,7 +664,7 @@ const ForumModal = ({ submission, userProfile, onClose, onSendMessage, message, 
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Mail className="w-8 h-8 text-gray-400" />
               </div>
-              <p className="text-gray-500">Belum ada pesan dalam forum diskusi</p>
+              <p className="text-gray-500">Belum ada pesan dalam Konfirmasi</p>
               <p className="text-sm text-gray-400 mt-2">Kirim pesan pertama untuk berkomunikasi dengan admin</p>
             </div>
           ) : (
@@ -732,14 +727,14 @@ const ForumModal = ({ submission, userProfile, onClose, onSendMessage, message, 
   );
 };
 
-// KOMPONEN UTAMA: Alur Pengajuan Hak Akses (MODIFIKASI)
+// ==================== KOMPONEN UTAMA: Alur Pengajuan Hak Akses ====================
 const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onOpenAddARO, isApoloApproved, getAppBadge }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [step, setStep] = useState(1); // 1: Halaman utama, 2: Data Umum, 3: Pilih Aplikasi, 4: Form Spesifik
+  const [step, setStep] = useState(1); // 1: Halaman utama, 2: Data Umum, 3: Pilih Aplikasi, 4: Form Wizard
   const [dataUmum, setDataUmum] = useState(null);
   const [selectedApps, setSelectedApps] = useState([]);
-  const [activeAppForm, setActiveAppForm] = useState(null);
+  const [activeTab, setActiveTab] = useState(null);
   const [formData, setFormData] = useState({
     sipina: {},
     apolo: {},
@@ -747,12 +742,11 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
   });
   const [savedSubmissions, setSavedSubmissions] = useState([]);
   
-  // State untuk ARO (tidak digunakan lagi, tapi tetap untuk backward compatibility)
+  // State untuk ARO
   const [aroData, setAroData] = useState({
     keterangan: '',
     suratPermohonan: null
   });
-  const [showAroForm, setShowAroForm] = useState(false);
 
   const [submittedApps, setSubmittedApps] = useState([]);
 
@@ -782,6 +776,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
       
       setDataUmum(resubmitData.dataUmum);
       setSelectedApps([app]);
+      setActiveTab(app);
       
       const formDataToLoad = resubmitData.data || {};
       
@@ -803,7 +798,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
       };
       
       setSavedSubmissions([newSubmission]);
-      setStep(3);
+      setStep(4);
       
       navigate(location.pathname, { replace: true, state: {} });
     }
@@ -848,32 +843,19 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
     const newSavedSubmissions = savedSubmissions.filter(s => s.app !== app);
     setSavedSubmissions(newSavedSubmissions);
     
-    // Reset ARO data jika app yang dihapus adalah APOLO
-    if (app === 'apolo') {
-      setAroData({ keterangan: '', suratPermohonan: null });
-      setShowAroForm(false);
+    // Reset active tab jika app yang dihapus adalah tab aktif
+    if (activeTab === app) {
+      const remainingApps = selectedApps.filter(a => a !== app);
+      setActiveTab(remainingApps.length > 0 ? remainingApps[0] : null);
     }
   };
 
-  const handleOpenAppForm = (app) => {
-    const existingSubmission = savedSubmissions.find(s => s.app === app);
-    
-    if (existingSubmission) {
-      setFormData(prev => ({
-        ...prev,
-        [app]: existingSubmission.data
-      }));
+  const handleNextToFormWizard = () => {
+    if (selectedApps.length === 0) {
+      alert('Pilih minimal satu aplikasi!');
+      return;
     }
-    
-    setActiveAppForm(app);
-    
-    // Jika app adalah APOLO, tampilkan form ARO (untuk pengajuan pertama kali)
-    if (app === 'apolo') {
-      setShowAroForm(true);
-    } else {
-      setShowAroForm(false);
-    }
-    
+    setActiveTab(selectedApps[0]);
     setStep(4);
   };
 
@@ -917,42 +899,30 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
       
       setSavedSubmissions([...savedSubmissions, newSubmission]);
     }
-    
-    setActiveAppForm(null);
-    setShowAroForm(false);
-    setStep(3);
   };
 
-  // Handle simpan ARO untuk APOLO (pengajuan pertama)
-  const handleSaveAro = () => {
-    if (!aroData.keterangan) {
-      alert('Harap isi keterangan ARO!');
-      return false;
-    }
-    
-    if (!aroData.suratPermohonan) {
-      alert('Harap upload surat permohonan ARO!');
-      return false;
-    }
-    
-    return true;
-  };
-
-  // Handle submit semua pengajuan
   const handleSubmitAll = () => {
     if (savedSubmissions.length === 0) {
       alert('Tidak ada pengajuan yang siap dikirim!');
       return;
     }
 
-    // Validasi khusus untuk APOLO: pastikan ARO sudah diisi (untuk pengajuan pertama)
+    // Validasi semua form sudah diisi
+    const allAppsFilled = selectedApps.every(app => {
+      const submission = savedSubmissions.find(s => s.app === app);
+      return submission && Object.keys(submission.data).length > 0;
+    });
+
+    if (!allAppsFilled) {
+      alert('Semua form aplikasi harus diisi terlebih dahulu!');
+      return;
+    }
+
+    // Validasi khusus untuk APOLO
     const apoloSubmission = savedSubmissions.find(s => s.app === 'apolo');
     if (apoloSubmission && (!aroData.keterangan || !aroData.suratPermohonan)) {
       alert('Untuk pengajuan APOLO, Anda harus mengisi data ARO terlebih dahulu!');
-      const apoloIndex = savedSubmissions.findIndex(s => s.app === 'apolo');
-      if (apoloIndex >= 0) {
-        handleOpenAppForm('apolo');
-      }
+      setActiveTab('apolo');
       return;
     }
 
@@ -968,7 +938,6 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
         approvedAt = new Date().toISOString();
       }
       
-      // Buat log
       const logAction = sub.isResubmit ? 'Diajukan Ulang' : 'Diajukan';
       const logDescription = sub.isResubmit ? 'Pengajuan ulang setelah ditolak' : 'Pengajuan hak akses baru dibuat';
       
@@ -980,7 +949,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
         details: status === 'approved' ? 'Pengajuan E-Reporting otomatis disetujui' : 'Menunggu persetujuan admin'
       }];
       
-      // Untuk APOLO, simpan data ARO sebagai bagian dari submission (pengajuan pertama)
+      // Untuk APOLO, simpan data ARO
       let aroDataToSave = null;
       if (sub.app === 'apolo') {
         aroDataToSave = {
@@ -992,7 +961,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
       const submissionData = {
         ...sub,
         dataUmum,
-        aroData: aroDataToSave, // Simpan data ARO untuk pengajuan pertama
+        aroData: aroDataToSave,
         status: status,
         approvedBy: approvedBy,
         approvedAt: approvedAt,
@@ -1020,9 +989,11 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
     localStorage.setItem('hakAksesSubmissions', JSON.stringify(updatedSubmissions));
     setSubmissions(updatedSubmissions);
 
+    // Reset semua state
     setStep(1);
     setSelectedApps([]);
     setSavedSubmissions([]);
+    setActiveTab(null);
     setFormData({
       sipina: {},
       apolo: {},
@@ -1040,13 +1011,42 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
     setStep(1);
     setSelectedApps([]);
     setSavedSubmissions([]);
+    setActiveTab(null);
     setFormData({
       sipina: {},
       apolo: {},
       ereporting: {}
     });
     setAroData({ keterangan: '', suratPermohonan: null });
-    setShowAroForm(false);
+  };
+
+  const handleDeleteDraft = (app) => {
+    if (window.confirm(`Hapus draft pengajuan ${app.toUpperCase()}?`)) {
+      const newSavedSubmissions = savedSubmissions.filter(s => s.app !== app);
+      setSavedSubmissions(newSavedSubmissions);
+      
+      setFormData(prev => ({
+        ...prev,
+        [app]: {}
+      }));
+      
+      // Hapus dari selectedApps
+      const newSelectedApps = selectedApps.filter(a => a !== app);
+      setSelectedApps(newSelectedApps);
+      
+      if (activeTab === app) {
+        setActiveTab(newSelectedApps.length > 0 ? newSelectedApps[0] : null);
+      }
+      
+      if (newSelectedApps.length === 0) {
+        setStep(3);
+      }
+    }
+  };
+
+  const handleEditDraft = (app) => {
+    setActiveTab(app);
+    setStep(4);
   };
 
   if (step === 1) {
@@ -1110,7 +1110,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
               </p>
               {!isApoloApproved && (
                 <p className="text-xs text-yellow-600 font-medium">
-                  Harus memiliki hak akses APOLO
+                  Harus memiliki hak akses APOLO yang sudah disetujui
                 </p>
               )}
             </div>
@@ -1149,9 +1149,6 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
                       <div>
                         <h4 className="font-bold text-gray-900">{appInfo.label}</h4>
                         <p className="text-sm text-gray-600">Submitted</p>
-                        {hasAro && (
-                          <p className="text-xs text-red-600 font-medium mt-1"></p>
-                        )}
                       </div>
                     </div>
                     
@@ -1177,77 +1174,7 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
                       </div>
                     </div>
 
-                    {/* Tampilkan detail ARO untuk APOLO dengan ARO */}
-                    {/* {hasAro && appSubmission.aroData && (
-                      <div className="mt-4 pt-4 border-t border-purple-200 bg-purple-50 -mx-6 px-6 pb-2 rounded-b-xl">
-                        <p className="text-xs font-bold text-red-800 mb-2 flex items-center gap-1">
-                          <Package className="w-3 h-3" />
-                          Informasi Menyertai:
-                        </p>
-                        <div className="text-xs space-y-2">
-                          <div className="bg-white p-2 rounded border border-purple-200">
-                            <p className="text-gray-700 line-clamp-2">
-                              {appSubmission.aroData.keterangan}
-                            </p>
-                            {appSubmission.aroData.suratPermohonan && (
-                              <p className="text-ed-600 mt-1 flex items-center gap-1">
-                                <FileText className="w-3 h-3" />
-                                {appSubmission.aroData.suratPermohonan.name}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    )} */}
-
-                    {/* Tampilkan daftar ARO yang sudah diajukan (sebagai submission terpisah) */}
-                    {app === 'apolo' && appSubmission?.status === 'approved' && !hasAro && (
-                      <div className="mt-4 pt-4 border-t border-red-100">
-                        <p className="text-xs font-bold text-gray-700 mb-3 flex items-center gap-1">
-                          <Info className="w-3 h-3 text-red-500" />
-                          Daftar ARO yang Diajukan (Terpisah):
-                        </p>
-                        <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                          {submissions
-                            .filter(sub => sub.app === 'apolo' && sub.isARO)
-                            .map((aro, idx) => (
-                              <div key={idx} className={`p-2 rounded border ${
-                                aro.status === 'approved' ? 'bg-green-50 border-green-200' :
-                                aro.status === 'pending' ? 'bg-yellow-50 border-yellow-200' :
-                                'bg-red-50 border-red-200'
-                              }`}>
-                                <div className="flex items-center justify-between">
-                                  <div className="flex-1">
-                                    <div className="flex items-center gap-2">
-                                      <p className="text-xs font-medium text-gray-800">
-                                        ARO #{idx + 1}
-                                      </p>
-                                      <span className={`px-1.5 py-0.5 text-xs rounded-full ${
-                                        aro.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                        aro.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                        'bg-red-100 text-red-800'
-                                      }`}>
-                                        {aro.status === 'approved' ? '✓ Disetujui' : 
-                                         aro.status === 'pending' ? '⏳ Menunggu' : 
-                                         '✗ Ditolak'}
-                                      </span>
-                                    </div>
-                                    <p className="text-xs text-gray-600 mt-1">
-                                      ID: {aro.trackingId}
-                                    </p>
-                                    <p className="text-xs text-gray-600 mt-1 line-clamp-2">
-                                      "{aro.aroKeterangan?.substring(0, 50)}..."
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          {submissions.filter(sub => sub.app === 'apolo' && sub.isARO).length === 0 && (
-                            <p className="text-xs text-gray-500 italic">Belum ada ARO diajukan</p>
-                          )}
-                        </div>
-                      </div>
-                    )}
+                    
                   </div>
                 );
               })}
@@ -1276,52 +1203,35 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
         submittedApps={submittedApps}
         onSelectApp={handleSelectApp}
         onRemoveApp={handleRemoveApp}
-        onOpenAppForm={handleOpenAppForm}
-        onSubmitAll={handleSubmitAll}
+        onNext={handleNextToFormWizard}
         onBack={handleBackToMain}
       />
     );
   }
 
-  // Di dalam NewAccessSubmissionFlow, pada bagian step === 4
-  if (step === 4 && activeAppForm) {
-    const formProps = {
-      dataUmum,
-      initialData: formData[activeAppForm] || {},
-      onSave: (data) => handleSaveAppForm(activeAppForm, data),
-      onCancel: () => {
-        setActiveAppForm(null);
-        setShowAroForm(false);
-        setStep(3);
-      }
-    };
-
-    if (activeAppForm === 'apolo') {
-      return (
-        <div className="p-6">
-          <ApoloFormWithAro 
-            {...formProps}
-            aroData={aroData}
-            setAroData={setAroData}
-          />
-        </div>
-      );
-    }
-
-    switch(activeAppForm) {
-      case 'sipina':
-        return <SipinaForm {...formProps} />;
-      case 'ereporting':
-        return <EReportingForm {...formProps} />;
-      default:
-        return null;
-    }
+  if (step === 4) {
+    return (
+      <FormWizard
+        selectedApps={selectedApps}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        savedSubmissions={savedSubmissions}
+        onSaveForm={handleSaveAppForm}
+        onSubmitAll={handleSubmitAll}
+        onBack={() => setStep(3)}
+        dataUmum={dataUmum}
+        aroData={aroData}
+        setAroData={setAroData}
+        onDeleteDraft={handleDeleteDraft}
+        onEditDraft={handleEditDraft}
+      />
+    );
   }
 
   return null;
 };
 
-// STEP 2: DATA UMUM
+// ==================== STEP 2: DATA UMUM ====================
 const DataUmumStep = ({ dataUmum, onFinish, onBack }) => {
   return (
     <div className="p-8">
@@ -1414,15 +1324,14 @@ const DataUmumStep = ({ dataUmum, onFinish, onBack }) => {
   );
 };
 
-// STEP 3: PILIH APLIKASI
+// ==================== STEP 3: PILIH APLIKASI ====================
 const PilihAplikasiStep = ({ 
   selectedApps, 
   savedSubmissions, 
   submittedApps,
   onSelectApp, 
   onRemoveApp, 
-  onOpenAppForm, 
-  onSubmitAll, 
+  onNext, 
   onBack 
 }) => {
   const apps = [
@@ -1493,11 +1402,10 @@ const PilihAplikasiStep = ({
           <div className="space-y-4">
             {selectedApps.map(appId => {
               const app = apps.find(a => a.id === appId);
-              const savedSubmission = savedSubmissions.find(s => s.app === appId);
               
               return (
                 <div key={appId} className="border border-red-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${app.color} flex items-center justify-center`}>
                         <Database className="w-5 h-5 text-white" />
@@ -1508,44 +1416,14 @@ const PilihAplikasiStep = ({
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-2">
-                      {!savedSubmission ? (
-                        <button
-                          onClick={() => onOpenAppForm(appId)}
-                          className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium rounded-lg hover:from-red-600 hover:to-red-700"
-                        >
-                          Isi Form
-                        </button>
-                      ) : (
-                        <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
-                          Form sudah diisi
-                        </span>
-                      )}
-                      <button
-                        onClick={() => onRemoveApp(appId)}
-                        className="p-2 text-gray-400 hover:text-red-600"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => onRemoveApp(appId)}
+                      className="p-2 text-gray-400 hover:text-red-600"
+                      title="Hapus dari daftar"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
-                  
-                  {savedSubmission && (
-                    <div className="border-t border-red-100 pt-4 mt-4">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p className="text-sm text-gray-600">Status: <span className="font-medium text-yellow-600">Draft</span></p>
-                          <p className="text-xs text-gray-500">ID: {savedSubmission.trackingId}</p>
-                        </div>
-                        <button
-                          onClick={() => onOpenAppForm(appId)}
-                          className="text-sm text-red-600 hover:text-red-700 font-medium"
-                        >
-                          Edit Form
-                        </button>
-                      </div>
-                    </div>
-                  )}
                 </div>
               );
             })}
@@ -1556,7 +1434,7 @@ const PilihAplikasiStep = ({
       <div className="flex justify-between items-center pt-6 border-t border-red-200">
         <div>
           <p className="text-sm text-gray-600">
-            {selectedApps.length} aplikasi dipilih • {savedSubmissions.length} form sudah diisi
+            {selectedApps.length} aplikasi dipilih
           </p>
         </div>
         
@@ -1568,29 +1446,239 @@ const PilihAplikasiStep = ({
             Kembali
           </button>
           
-          {savedSubmissions.length === selectedApps.length && selectedApps.length > 0 ? (
-            <button
-              onClick={onSubmitAll}
-              className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700"
-            >
-              Submit Semua Pengajuan
-            </button>
-          ) : (
-            <button
-              disabled
-              className="px-8 py-3 bg-gray-300 text-gray-500 font-medium rounded-lg cursor-not-allowed"
-            >
-              Isi semua form terlebih dahulu
-            </button>
-          )}
+          <button
+            onClick={onNext}
+            disabled={selectedApps.length === 0}
+            className={`
+              px-8 py-3 font-bold rounded-lg flex items-center gap-2
+              ${selectedApps.length > 0
+                ? 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }
+            `}
+          >
+            Selanjutnya
+            <ArrowRight className="w-5 h-5" />
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-// FORM APOLO DENGAN ARO (UNTUK PENGAJUAN PERTAMA)
-const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, aroData, setAroData }) => {
+// ==================== STEP 4: FORM WIZARD DENGAN TAB ====================
+const FormWizard = ({ 
+  selectedApps, 
+  activeTab, 
+  setActiveTab, 
+  savedSubmissions, 
+  onSaveForm, 
+  onSubmitAll, 
+  onBack,
+  dataUmum,
+  aroData,
+  setAroData,
+  onDeleteDraft,
+  onEditDraft
+}) => {
+  const apps = [
+    { id: 'sipina', label: 'SIPINA', icon: Database },
+    { id: 'apolo', label: 'APOLO', icon: Package },
+    { id: 'ereporting', label: 'E-Reporting', icon: FileSpreadsheet }
+  ];
+
+  const filteredApps = apps.filter(app => selectedApps.includes(app.id));
+
+  const isFormFilled = (appId) => {
+    const submission = savedSubmissions.find(s => s.app === appId);
+    return submission && Object.keys(submission.data).length > 0;
+  };
+
+  const getFormComponent = () => {
+    const commonProps = {
+      dataUmum,
+      initialData: savedSubmissions.find(s => s.app === activeTab)?.data || {},
+      onSave: (data) => onSaveForm(activeTab, data),
+      onCancel: () => {},
+      hideCancel: true
+    };
+
+    if (activeTab === 'apolo') {
+      return (
+        <ApoloFormWithAro 
+          {...commonProps}
+          aroData={aroData}
+          setAroData={setAroData}
+        />
+      );
+    }
+
+    if (activeTab === 'sipina') {
+      return <SipinaForm {...commonProps} />;
+    }
+
+    if (activeTab === 'ereporting') {
+  return <EReportingFormAccordion {...commonProps} />;
+    }
+
+    return null;
+  };
+
+  return (
+    <div className="p-6">
+      {/* Header dengan tabs */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onBack}
+              className="p-2 text-gray-400 hover:text-gray-600"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <h2 className="text-xl font-bold text-gray-900">Form Pengajuan Hak Akses</h2>
+          </div>
+          <div className="flex items-center gap-3">
+            {selectedApps.map(appId => {
+              const app = apps.find(a => a.id === appId);
+              const filled = isFormFilled(appId);
+              return (
+                <div 
+                  key={appId}
+                  className="flex items-center"
+                >
+                  {filled && (
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="flex border-b border-red-200">
+          {filteredApps.map(app => {
+            const Icon = app.icon;
+            const filled = isFormFilled(app.id);
+            
+            return (
+              <button
+                key={app.id}
+                onClick={() => setActiveTab(app.id)}
+                className={`
+                  flex items-center gap-2 px-6 py-3 font-medium text-sm border-b-2 transition-all
+                  ${activeTab === app.id 
+                    ? 'border-red-600 text-red-600' 
+                    : 'border-transparent text-gray-500 hover:text-red-600 hover:border-red-300'
+                  }
+                `}
+              >
+                <Icon className={`w-4 h-4 ${filled ? 'text-green-500' : ''}`} />
+                {app.label}
+                {filled && (
+                  <CheckCircle className="w-4 h-4 text-green-500 ml-1" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Form Content */}
+      <div className="mb-8">
+        {getFormComponent()}
+      </div>
+
+      {/* Draft Management & Submit */}
+      <div className="border-t border-red-200 pt-6">
+        {/* Draft List */}
+        {savedSubmissions.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-red-500" />
+              Draft Pengajuan
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {savedSubmissions.map(sub => {
+                const app = apps.find(a => a.id === sub.app);
+                const filled = Object.keys(sub.data).length > 0;
+                
+                return (
+                  <div key={sub.id} className="border border-red-200 rounded-lg p-4 bg-white">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center">
+                          {app && <app.icon className="w-4 h-4 text-white" />}
+                        </div>
+                        <span className="font-medium text-gray-900">{app?.label}</span>
+                      </div>
+                      {filled ? (
+                        <CheckCircle className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-yellow-500" />
+                      )}
+                    </div>
+                    
+                    <p className="text-xs text-gray-500 mb-2">ID: {sub.trackingId}</p>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        filled ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {filled ? 'Terisi' : 'Belum diisi'}
+                      </span>
+                      
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => onEditDraft(sub.app)}
+                          className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => onDeleteDraft(sub.app)}
+                          className="p-1 text-red-600 hover:bg-red-50 rounded"
+                          title="Hapus"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <div className="flex justify-end">
+          <button
+            onClick={onSubmitAll}
+            disabled={savedSubmissions.length !== selectedApps.length || 
+                     savedSubmissions.some(sub => Object.keys(sub.data).length === 0)}
+            className={`
+              px-8 py-3 font-bold rounded-lg flex items-center gap-2
+              ${savedSubmissions.length === selectedApps.length && 
+                savedSubmissions.every(sub => Object.keys(sub.data).length > 0)
+                ? 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }
+            `}
+          >
+            <Send className="w-5 h-5" />
+            Submit Semua Pengajuan
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ==================== FORM APOLO DENGAN ARO ====================
+const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, hideCancel, aroData, setAroData }) => {
   const [formData, setFormData] = useState({
     nomorSurat: initialData.nomorSurat || '',
     tanggalSurat: initialData.tanggalSurat || '',
@@ -1658,9 +1746,11 @@ const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, aroData, se
             {step === 1 ? 'Langkah 1: Isi data APOLO' : 'Langkah 2: Isi data ARO'}
           </p>
         </div>
-        <button onClick={onCancel} className="p-2 text-gray-400 hover:text-gray-600">
-          <X className="w-5 h-5" />
-        </button>
+        {!hideCancel && (
+          <button onClick={onCancel} className="p-2 text-gray-400 hover:text-gray-600">
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       <div className="mb-6">
@@ -1736,13 +1826,15 @@ const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, aroData, se
             </div>
 
             <div className="flex justify-between pt-6 border-t border-gray-200 mt-6">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
-              >
-                Batal
-              </button>
+              {!hideCancel && (
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
+                >
+                  Batal
+                </button>
+              )}
               <button
                 type="button"
                 onClick={handleNextStep}
@@ -1838,7 +1930,7 @@ const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, aroData, se
                 className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 flex items-center gap-2"
               >
                 <CheckCircle className="w-5 h-5" />
-                Submit APOLO & ARO (ID Tracking baru)
+                Submit Data
               </button>
             </div>
           </div>
@@ -1848,8 +1940,8 @@ const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, aroData, se
   );
 };
 
-// Form SIPINA (TIDAK BERUBAH)
-const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
+// ==================== FORM SIPINA ====================
+const SipinaForm = ({ dataUmum, initialData, onSave, onCancel, hideCancel }) => {
   const [formData, setFormData] = useState({
     kodeSIPO: initialData.kodeSIPO || '',
     namaLJK: initialData.namaLJK || '',
@@ -2002,12 +2094,14 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
             <p className="text-gray-600">Form aktivasi user SIPINA berdasarkan data dari SIPO</p>
             <p className="text-sm text-gray-500 mt-1">ID Tracking baru akan dibuat setelah submit</p>
           </div>
-          <button
-            onClick={onCancel}
-            className="p-2 text-gray-400 hover:text-gray-600"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          {!hideCancel && (
+            <button
+              onClick={onCancel}
+              className="p-2 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2447,13 +2541,15 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
         </div>
 
         <div className="flex justify-between pt-6 border-t border-gray-200">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
-          >
-            Batal
-          </button>
+          {!hideCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
+            >
+              Batal
+            </button>
+          )}
           
           <button
             type="submit"
@@ -2469,9 +2565,8 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   );
 };
 
-// FORM E-REPORTING - DENGAN AUTO-FILL UNTUK SIPO DAN NON-SIPO
-const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
-  const [step, setStep] = useState(1); // 1: Pilih metode, 2: Input data, 3: Validasi jenis usaha, 4: Selesai
+// ==================== FORM E-REPORTING DENGAN ACCORDION ====================
+const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hideCancel }) => {
   const [metodePendaftaran, setMetodePendaftaran] = useState(null);
   const [formData, setFormData] = useState({
     npwp: initialData.npwp || '',
@@ -2491,6 +2586,14 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [isDataFromNPWP, setIsDataFromNPWP] = useState(false);
+  
+  const [expandedSections, setExpandedSections] = useState({
+    pilihMetode: true,
+    dataPerusahaan: false,
+    validasiSIPO: false,
+    email: false,
+    konfirmasi: false
+  });
 
   useEffect(() => {
     if (initialData && Object.keys(initialData).length > 0) {
@@ -2560,20 +2663,10 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
       sipoValidated: false,
       dataSIPO: null
     }));
-  };
-
-  const handleStep1Submit = () => {
-    if (!formData.npwp || !formData.namaPerusahaan || !formData.alamat || !formData.jenisUsaha) {
-      alert('Semua field wajib diisi!');
-      return;
-    }
     
-    if (metodePendaftaran === 'sipo') {
-      setStep(2); // Langsung ke validasi SIPO
-    } else {
-      // Non-SIPO: langsung ke input email
-      setStep(3);
-    }
+    // Tutup section pilihMetode dan buka section dataPerusahaan
+    toggleSection('pilihMetode');
+    toggleSection('dataPerusahaan');
   };
 
   const handleValidateSIPO = () => {
@@ -2601,6 +2694,11 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
           dataSIPO: dataSIPO
         }));
         setSipoValidationMessage('Validasi SIPO berhasil. Data perusahaan telah diverifikasi.');
+        
+        // Setelah validasi berhasil, buka section email
+        setTimeout(() => {
+          toggleSection('email');
+        }, 500);
       } else {
         setSipoValidationMessage('Validasi gagal. Periksa kembali User ID dan Password.');
       }
@@ -2608,15 +2706,24 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     }, 1500);
   };
 
-  const handleStep2Submit = () => {
-    if (!formData.sipoValidated) {
-      alert('Harap validasi User ID dan Password SIPO terlebih dahulu!');
+  const handleDataPerusahaanSubmit = () => {
+    if (!formData.npwp || !formData.namaPerusahaan || !formData.alamat || !formData.jenisUsaha) {
+      alert('Semua field data perusahaan wajib diisi!');
       return;
     }
-    setStep(3); // Lanjut ke input email
+    
+    // Tutup section dataPerusahaan
+    toggleSection('dataPerusahaan');
+    
+    // Buka section berikutnya berdasarkan metode
+    if (metodePendaftaran === 'sipo') {
+      toggleSection('validasiSIPO');
+    } else {
+      toggleSection('email');
+    }
   };
 
-  const handleStep3Submit = () => {
+  const handleEmailSubmit = () => {
     if (!formData.email) {
       setEmailValidationMessage('Email harus diisi!');
       return;
@@ -2628,19 +2735,34 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     }
     
     setEmailValidationMessage('');
-    setStep(4); // Lanjut ke validasi jenis usaha
+    
+    // Tutup section email
+    toggleSection('email');
+    
+    // Buka section konfirmasi
+    toggleSection('konfirmasi');
   };
 
-  // STEP 4: Validasi Jenis Usaha (tidak bisa diedit lagi)
-  const handleValidateJenisUsaha = () => {
-    setFormData(prev => ({
-      ...prev,
-      jenisUsahaValidated: true
-    }));
-    setStep(5); // Lanjut ke halaman sukses
-  };
-
-  const handleFinalRegistration = () => {
+  const handleFinalSubmit = () => {
+    // Validasi final
+    if (!formData.npwp || !formData.namaPerusahaan || !formData.alamat || !formData.jenisUsaha) {
+      alert('Data perusahaan belum lengkap!');
+      toggleSection('dataPerusahaan');
+      return;
+    }
+    
+    if (metodePendaftaran === 'sipo' && !formData.sipoValidated) {
+      alert('Harap validasi SIPO terlebih dahulu!');
+      toggleSection('validasiSIPO');
+      return;
+    }
+    
+    if (!formData.email || !validateEmail(formData.email)) {
+      alert('Email harus diisi dengan format yang valid!');
+      toggleSection('email');
+      return;
+    }
+    
     const completeData = {
       ...formData,
       metode: metodePendaftaran,
@@ -2652,520 +2774,486 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
     onSave(completeData);
     setRegistrationSuccess(true);
     
-    // Tampilkan pesan sukses selama 5 detik sebelum kembali
+    // Tampilkan pesan sukses selama 5 detik
     setTimeout(() => {
-      onCancel();
+      setRegistrationSuccess(false);
+      if (!hideCancel) {
+        onCancel();
+      }
     }, 5000);
   };
 
-  const renderStep = () => {
-    switch(step) {
-      case 1:
-        return renderStep1();
-      case 2:
-        return renderStep2();
-      case 3:
-        return renderStep3();
-      case 4:
-        return renderStep4();
-      case 5:
-        return renderStep5();
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  const isSectionValid = (section) => {
+    switch(section) {
+      case 'dataPerusahaan':
+        return formData.npwp && formData.namaPerusahaan && formData.alamat && formData.jenisUsaha;
+      case 'validasiSIPO':
+        return formData.sipoValidated;
+      case 'email':
+        return formData.email && validateEmail(formData.email);
+      case 'konfirmasi':
+        return true;
       default:
-        return renderStep1();
+        return false;
     }
   };
 
-  const renderStep1 = () => (
-    <div>
-      <div className="flex items-center gap-2 mb-6">
-        <button
-          onClick={onCancel}
-          className="p-2 text-gray-400 hover:text-gray-600"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span>
-          Pilih Metode & Input Data Perusahaan
-        </h3>
+  return (
+    <div className="p-4">
+      <div className="mb-6 bg-gradient-to-r from-red-50 to-white border-l-4 border-red-700 p-4 rounded-r-lg shadow">
+        <h3 className="text-lg font-bold text-gray-900">Form Pendaftaran E-Reporting</h3>
+        <p className="text-sm text-gray-600">Isi semua bagian form di bawah ini</p>
       </div>
-      
-      <div className="space-y-6">
-        {!metodePendaftaran ? (
-          <div className="space-y-4 mb-6">
-            <h4 className="font-medium text-gray-900">Pilih Metode Pendaftaran:</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <button
-                onClick={() => handlePilihMetode('sipo')}
-                className="p-6 border-2 border-red-400 rounded-xl text-left hover:border-red-600 hover:bg-red-50 transition-all shadow"
-              >
-                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-                  <Database className="w-6 h-6 text-red-600" />
-                </div>
-                <h4 className="font-bold text-gray-900 mb-2">Menggunakan SIPO</h4>
-                <p className="text-sm text-gray-600">
-                  Input NPWP, lalu lakukan validasi dengan User ID dan Password SIPO.
-                </p>
-              </button>
-              
-              <button
-                onClick={() => handlePilihMetode('non-sipo')}
-                className="p-6 border-2 border-red-400 rounded-xl text-left hover:border-red-600 hover:bg-red-50 transition-all shadow"
-              >
-                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-                  <FileText className="w-6 h-6 text-red-600" />
-                </div>
-                <h4 className="font-bold text-gray-900 mb-2">Non-SIPO</h4>
-                <p className="text-sm text-gray-600">
-                  Input Token Untuk Non-sipo dan NPWP untuk SIPO, konfirmasi data, lalu lanjut ke input email.
-                </p>
-              </button>
+
+      <div className="space-y-4">
+        {/* Section 1: Pilih Metode */}
+        <div className="border border-red-200 rounded-xl overflow-hidden">
+          <button
+            onClick={() => toggleSection('pilihMetode')}
+            className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                metodePendaftaran ? 'bg-green-500' : 'bg-red-600'
+              } text-white`}>
+                {metodePendaftaran ? <CheckCircle className="w-4 h-4" /> : '1'}
+              </div>
+              <span className="font-bold text-gray-900">Pilih Metode Pendaftaran</span>
             </div>
-          </div>
-        ) : (
-          <div className="mb-4 p-3 bg-red-50 border border-red-300 rounded-lg shadow">
-            <p className="text-sm text-red-700">
-              Metode pendaftaran: <span className="font-bold">{metodePendaftaran === 'sipo' ? 'Menggunakan SIPO' : 'Non-SIPO'}</span>
-            </p>
-          </div>
-        )}
-        
-        {metodePendaftaran && (
-          <div className="space-y-4 border border-red-300 rounded-xl p-6 bg-white shadow">
-            <h4 className="font-bold text-gray-900 mb-2">Data Perusahaan</h4>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Token/NPWP <span className="text-red-600">*</span>
-              </label>
-              <input
-                type="text"
-                value={formData.npwp}
-                onChange={(e) => setFormData({...formData, npwp: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                placeholder="Masukkan Token/NPWP"
-                required
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nama Perusahaan <span className="text-red-600">*</span>
-              </label>
-              <input
-                type="text"
-                value={formData.namaPerusahaan}
-                readOnly
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-100 text-gray-700"
-              />
-              {isDataFromNPWP && (
-                <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
-                  <CheckCircle className="w-3 h-3" />
-                  Data otomatis dari NPWP (tidak dapat diedit)
-                </p>
+            {expandedSections.pilihMetode ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          </button>
+          
+          {expandedSections.pilihMetode && (
+            <div className="p-6 border-t border-red-200">
+              {!metodePendaftaran ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button
+                    onClick={() => handlePilihMetode('sipo')}
+                    className="p-6 border-2 border-red-400 rounded-xl text-left hover:border-red-600 hover:bg-red-50 transition-all shadow"
+                  >
+                    <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                      <Database className="w-6 h-6 text-red-600" />
+                    </div>
+                    <h4 className="font-bold text-gray-900 mb-2">Menggunakan SIPO</h4>
+                    <p className="text-sm text-gray-600">
+                      Input NPWP, lalu lakukan validasi dengan User ID dan Password SIPO.
+                    </p>
+                  </button>
+                  
+                  <button
+                    onClick={() => handlePilihMetode('non-sipo')}
+                    className="p-6 border-2 border-red-400 rounded-xl text-left hover:border-red-600 hover:bg-red-50 transition-all shadow"
+                  >
+                    <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                      <FileText className="w-6 h-6 text-red-600" />
+                    </div>
+                    <h4 className="font-bold text-gray-900 mb-2">Non-SIPO</h4>
+                    <p className="text-sm text-gray-600">
+                      Input Token/NPWP, konfirmasi data, lalu lanjut ke input email.
+                    </p>
+                  </button>
+                </div>
+              ) : (
+                <div className="p-4 bg-red-50 border border-red-300 rounded-lg">
+                  <p className="text-sm text-red-700 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    Metode pendaftaran: <span className="font-bold">{metodePendaftaran === 'sipo' ? 'Menggunakan SIPO' : 'Non-SIPO'}</span>
+                  </p>
+                  <button
+                    onClick={() => setMetodePendaftaran(null)}
+                    className="mt-2 text-xs text-red-600 hover:text-red-800 underline"
+                  >
+                    Ubah Metode
+                  </button>
+                </div>
               )}
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Alamat <span className="text-red-600">*</span>
-              </label>
-              <textarea
-                value={formData.alamat}
-                readOnly
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-100 text-gray-700"
-                rows="3"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Jenis Usaha <span className="text-red-600">*</span>
-              </label>
-              <select
-                value={formData.jenisUsaha}
-                onChange={(e) => setFormData({...formData, jenisUsaha: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                required
-              >
-                <option value="">Pilih Jenis Usaha</option>
-                <option value="Perusahaan Asuransi Umum">Perusahaan Asuransi Umum</option>
-                <option value="Perusahaan Asuransi Jiwa">Perusahaan Asuransi Jiwa</option>
-                <option value="Perusahaan Reasuransi">Perusahaan Reasuransi</option>
-                <option value="Perbankan">Perbankan</option>
-                <option value="Fintech">Fintech</option>
-                <option value="Dana Pensiun">Dana Pensiun</option>
-              </select>
-            
-            </div>
-            
-            <div className="pt-6 border-t border-gray-200">
-              <button
-                type="button"
-                onClick={handleStep1Submit}
-                className="w-full py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md"
-              >
-                {metodePendaftaran === 'sipo' ? 'Lanjut ke Validasi SIPO' : 'Lanjut ke Input Email'}
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  const renderStep2 = () => (
-    <div>
-      <div className="flex items-center gap-2 mb-6">
-        <button
-          onClick={() => setStep(1)}
-          className="p-2 text-gray-400 hover:text-gray-600"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
-          Validasi User SIPO
-        </h3>
-      </div>
-      
-      <div className="space-y-6 border border-red-300 rounded-xl p-6 bg-white shadow">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-sm text-gray-700">
-            Masukkan User ID dan Password SIPO yang valid untuk memverifikasi data perusahaan.
-          </p>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            User ID SIPO <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="text"
-            value={formData.userIdSIPO}
-            onChange={(e) => {
-              setFormData({...formData, userIdSIPO: e.target.value, sipoValidated: false});
-              setSipoValidationMessage('');
-            }}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-            required
-          />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Password SIPO <span className="text-red-600">*</span>
-          </label>
-          <div className="relative">
-            <input
-              type="password"
-              value={formData.passwordSIPO}
-              onChange={(e) => {
-                setFormData({...formData, passwordSIPO: e.target.value, sipoValidated: false});
-                setSipoValidationMessage('');
-              }}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 pr-12"
-              required
-            />
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-              <Lock className="w-5 h-5 text-red-500" />
-            </div>
-          </div>
-        </div>
-        
-        <button
-          type="button"
-          onClick={handleValidateSIPO}
-          disabled={isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO}
-          className={`w-full py-3 font-bold rounded-lg ${
-            formData.sipoValidated
-              ? 'bg-green-100 text-green-800 border border-green-300'
-              : 'bg-red-600 text-white hover:bg-red-700'
-          } ${isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          {isValidatingSIPO ? (
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              Memvalidasi...
-            </div>
-          ) : formData.sipoValidated ? (
-            <div className="flex items-center justify-center gap-2">
-              <CheckCircle className="w-5 h-5" />
-              Tervalidasi
-            </div>
-          ) : (
-            'Validasi SIPO'
-          )}
-        </button>
-        
-        {sipoValidationMessage && (
-          <div className={`p-3 rounded-lg ${formData.sipoValidated ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-            <p className={`text-sm ${formData.sipoValidated ? 'text-green-700' : 'text-red-700'} flex items-center gap-2`}>
-              {formData.sipoValidated ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
-              {sipoValidationMessage}
-            </p>
-          </div>
-        )}
-        
-        {formData.sipoValidated && formData.dataSIPO && (
-          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-            <h5 className="font-bold text-green-800 mb-3 flex items-center gap-2">
-              <CheckCircle className="w-4 h-4" />
-              Hasil Validasi SIPO:
-            </h5>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Nama Perusahaan:</span>
-                <span className="font-medium text-gray-900">{formData.dataSIPO.namaPerusahaan}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">NPWP:</span>
-                <span className="font-medium text-gray-900">{formData.dataSIPO.npwp}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Alamat:</span>
-                <span className="font-medium text-gray-900">{formData.dataSIPO.alamat}</span>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        <div className="pt-6 border-t border-gray-200">
-          <button
-            type="button"
-            onClick={handleStep2Submit}
-            disabled={!formData.sipoValidated}
-            className={`w-full py-3 font-bold rounded-lg ${
-              formData.sipoValidated
-                ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            Lanjut ke Input Email
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderStep3 = () => (
-    <div>
-      <div className="flex items-center gap-2 mb-6">
-        <button
-          onClick={() => setStep(metodePendaftaran === 'sipo' ? 2 : 1)}
-          className="p-2 text-gray-400 hover:text-gray-600"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
-            {metodePendaftaran === 'sipo' ? '3' : '2'}
-          </span>
-          Input Email (User ID Aplikasi)
-        </h3>
-      </div>
-      
-      <div className="space-y-6 border border-red-300 rounded-xl p-6 bg-white shadow">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-sm text-gray-700">
-            Email ini akan digunakan sebagai identitas login utama aplikasi.
-          </p>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Alamat Email <span className="text-red-600">*</span>
-          </label>
-          <div className="relative">
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => {
-                setFormData({...formData, email: e.target.value});
-                setEmailValidationMessage('');
-              }}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 pr-12"
-              placeholder="contoh@perusahaan.co.id"
-              required
-            />
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-              <Mail className="w-5 h-5 text-red-500" />
-            </div>
-          </div>
-          {formData.email && validateEmail(formData.email) && (
-            <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
-              <CheckCircle className="w-3 h-3" />
-              Format email valid
-            </p>
           )}
         </div>
-        
-        {emailValidationMessage && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-700 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" />
-              {emailValidationMessage}
-            </p>
+
+        {/* Section 2: Data Perusahaan (hanya muncul jika metode sudah dipilih) */}
+        {metodePendaftaran && (
+          <div className="border border-red-200 rounded-xl overflow-hidden">
+            <button
+              onClick={() => toggleSection('dataPerusahaan')}
+              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  isSectionValid('dataPerusahaan') ? 'bg-green-500' : 'bg-red-600'
+                } text-white`}>
+                  {isSectionValid('dataPerusahaan') ? <CheckCircle className="w-4 h-4" /> : '2'}
+                </div>
+                <span className="font-bold text-gray-900">Data Perusahaan</span>
+              </div>
+              {expandedSections.dataPerusahaan ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
+            
+            {expandedSections.dataPerusahaan && (
+              <div className="p-6 border-t border-red-200 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Token/NPWP <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.npwp}
+                    onChange={(e) => setFormData({...formData, npwp: e.target.value, sipoValidated: false})}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                    placeholder="Masukkan Token/NPWP"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nama Perusahaan <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.namaPerusahaan}
+                    readOnly
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-100 text-gray-700"
+                  />
+                  {isDataFromNPWP && (
+                    <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" />
+                      Data otomatis dari NPWP (tidak dapat diedit)
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Alamat <span className="text-red-600">*</span>
+                  </label>
+                  <textarea
+                    value={formData.alamat}
+                    readOnly
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-100 text-gray-700"
+                    rows="3"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Jenis Usaha <span className="text-red-600">*</span>
+                  </label>
+                  <select
+                    value={formData.jenisUsaha}
+                    onChange={(e) => setFormData({...formData, jenisUsaha: e.target.value})}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                  >
+                    <option value="">Pilih Jenis Usaha</option>
+                    <option value="Perusahaan Asuransi Umum">Perusahaan Asuransi Umum</option>
+                    <option value="Perusahaan Asuransi Jiwa">Perusahaan Asuransi Jiwa</option>
+                    <option value="Perusahaan Reasuransi">Perusahaan Reasuransi</option>
+                    <option value="Perbankan">Perbankan</option>
+                    <option value="Fintech">Fintech</option>
+                    <option value="Dana Pensiun">Dana Pensiun</option>
+                  </select>
+                </div>
+                
+                <div className="pt-4">
+                  <button
+                    type="button"
+                    onClick={handleDataPerusahaanSubmit}
+                    disabled={!formData.npwp || !formData.jenisUsaha}
+                    className={`w-full py-3 font-bold rounded-lg ${
+                      formData.npwp && formData.jenisUsaha
+                        ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    Simpan Data Perusahaan
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
-        
-        <div className="pt-6 border-t border-gray-200">
-          <button
-            type="button"
-            onClick={handleStep3Submit}
-            disabled={!formData.email || !validateEmail(formData.email)}
-            className={`w-full py-3 font-bold rounded-lg ${
-              formData.email && validateEmail(formData.email)
-                ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            Lanjut ke Validasi Jenis Usaha
-          </button>
-        </div>
-      </div>
-    </div>
-  );
 
-  const renderStep4 = () => (
-    <div>
-      <div className="flex items-center gap-2 mb-6">
-        <button
-          onClick={() => setStep(3)}
-          className="p-2 text-gray-400 hover:text-gray-600"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
-            {metodePendaftaran === 'sipo' ? '4' : '3'}
-          </span>
-          Validasi Jenis Usaha
-        </h3>
-      </div>
-      
-      <div className="space-y-6 border border-red-300 rounded-xl p-6 bg-white shadow">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <div className="flex items-start gap-2">
-            <Info className="w-5 h-5 text-yellow-600 mt-0.5" />
-            <div>
-              <p className="text-sm font-medium text-yellow-800">
-                Tahap Validasi Jenis Usaha
-              </p>
-              <p className="text-xs text-yellow-700 mt-1">
-                Pada tahap ini, jenis usaha tidak dapat diubah lagi. Pastikan data sudah benar sebelum melanjutkan.
-              </p>
-            </div>
+        {/* Section 3: Validasi SIPO (hanya untuk metode SIPO) */}
+        {metodePendaftaran === 'sipo' && isSectionValid('dataPerusahaan') && (
+          <div className="border border-red-200 rounded-xl overflow-hidden">
+            <button
+              onClick={() => toggleSection('validasiSIPO')}
+              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  formData.sipoValidated ? 'bg-green-500' : 'bg-red-600'
+                } text-white`}>
+                  {formData.sipoValidated ? <CheckCircle className="w-4 h-4" /> : '3'}
+                </div>
+                <span className="font-bold text-gray-900">Validasi SIPO</span>
+              </div>
+              {expandedSections.validasiSIPO ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
+            
+            {expandedSections.validasiSIPO && (
+              <div className="p-6 border-t border-red-200 space-y-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-sm text-gray-700">
+                    Masukkan User ID dan Password SIPO yang valid untuk memverifikasi data perusahaan.
+                  </p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    User ID SIPO <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.userIdSIPO}
+                    onChange={(e) => {
+                      setFormData({...formData, userIdSIPO: e.target.value, sipoValidated: false});
+                      setSipoValidationMessage('');
+                    }}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Password SIPO <span className="text-red-600">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="password"
+                      value={formData.passwordSIPO}
+                      onChange={(e) => {
+                        setFormData({...formData, passwordSIPO: e.target.value, sipoValidated: false});
+                        setSipoValidationMessage('');
+                      }}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 pr-12"
+                    />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <Lock className="w-5 h-5 text-red-500" />
+                    </div>
+                  </div>
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={handleValidateSIPO}
+                  disabled={isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO}
+                  className={`w-full py-3 font-bold rounded-lg ${
+                    formData.sipoValidated
+                      ? 'bg-green-100 text-green-800 border border-green-300'
+                      : 'bg-red-600 text-white hover:bg-red-700'
+                  } ${isValidatingSIPO || !formData.userIdSIPO || !formData.passwordSIPO ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {isValidatingSIPO ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Memvalidasi...
+                    </div>
+                  ) : formData.sipoValidated ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <CheckCircle className="w-5 h-5" />
+                      Tervalidasi
+                    </div>
+                  ) : (
+                    'Validasi SIPO'
+                  )}
+                </button>
+                
+                {sipoValidationMessage && (
+                  <div className={`p-3 rounded-lg ${formData.sipoValidated ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                    <p className={`text-sm ${formData.sipoValidated ? 'text-green-700' : 'text-red-700'} flex items-center gap-2`}>
+                      {formData.sipoValidated ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+                      {sipoValidationMessage}
+                    </p>
+                  </div>
+                )}
+                
+                {formData.sipoValidated && formData.dataSIPO && (
+                  <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <h5 className="font-bold text-green-800 mb-3 flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4" />
+                      Hasil Validasi SIPO:
+                    </h5>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Nama Perusahaan:</span>
+                        <span className="font-medium text-gray-900">{formData.dataSIPO.namaPerusahaan}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">NPWP:</span>
+                        <span className="font-medium text-gray-900">{formData.dataSIPO.npwp}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Alamat:</span>
+                        <span className="font-medium text-gray-900">{formData.dataSIPO.alamat}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        </div>
-        
-        <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
-          <h4 className="font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Data Perusahaan (Final)</h4>
-          
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs text-gray-500 mb-1">Token/NPWP </p>
-                <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.npwp}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 mb-1">Email </p>
-                <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.email}</p>
-              </div>
-            </div>
-            
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Nama Perusahaan</p>
-              <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.namaPerusahaan}</p>
-            </div>
-            
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Alamat</p>
-              <p className="font-medium text-gray-900 bg-white p-2 rounded border border-gray-200">{formData.alamat}</p>
-            </div>
-            
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Jenis Usaha</p>
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="font-bold text-red-800 text-center">{formData.jenisUsaha}</p>
-                <p className="text-xs text-red-600 mt-1 text-center">(Tidak dapat diubah pada tahap ini)</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="pt-6 border-t border-gray-200">
-          <button
-            type="button"
-            onClick={handleValidateJenisUsaha}
-            className="w-full py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md flex items-center justify-center gap-2"
-          >
-            <CheckCircle className="w-5 h-5" />
-            Konfirmasi & Selesai
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+        )}
 
-  const renderStep5 = () => (
-    <div className="text-center">
-      <div className="mb-6">
-        <h3 className="text-lg font-bold text-gray-900 flex items-center justify-center gap-2">
-          <span className="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
-            ✓
-          </span>
-          Pendaftaran Berhasil
-        </h3>
-      </div>
-      
-      <div className="space-y-8 border-2 border-green-300 rounded-xl p-8 bg-gradient-to-b from-green-50 to-white shadow-lg">
-        <div className="flex justify-center">
-          <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center border-4 border-green-200">
-            <CheckCircle className="w-14 h-14 text-green-600" />
+        {/* Section 4: Email (untuk semua metode) */}
+        {((metodePendaftaran === 'sipo' && isSectionValid('validasiSIPO')) || 
+          (metodePendaftaran === 'non-sipo' && isSectionValid('dataPerusahaan'))) && (
+          <div className="border border-red-200 rounded-xl overflow-hidden">
+            <button
+              onClick={() => toggleSection('email')}
+              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  formData.email && validateEmail(formData.email) ? 'bg-green-500' : 'bg-red-600'
+                } text-white`}>
+                  {formData.email && validateEmail(formData.email) ? <CheckCircle className="w-4 h-4" /> : 
+                    (metodePendaftaran === 'sipo' ? '4' : '3')}
+                </div>
+                <span className="font-bold text-gray-900">Email (User ID Aplikasi)</span>
+              </div>
+              {expandedSections.email ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
+            
+            {expandedSections.email && (
+              <div className="p-6 border-t border-red-200 space-y-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-sm text-gray-700">
+                    Email ini akan digunakan sebagai identitas login utama aplikasi.
+                  </p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Alamat Email <span className="text-red-600">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => {
+                        setFormData({...formData, email: e.target.value});
+                        setEmailValidationMessage('');
+                      }}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 pr-12"
+                      placeholder="contoh@perusahaan.co.id"
+                    />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <Mail className="w-5 h-5 text-red-500" />
+                    </div>
+                  </div>
+                  {formData.email && validateEmail(formData.email) && (
+                    <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" />
+                      Format email valid
+                    </p>
+                  )}
+                </div>
+                
+                {emailValidationMessage && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-700 flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4" />
+                      {emailValidationMessage}
+                    </p>
+                  </div>
+                )}
+                
+                <div className="pt-4">
+                  <button
+                    type="button"
+                    onClick={handleEmailSubmit}
+                    disabled={!formData.email || !validateEmail(formData.email)}
+                    className={`w-full py-3 font-bold rounded-lg ${
+                      formData.email && validateEmail(formData.email)
+                        ? 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900 shadow-md'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    Simpan Email
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-        
-        <div className="space-y-4">
-          <h4 className="text-2xl font-bold text-gray-900">Pendaftaran Berhasil!</h4>
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <p className="text-lg text-red-700 font-medium mb-2">
-              Email aktivasi telah dikirim ke:
-            </p>
-            <p className="text-xl font-bold text-red-800 bg-white p-3 rounded border border-red-200">
-              {formData.email}
-            </p>
+        )}
+
+        {/* Section 5: Konfirmasi & Submit */}
+        {((metodePendaftaran === 'sipo' && isSectionValid('email')) || 
+          (metodePendaftaran === 'non-sipo' && isSectionValid('email'))) && (
+          <div className="border border-red-200 rounded-xl overflow-hidden">
+            <button
+              onClick={() => toggleSection('konfirmasi')}
+              className="w-full px-6 py-4 bg-gradient-to-r from-red-50 to-white flex items-center justify-between hover:bg-red-100 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center">
+                  {metodePendaftaran === 'sipo' ? '5' : '4'}
+                </div>
+                <span className="font-bold text-gray-900">Konfirmasi & Submit</span>
+              </div>
+              {expandedSections.konfirmasi ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
+            
+            {expandedSections.konfirmasi && (
+              <div className="p-6 border-t border-red-200 space-y-4">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 className="font-bold text-green-800 mb-3 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    Semua data telah lengkap dan valid
+                  </h4>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Metode:</span>
+                      <span className="font-medium">{metodePendaftaran === 'sipo' ? 'Menggunakan SIPO' : 'Non-SIPO'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">NPWP/Token:</span>
+                      <span className="font-medium">{formData.npwp}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Nama Perusahaan:</span>
+                      <span className="font-medium">{formData.namaPerusahaan}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Jenis Usaha:</span>
+                      <span className="font-medium">{formData.jenisUsaha}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Email:</span>
+                      <span className="font-medium">{formData.email}</span>
+                    </div>
+                    {metodePendaftaran === 'sipo' && formData.sipoValidated && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Status SIPO:</span>
+                        <span className="font-medium text-green-600">Tervalidasi</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={handleFinalSubmit}
+                  className="w-full py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md flex items-center justify-center gap-2"
+                >
+                  <CheckCircle className="w-5 h-5" />
+                  Submit Pendaftaran E-Reporting
+                </button>
+              </div>
+            )}
           </div>
-          <p className="text-gray-600">
-            Silakan periksa kotak masuk email Anda untuk melakukan aktivasi akun.
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            Jika tidak menerima email, periksa folder spam atau klik tombol di bawah untuk mengirim ulang.
-          </p>
-        </div>
-        
-        <div className="flex gap-3 pt-4">
-          <button
-            type="button"
-            onClick={() => {
-              alert('Email aktivasi telah dikirim ulang ke: ' + formData.email);
-            }}
-            className="flex-1 px-6 py-3 border border-red-300 text-red-700 font-medium rounded-lg hover:bg-red-50 flex items-center justify-center gap-2"
-          >
-            <Send className="w-4 h-4" />
-            Kirim Ulang Email
-          </button>
-          <button
-            type="button"
-            onClick={handleFinalRegistration}
-            className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:from-red-700 hover:to-red-900 shadow-md flex items-center justify-center gap-2"
-          >
-            <CheckCircle className="w-5 h-5" />
-            Selesai
-          </button>
-        </div>
+        )}
       </div>
-      
+
+      {/* Modal Sukses */}
       {registrationSuccess && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-md mx-4 border-2 border-red-300 shadow-xl">
@@ -3189,33 +3277,26 @@ const EReportingForm = ({ dataUmum, initialData, onSave, onCancel }) => {
           </div>
         </div>
       )}
-    </div>
-  );
 
-  return (
-    <div className="p-6">
-      <div className="mb-8 bg-gradient-to-r from-red-50 to-white border-l-4 border-red-700 p-6 rounded-r-lg shadow">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Form Pendaftaran E-Reporting</h2>
-            <p className="text-gray-600">Form registrasi</p>
-          </div>
-          <button onClick={onCancel} className="p-2 text-gray-400 hover:text-gray-600">
-            <X className="w-5 h-5" />
+      {!hideCancel && (
+        <div className="mt-6 flex justify-end">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
+          >
+            Batal
           </button>
         </div>
-      </div>
-
-      {renderStep()}
+      )}
     </div>
   );
 };
 
-// TAB STATUS & MONITORING - MODIFIKASI UNTUK MENAMPILKAN ARO PADA PENGAJUAN APOLO PERTAMA
+// ==================== TAB STATUS & MONITORING ====================
 const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge, formatDate, userProfile, onOpenForum }) => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('monitoring');
-  const [expandedCard, setExpandedCard] = useState(null);
   
   const submittedSubmissions = submissions.filter(s => s.status !== 'draft');
   
@@ -3226,10 +3307,6 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge, formatD
         app: submission.app 
       }
     });
-  };
-
-  const toggleExpand = (id) => {
-    setExpandedCard(expandedCard === id ? null : id);
   };
 
   const getUnreadAdminMessages = (submission) => {
@@ -3299,9 +3376,6 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge, formatD
                           <span className="font-bold text-gray-900 text-lg">{submission.trackingId}</span>
                           {getStatusBadge(submission.status)}
                           
-                      
-                          
-                         
                           {unreadMessages > 0 && (
                             <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full flex items-center gap-1">
                               <Mail className="w-3 h-3" />
@@ -3325,7 +3399,7 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge, formatD
                               ? 'bg-blue-100 text-blue-600 hover:bg-blue-200' 
                               : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50'
                           }`}
-                          title="Forum Diskusi"
+                          title="Konfirmasi"
                         >
                           <Mail className="w-4 h-4" />
                           {unreadMessages > 0 && (
@@ -3481,7 +3555,6 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge, formatD
                     <div className="flex items-center gap-3 mb-2">
                       <span className="font-bold text-gray-900">{submission.trackingId}</span>
                       {getAppBadge(submission.app, submission.isARO, submission.app === 'apolo' && submission.aroData && !submission.isARO)}
-                      
                     </div>
                     <p className="text-lg font-bold text-gray-900">{log.action}</p>
                     <p className="text-sm text-gray-600 mt-1">{log.description}</p>
@@ -3498,4 +3571,5 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge, formatD
     </div>
   );
 };
+
 export default Profile;
