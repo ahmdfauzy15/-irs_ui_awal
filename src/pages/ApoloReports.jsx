@@ -1114,7 +1114,7 @@ const ApoloReports = () => {
           </div>
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Sistem APOLO {currentDateTime.getFullYear()}</h1>
-            <p className="text-gray-600 mt-1">Monitoring Laporan APOLO - Total {stats.total} Laporan (Periode 1 Tahun)</p>
+            <p className="text-gray-600 mt-1">Monitoring Absensi</p>
             <div className="flex items-center space-x-4 mt-1">
               <p className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200">
                 <Clock className="w-3 h-3 inline mr-1" />
