@@ -465,7 +465,6 @@ const ApoloReports = () => {
     const deadline = new Date(deadlineDate);
     const submission = new Date(submissionDate);
     
-    // PERBAIKAN: Cek apakah tanggal valid
     if (isNaN(deadline.getTime()) || isNaN(submission.getTime())) {
       return null;
     }
@@ -596,7 +595,6 @@ const ApoloReports = () => {
         });
       };
       
-      // PERBAIKAN: Pastikan tanggal valid sebelum konversi ke ISO
       const safeDateToISO = (date) => {
         if (!date || isNaN(date.getTime())) return null;
         return date.toISOString();
