@@ -29,7 +29,6 @@ import {
 } from 'lucide-react';
 
 const ApoloReports = () => {
-  // Fungsi untuk mendapatkan waktu saat ini di WIB (menggunakan local time Indonesia)
   const getCurrentWIBTime = () => {
     const now = new Date();
     return now;
@@ -50,7 +49,6 @@ const ApoloReports = () => {
     };
   });
   
-  // State untuk filter - DIPERBAHARUI untuk struktur baru
   const [filters, setFilters] = useState({
     periodeStatus: 'aktif',
     subFilters: {
@@ -81,7 +79,6 @@ const ApoloReports = () => {
     const currentMonth = currentDateTime.getMonth() + 1; // 1-indexed
     const currentDay = currentDateTime.getDate();
     
-    // Fungsi untuk mendapatkan tanggal yang aman
     const getSafeDate = (year, month, day) => {
       let safeMonth = month;
       let safeYear = year;

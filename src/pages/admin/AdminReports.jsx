@@ -1,4 +1,3 @@
-// src/pages/admin/AdminReports.jsx
 import React, { useState } from 'react';
 import {
   BarChart3,
@@ -186,7 +185,6 @@ const AdminReports = () => {
   );
 };
 
-// Import Check icon
 import { Check } from 'lucide-react';
 
 export default AdminReports;

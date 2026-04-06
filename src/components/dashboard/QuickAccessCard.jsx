@@ -38,7 +38,7 @@ const QuickAccessCard = ({ title, description, reports, color, link }) => {
               alt={`${title} logo`}
               className="w-8 h-8 object-contain"
               onError={(e) => {
-                // Fallback ke inisial jika gambar tidak ditemukan
+                 Fallback ke inisial jika gambar tidak ditemukan
                 e.target.style.display = 'none';
                 e.target.parentElement.innerHTML = `<span class="text-white font-bold text-lg">${title.charAt(0)}</span>`;
               }}

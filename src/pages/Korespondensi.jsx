@@ -37,11 +37,9 @@ import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-// Komponen untuk konten detail pengumuman - DIPERBAIKI
 const AnnouncementDetailContent = ({ announcement }) => {
   if (!announcement) return null;
   
-  // Data deskripsi lengkap untuk pengumuman
   const announcementDetails = {
     1: {
       fullDescription: `Kementerian Keuangan secara resmi merilis Panduan Sistem e-Reporting Tahun 2024 yang merupakan pembaruan komprehensif dari versi sebelumnya. Panduan ini dikembangkan berdasarkan masukan dari pengguna selama setahun terakhir dan mengintegrasikan teknologi terbaru untuk meningkatkan efisiensi pelaporan keuangan negara.`,
@@ -247,7 +245,6 @@ const Korespondensi = () => {
     }
   ];
 
-  // HANYA SATU PENGUMUMAN
   const announcements = [
     {
       id: 1,

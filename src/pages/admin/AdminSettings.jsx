@@ -1,4 +1,3 @@
-// src/pages/admin/AdminSettings.jsx
 import React, { useState } from 'react';
 import {
   Settings,

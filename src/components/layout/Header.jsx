@@ -29,7 +29,6 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Close user menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (showUserMenu && !event.target.closest('.user-menu-container')) {

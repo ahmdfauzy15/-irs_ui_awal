@@ -1,4 +1,3 @@
-// components/layout/AdminHeader.jsx
 import React, { useState, useEffect } from 'react';
 import { 
   Bell, 

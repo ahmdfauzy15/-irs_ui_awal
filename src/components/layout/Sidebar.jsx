@@ -1,4 +1,3 @@
-// Sidebar.js - Update untuk user baru tanpa hak akses lengkap
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   LayoutDashboard,
@@ -39,7 +38,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
   
-  // State untuk menandai apakah user baru
+
   const [isNewUser, setIsNewUser] = useState(true);
 
   // Handle window resize
@@ -380,8 +379,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   ) : null}
                 </>
               ) : (
-                // Menu untuk user biasa (original code)
-                // ... (kode original untuk user dengan hak akses lengkap)
+             
                 null
               )}
             </div>

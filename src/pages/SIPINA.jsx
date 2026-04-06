@@ -39,7 +39,6 @@ const SIPINA = () => {
   const [currentDateTime, setCurrentDateTime] = useState(getCurrentWIBTime());
   const [reportsWithPeriod, setReportsWithPeriod] = useState([]);
   
-  // State untuk periode tanggal - default 1 tahun kebelakang dari hari ini
   const [dateRange, setDateRange] = useState(() => {
     const currentDate = getCurrentWIBTime();
     const currentYear = currentDate.getFullYear();
@@ -50,7 +49,6 @@ const SIPINA = () => {
     };
   });
   
-  // State untuk filter - DIPERBAHARUI untuk struktur baru
   const [filters, setFilters] = useState({
     periodeStatus: 'aktif',
     subFilters: {
@@ -75,7 +73,6 @@ const SIPINA = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Data reports SIPINA dengan tanggal real-time
   const initialReports = useMemo(() => {
     const currentYear = currentDateTime.getFullYear();
     const currentMonth = currentDateTime.getMonth() + 1; // 1-indexed
@@ -378,7 +375,6 @@ const SIPINA = () => {
     const deadline = new Date(deadlineDate);
     const submission = new Date(submissionDate);
     
-    // PERBAIKAN: Cek apakah tanggal valid
     if (isNaN(deadline.getTime()) || isNaN(submission.getTime())) {
       return null;
     }
@@ -509,7 +505,6 @@ const SIPINA = () => {
         });
       };
       
-      // PERBAIKAN: Pastikan tanggal valid sebelum konversi ke ISO
       const safeDateToISO = (date) => {
         if (!date || isNaN(date.getTime())) return null;
         return date.toISOString();

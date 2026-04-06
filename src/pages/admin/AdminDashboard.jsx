@@ -1,4 +1,3 @@
-// pages/admin/AdminDashboard.jsx
 import React, { useState, useEffect } from 'react';
 import {
   Users,
@@ -243,7 +242,7 @@ const AdminDashboard = () => {
         sub.app || '',
         sub.trackingId || '',
         sub.dataUmum?.email || '',
-        sub.aroData?.keterangan || '' // Tambahkan pencarian di keterangan ARO
+        sub.aroData?.keterangan || '' 
       ].join(' ').toLowerCase();
       
       return searchable.includes(query);

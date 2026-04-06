@@ -6,7 +6,6 @@ const AntiGratificationBanner = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    // SELALU tampilkan banner setiap refresh
     const showBanner = () => {
       setIsVisible(true);
       setTimeout(() => {
@@ -14,10 +13,8 @@ const AntiGratificationBanner = () => {
       }, 50);
     };
 
-    // Tampilkan banner dengan sedikit delay untuk animasi
     const timer = setTimeout(showBanner, 300);
     
-    // Cleanup timeout
     return () => {
       clearTimeout(timer);
     };
@@ -30,7 +27,6 @@ const AntiGratificationBanner = () => {
     }, 200);
   };
 
-  // Jangan render apa-apa jika tidak visible
   if (!isVisible) return null;
 
   return (

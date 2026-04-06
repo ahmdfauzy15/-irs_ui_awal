@@ -1,4 +1,3 @@
-// data/monitoringData.js
 export const monitoringLaporanData = [
   {
     id: 1,

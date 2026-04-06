@@ -1,4 +1,3 @@
-// components/layout/AdminSidebar.jsx
 import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard,
@@ -43,7 +42,6 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, [isSidebarOpen, toggleSidebar]);
 
-  // Menu Admin SEDERHANA: Hanya 3 menu utama
   const adminMenuItems = [
     { 
       id: 'dashboard',

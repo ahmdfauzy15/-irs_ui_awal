@@ -1,4 +1,3 @@
-// Dashboard.js - Update untuk user baru
 import React, { useState } from 'react';
 import { 
   FileText, 
@@ -19,13 +18,13 @@ import {
   Shield,
   Lock,
   AlertTriangle,
-  Gavel // TAMBAHKAN INI
+  Gavel 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isNewUser, setIsNewUser] = useState(true); // State untuk menandai user baru
+  const [isNewUser, setIsNewUser] = useState(true); 
   
   // Data untuk user baru
   const welcomeStatsNewUser = [

@@ -50,7 +50,6 @@ const Ereporting = () => {
     };
   });
   
-  // State untuk filter - DIPERBAHARUI untuk struktur baru
   const [filters, setFilters] = useState({
     periodeStatus: 'aktif',
     subFilters: {
@@ -58,7 +57,7 @@ const Ereporting = () => {
       jenisLJK: 'all',
       periode: 'all',
       searchTerm: '',
-      reviewStatus: 'all' // Status review untuk filter level 3
+      reviewStatus: 'all' 
     }
   });
   
@@ -75,13 +74,11 @@ const Ereporting = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Data reports Ereporting dengan tanggal real-time
   const initialReports = useMemo(() => {
     const currentYear = currentDateTime.getFullYear();
     const currentMonth = currentDateTime.getMonth() + 1; // 1-indexed
     const currentDay = currentDateTime.getDate();
     
-    // Fungsi untuk mendapatkan tanggal yang aman
     const getSafeDate = (year, month, day) => {
       let safeMonth = month;
       let safeYear = year;
@@ -477,7 +474,6 @@ const Ereporting = () => {
     const deadline = new Date(deadlineDate);
     const submission = new Date(submissionDate);
     
-    // PERBAIKAN: Cek apakah tanggal valid
     if (isNaN(deadline.getTime()) || isNaN(submission.getTime())) {
       return null;
     }
@@ -608,7 +604,6 @@ const Ereporting = () => {
         });
       };
       
-      // PERBAIKAN: Pastikan tanggal valid sebelum konversi ke ISO
       const safeDateToISO = (date) => {
         if (!date || isNaN(date.getTime())) return null;
         return date.toISOString();
@@ -639,7 +634,6 @@ const Ereporting = () => {
     setReportsWithPeriod(updatedReports);
   }, [dateRange, initialReports, currentDateTime]);
 
-  // Sub-filter options - STRUKTUR BARU
   const getSubFilterOptions = () => {
     if (filters.periodeStatus === 'aktif') {
       return [
@@ -705,7 +699,6 @@ const Ereporting = () => {
       filtered = filtered.filter(report => report.periodeStatus === filters.periodeStatus);
     }
     
-    // Filter sub-filters - STRUKTUR BARU
     if (filters.subFilters.statusDetail !== 'all') {
       filtered = filtered.filter(report => {
         switch(filters.subFilters.statusDetail) {
@@ -782,7 +775,6 @@ const Ereporting = () => {
     }));
   }, [reportsWithPeriod]);
 
-  // Hitung stats - DIPERBAHARUI untuk statistik baru
   const stats = useMemo(() => {
     const activeReports = reportsWithPeriod.filter(r => r.periodeStatus === 'aktif');
     const lateReports = reportsWithPeriod.filter(r => r.periodeStatus === 'terlambat');
@@ -807,7 +799,6 @@ const Ereporting = () => {
       berhasilTepatWaktu: activeReports.filter(r => r.status === 'berhasil' && r.statusKetepatanWaktu === 'Tepat Waktu').length,
       belumLaporAktif: activeReports.filter(r => r.status === 'belum-lapor').length,
       gagal: activeReports.filter(r => r.status === 'gagal').length,
-      // Statistik untuk periode terlambat
       berhasilSedangReviewTerlambat: sedangReviewTerlambat,
       berhasilSudahReviewTerlambat: sudahReviewTerlambat,
       berhasilBelumReviewTerlambat: belumReviewTerlambat,

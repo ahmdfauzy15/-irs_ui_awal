@@ -1,4 +1,3 @@
-// Profile.jsx - Page Profile Sederhana dengan Hak Akses (MODIFIKASI APOLO)
 import React, { useState, useEffect } from 'react';
 import { 
   User, 
@@ -50,7 +49,6 @@ const Profile = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Tentukan tab aktif berdasarkan URL
   const getActiveTabFromURL = () => {
     const path = location.pathname;
     if (path === '/profile' || path === '/profile/hak-akses/pengajuan') return 'pengajuan';
@@ -167,7 +165,6 @@ const Profile = () => {
     setSelectedForumSubmission(updated);
   };
 
-  // FUNGSI TAMBAH ARO - Membuat submission baru dengan ID tracking baru
   const handleAddARO = () => {
     if (!aroKeterangan) {
       alert('Harap isi keterangan penambahan ARO!');
@@ -240,7 +237,6 @@ const Profile = () => {
     }
   };
 
-  // MODIFIKASI getAppBadge untuk menangani APOLO dengan ARO
   const getAppBadge = (app, isARO = false, hasAro = false) => {
     const appNames = {
       'sipina': 'SIPINA',
@@ -2730,7 +2726,6 @@ const SipinaForm = ({ dataUmum, initialData, onSave, onCancel, hideCancel }) => 
 };
 
 // ==================== FORM E-REPORTING DENGAN ACCORDION ====================
-// ==================== FORM E-REPORTING DENGAN ACCORDION (URUTAN BENAR) ====================
 const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hideCancel }) => {
   const [metodePendaftaran, setMetodePendaftaran] = useState(null);
   const [formData, setFormData] = useState({
@@ -2792,7 +2787,6 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
     }
   }, [initialData]);
 
-  // Auto-load data perusahaan berdasarkan NPWP (nama & alamat tidak bisa diedit, jenis usaha bisa diedit)
   useEffect(() => {
     if (formData.npwp && formData.npwp.length >= 5) {
       const generateDataFromNPWP = (npwp) => {
@@ -2849,7 +2843,6 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
       dataSIPO: null
     }));
     
-    // Tutup section pilihMetode dan buka section dataPerusahaan
     toggleSection('pilihMetode');
     toggleSection('dataPerusahaan');
   };
@@ -3047,8 +3040,7 @@ const EReportingFormAccordion = ({ dataUmum, initialData, onSave, onCancel, hide
       return metodePendaftaran === 'sipo' && savedSteps.dataPerusahaan;
     }
     
-    // Email bisa diakses setelah data perusahaan selesai (untuk non-sipo) 
-    // atau setelah validasi SIPO selesai (untuk sipo)
+   
     if (section === 'email') {
       if (metodePendaftaran === 'sipo') {
         return savedSteps.validasiSIPO;

@@ -1,4 +1,3 @@
-// src/components/dashboard/ActivityList.jsx
 import React from 'react';
 import { CheckCircle, Clock, XCircle, AlertCircle, Info } from 'lucide-react';
 

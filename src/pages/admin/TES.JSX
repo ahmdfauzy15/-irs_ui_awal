@@ -1,4 +1,3 @@
-// Profile.jsx - Page Profile Sederhana dengan Hak Akses
 import React, { useState, useEffect } from 'react';
 import { 
   User, 
