@@ -71,13 +71,13 @@ const AdminHeader = ({ toggleSidebar, sidebarOpen }) => {
             <div className="min-w-0 flex-1">
               <div className="flex items-center space-x-1 sm:space-x-2">
                 <h1 className="text-lg sm:text-xl font-bold text-white truncate">
-                  Admin Dashboard - Hak Akses IRS
+                  Dashboard
                 </h1>
                 {!isMobile && (
                   <div className="hidden md:flex items-center space-x-1 text-sm text-red-100">
                     <span className='font-bold text-white'>Admin</span>
                     <ChevronDown className="w-3 h-3 rotate-[-90deg] mx-1 text-red-200" />
-                    <span className='font-bold text-white'>Approval Pengajuan</span>
+                    <span className='font-bold text-white'></span>
                   </div>
                 )}
               </div>

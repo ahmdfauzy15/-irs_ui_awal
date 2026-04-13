@@ -17,15 +17,8 @@ const About = () => {
   const features = [
     { icon: Shield, title: 'Keamanan Terjamin', description: 'Enkripsi end-to-end dan autentikasi multi-faktor untuk perlindungan data.' },
     { icon: RefreshCw, title: 'Integrasi Lengkap', description: 'Terhubung dengan APOLO, E-Reporting, dan SIPINA dalam satu platform.' },
-    { icon: BarChart, title: 'Analitik Real-time', description: 'Dashboard dengan visualisasi data untuk pengambilan keputusan yang cepat.' },
-    { icon: Globe, title: 'Akses Global', description: 'Akses dari mana saja dengan dukungan multi-bahasa dan timezone.' },
-  ];
-
-  const stats = [
-    { number: '500+', label: 'Pengguna Aktif' },
-    { number: '10K+', label: 'Laporan Diproses' },
-    { number: '99.8%', label: 'Kepuasan Pengguna' },
-    { number: '24/7', label: 'Dukungan Teknis' },
+    { icon: BarChart, title: 'Analitik', description: 'Dashboard dengan visualisasi data untuk pengambilan keputusan yang cepat.' },
+    { icon: Users, title: 'Akses Responsif', description: 'Akses melalui perangkat apa saja dengan tampilan yang disesuaikan.' },
   ];
 
   return (
@@ -41,13 +34,11 @@ const About = () => {
                     <Info className="w-8 h-8 text-white" />
                   </div>
                   <h1 className="text-3xl md:text-4xl font-bold text-white">
-                    Tentang IRS OJK
+                    Tentang IRS
                   </h1>
                 </div>
                 <p className="text-red-100 text-lg mb-8">
-                  Sistem Pelaporan Terpusat yang dirancang untuk menyederhanakan dan mengotomatisasi 
-                  proses pelaporan keuangan dan operasional Anda. Platform yang intuitif, aman, 
-                  dan efisien untuk semua kebutuhan pelaporan.
+                  Gerbang Tunggal Integrated Reporting System (IRS) merupakan bagian dari roadmap Arsitektur Pelaporan Terintegrasi atau Integrated Reporting Architecture (IRA) untuk mengintegrasikan sistem pelaporan.
                 </p>
               </div>
               
@@ -58,45 +49,6 @@ const About = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map((stat, index) => (
-            <div key={index} className="bg-gradient-to-br from-white to-red-50/50 p-6 rounded-xl border border-red-100 shadow-sm">
-              <div className="text-3xl font-bold text-red-900 mb-2">{stat.number}</div>
-              <div className="text-red-600 font-medium">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Mission & Vision */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-gradient-to-br from-white to-red-50/50 rounded-2xl border border-red-100 shadow-lg p-6">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="p-3 bg-gradient-to-r from-red-100 to-white rounded-xl border border-red-200">
-              <Target className="w-6 h-6 text-red-600" />
-            </div>
-            <h2 className="text-xl font-bold text-red-900">Misi Kami</h2>
-          </div>
-          <p className="text-red-700 leading-relaxed">
-            Menyediakan platform pelaporan yang terintegrasi, aman, dan efisien untuk meningkatkan 
-            transparansi dan akuntabilitas dalam pelaporan keuangan dan operasional.
-          </p>
-        </div>
-
-        <div className="bg-gradient-to-br from-white to-red-50/50 rounded-2xl border border-red-100 shadow-lg p-6">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="p-3 bg-gradient-to-r from-red-100 to-white rounded-xl border border-red-200">
-              <Globe className="w-6 h-6 text-red-600" />
-            </div>
-            <h2 className="text-xl font-bold text-red-900">Visi Kami</h2>
-          </div>
-          <p className="text-red-700 leading-relaxed">
-            Menjadi sistem pelaporan terdepan di Indonesia yang mendukung transformasi digital 
-            sektor keuangan dan bisnis menuju pelaporan yang lebih baik dan efisien.
-          </p>
         </div>
       </div>
 
@@ -131,42 +83,6 @@ const About = () => {
                   </div>
                 );
               })}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Team Section */}
-      <div className="mb-8">
-        <div className="bg-gradient-to-br from-white to-red-50/50 rounded-2xl border border-red-100 shadow-lg overflow-hidden">
-          <div className="p-6 border-b border-red-100 bg-gradient-to-r from-red-50 to-white">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-gradient-to-r from-red-600 to-red-700 rounded-xl">
-                <Users className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-red-900">Tim Pengembang</h2>
-                <p className="text-sm text-red-600">Profesional di balik sistem IRS</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                { name: 'John Doe', role: 'Head of Development', description: 'Bertanggung jawab atas pengembangan sistem dan teknologi.' },
-                { name: 'Jane Smith', role: 'Product Manager', description: 'Mengawasi pengembangan produk dan kepuasan pengguna.' },
-                { name: 'Robert Johnson', role: 'Security Specialist', description: 'Memastikan keamanan sistem dan perlindungan data.' },
-              ].map((member, index) => (
-                <div key={index} className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-red-600 to-red-700 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-xl font-bold">
-                    {member.name.split(' ').map(n => n[0]).join('')}
-                  </div>
-                  <h3 className="font-bold text-red-900 mb-1">{member.name}</h3>
-                  <p className="text-red-600 text-sm font-medium mb-2">{member.role}</p>
-                  <p className="text-red-700 text-sm">{member.description}</p>
-                </div>
-              ))}
             </div>
           </div>
         </div>
