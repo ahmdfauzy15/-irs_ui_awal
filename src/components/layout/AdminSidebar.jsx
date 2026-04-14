@@ -159,12 +159,12 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
               {(!collapsed || windowWidth < 1024) && (
                 <div className="min-w-0">
                   <h1 className="text-lg font-bold text-gray-900">Admin Panel</h1>
-                  <p className="text-xs text-gray-500">Sistem Hak Akses</p>
+                  {/* <p className="text-xs text-gray-500">Sistem Hak Akses</p>
                   <div className="mt-1">
                     <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium rounded-full">
                       Administrator
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               )}
             </div>

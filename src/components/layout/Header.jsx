@@ -191,7 +191,7 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
             )}
 
             {/* Notifications - Hanya tampil jika sidebar tidak terbuka di mobile */}
-            {(!isMobile || (isMobile && !sidebarOpen)) && (
+            {/* {(!isMobile || (isMobile && !sidebarOpen)) && (
               <button 
                 onClick={handleNotificationsClick}
                 className="relative p-2 rounded-lg hover:bg-red-700 transition-colors"
@@ -202,7 +202,7 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
                   3
                 </span>
               </button>
-            )}
+            )} */}
 
             {/* User Profile - Hanya tampil jika sidebar tidak terbuka di mobile */}
             {(!isMobile || (isMobile && !sidebarOpen)) && (
