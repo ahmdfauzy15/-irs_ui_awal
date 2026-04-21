@@ -23,6 +23,8 @@ import AdminSidebar from './components/layout/AdminSidebar';
 import AboutAdmin from './pages/admin/AboutAdmin';
 import FAQAdmin from './pages/admin/FAQAdmin';
 import AdminIndex from './pages/admin/index';
+import Adminset from './pages/admin/AdminSettings';
+
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -124,6 +126,8 @@ function App() {
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="about" element={<AboutAdmin />} />
                 <Route path="faq" element={<FAQAdmin />} />
+                <Route path="settings" element={<Adminset />} />
+
                 {/* Tambahkan route admin lainnya di sini */}
               </Routes>
             </AdminLayoutWrapper>

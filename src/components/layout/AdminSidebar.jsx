@@ -50,6 +50,13 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
       label: 'Dashboard Admin',
       exact: true 
     },
+    { 
+      id: 'settings',
+      path: '/admin/settings', 
+      icon: LayoutDashboard, 
+      label: 'Konfigurasi Admin',
+      exact: true 
+    },
     // { 
     //   id: 'approval',
     //   path: '/admin/approval', 
