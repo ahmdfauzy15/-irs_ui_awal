@@ -307,7 +307,7 @@ const AdminSettings = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nama Laporan <span className="text-red-500">*</span>
+                    Nama Form <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -317,7 +317,7 @@ const AdminSettings = () => {
                     placeholder="Contoh: LCR Individual"
                   />
                 </div>
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Jenis LJK
                   </label>
@@ -331,8 +331,8 @@ const AdminSettings = () => {
                     <option value="BPR / BPRS">BPR / BPRS</option>
                     <option value="Lembaga Keuangan">Lembaga Keuangan</option>
                   </select>
-                </div>
-                <div>
+                </div> */}
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Bidang LJK
                   </label>
@@ -343,7 +343,7 @@ const AdminSettings = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                     placeholder="Contoh: Bank Umum Konvensional"
                   />
-                </div>
+                </div> */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Aturan Deadline
@@ -354,7 +354,7 @@ const AdminSettings = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                   >
                     <option value="calendar">Hari Kalender</option>
-                    <option value="working_days">Hari Kerja (Senin-Jumat)</option>
+                    <option value="working_days">Hari Kerja </option>
                   </select>
                 </div>
                 <div>
@@ -370,7 +370,7 @@ const AdminSettings = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    {formData.deadlineRule === 'calendar' ? 'Jumlah hari kalender dari awal periode' : 'Jumlah hari kerja (Senin-Jumat) dari awal periode'}
+                    {formData.deadlineRule === 'calendar' ? 'Jumlah hari kalender dari awal periode' : 'Jumlah hari kerja dari awal periode'}
                   </p>
                 </div>
                 <div>
@@ -467,7 +467,7 @@ const ReportConfig = ({ reportConfigs, onAdd, onEdit, onDelete }) => {
       </div>
 
       {/* Filter */}
-      <div className="mb-6 flex items-center space-x-4">
+      {/* <div className="mb-6 flex items-center space-x-4">
         <label className="text-sm font-medium text-gray-700">Filter Jenis LJK:</label>
         <select
           value={filterJenis}
@@ -480,17 +480,17 @@ const ReportConfig = ({ reportConfigs, onAdd, onEdit, onDelete }) => {
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
 
       {/* Tabel Konfigurasi */}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">ID</th>
-              <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Nama Laporan</th>
-              <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Jenis LJK</th>
-              <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Bidang LJK</th>
+              <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Kode Form</th>
+              <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Nama Form</th>
+              {/* <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Jenis LJK</th> */}
+              {/* <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Bidang LJK</th> */}
               <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Aturan Deadline</th>
               <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Jml Hari</th>
               <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Status</th>
@@ -502,8 +502,8 @@ const ReportConfig = ({ reportConfigs, onAdd, onEdit, onDelete }) => {
               <tr key={config.id} className="hover:bg-red-50/30 transition-colors">
                 <td className="px-4 py-3 text-sm font-medium text-gray-900">{config.id}</td>
                 <td className="px-4 py-3 text-sm text-gray-900">{config.namaLaporan}</td>
-                <td className="px-4 py-3 text-sm text-gray-600">{config.jenisLJK}</td>
-                <td className="px-4 py-3 text-sm text-gray-600">{config.bidangLJK}</td>
+                {/* <td className="px-4 py-3 text-sm text-gray-600">{config.jenisLJK}</td>
+                <td className="px-4 py-3 text-sm text-gray-600">{config.bidangLJK}</td> */}
                 <td className="px-4 py-3">
                   <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                     config.deadlineRule === 'calendar' 
@@ -618,7 +618,7 @@ const DisputeConfig = () => {
               onChange={(e) => setDisputeSettings({...disputeSettings, maxWorkingDays: parseInt(e.target.value)})}
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
             />
-            <p className="text-xs text-gray-500 mt-1">Jumlah hari kerja (Senin-Jumat) untuk mengajukan sanggahan</p>
+            <p className="text-xs text-gray-500 mt-1">Jumlah hari kerja untuk mengajukan sanggahan</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
