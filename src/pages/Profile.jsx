@@ -823,90 +823,26 @@ const NewAccessSubmissionFlow = ({ userProfile, submissions, setSubmissions, onO
     return;
   }
   
-  // Validasi urutan: APOLO harus dipilih pertama
-  if (app === 'ereporting' && !selectedApps.includes('apolo')) {
-    alert('Harap pilih APOLO terlebih dahulu sebelum memilih E-Reporting!');
-    return;
-  }
-  
-  if (app === 'sipina' && !selectedApps.includes('apolo') && !selectedApps.includes('ereporting')) {
-    alert('Harap pilih APOLO dan E-Reporting terlebih dahulu sebelum memilih SIPINA!');
-    return;
-  }
-  
-  if (!selectedApps.includes(app)) {
+   if (!selectedApps.includes(app)) {
     setSelectedApps([...selectedApps, app]);
   }
 };
 
   const handleRemoveApp = (app) => {
   // Cek apakah aplikasi yang dihapus mempengaruhi urutan
-  const appIndex = selectedApps.findIndex(a => a === app);
-  const remainingApps = selectedApps.filter(a => a !== app);
+ 
+  setSelectedApps(selectedApps.filter(a => a !== app));
   
-  // Validasi: jika menghapus APOLO, maka E-Reporting dan SIPINA juga harus dihapus
-  if (app === 'apolo') {
-    const hasEreporting = remainingApps.includes('ereporting');
-    const hasSipina = remainingApps.includes('sipina');
-    
-    if (hasEreporting || hasSipina) {
-      alert('Menghapus APOLO akan menghapus E-Reporting dan SIPINA yang tergantung padanya!');
-      // Hapus semua yang tergantung
-      const finalApps = remainingApps.filter(a => a !== 'ereporting' && a !== 'sipina');
-      setSelectedApps(finalApps);
-      
-      // Hapus data yang tersimpan
-      const newSavedSubmissions = savedSubmissions.filter(s => s.app !== 'ereporting' && s.app !== 'sipina');
-      setSavedSubmissions(newSavedSubmissions);
-      
-      setFormData(prev => ({
-        ...prev,
-        ereporting: {},
-        sipina: {}
-      }));
-      
-      if (activeTab === 'ereporting' || activeTab === 'sipina') {
-        setActiveTab(finalApps.length > 0 ? finalApps[0] : null);
-      }
-      return;
-    }
-  }
-  
-  // Jika menghapus E-Reporting, hapus juga SIPINA
-  if (app === 'ereporting') {
-    const hasSipina = remainingApps.includes('sipina');
-    if (hasSipina) {
-      alert('Menghapus E-Reporting akan menghapus SIPINA yang tergantung padanya!');
-      const finalApps = remainingApps.filter(a => a !== 'sipina');
-      setSelectedApps(finalApps);
-      
-      const newSavedSubmissions = savedSubmissions.filter(s => s.app !== 'sipina');
-      setSavedSubmissions(newSavedSubmissions);
-      
-      setFormData(prev => ({
-        ...prev,
-        sipina: {}
-      }));
-      
-      if (activeTab === 'sipina') {
-        setActiveTab(finalApps.length > 0 ? finalApps[0] : null);
-      }
-      return;
-    }
-  }
-  
-  setSelectedApps(remainingApps);
-  
-  setFormData(prev => ({
+   setFormData(prev => ({
     ...prev,
     [app.toLowerCase()]: {}
   }));
   
-  const newSavedSubmissions = savedSubmissions.filter(s => s.app !== app);
+   const newSavedSubmissions = savedSubmissions.filter(s => s.app !== app);
   setSavedSubmissions(newSavedSubmissions);
   
   if (activeTab === app) {
-    setActiveTab(remainingApps.length > 0 ? remainingApps[0] : null);
+    setActiveTab(selectedApps.filter(a => a !== app).length > 0 ? selectedApps.filter(a => a !== app)[0] : null);
   }
 };
 
@@ -1543,13 +1479,18 @@ const FormWizard = ({
   onDeleteDraft,
   onEditDraft
 }) => {
-  const apps = [
-    { id: 'apolo', label: 'APOLO', icon: Package },
-    { id: 'ereporting', label: 'E-Reporting', icon: FileSpreadsheet },
-    { id: 'sipina', label: 'SIPINA', icon: Database }
-  ];
+  // Map aplikasi dengan icon dan label
+  const appConfig = {
+    apolo: { id: 'apolo', label: 'APOLO', icon: Package, order: 0 },
+    ereporting: { id: 'ereporting', label: 'E-Reporting', icon: FileSpreadsheet, order: 0 },
+    sipina: { id: 'sipina', label: 'SIPINA', icon: Database, order: 0 }
+  };
 
-  const filteredApps = apps.filter(app => selectedApps.includes(app.id));
+
+  const filteredApps = selectedApps.map((appId, index) => ({
+    ...appConfig[appId],
+    order: index + 1 // Urutan sesuai dengan urutan dipilih
+  }));
 
   const isFormFilled = (appId) => {
     const submission = savedSubmissions.find(s => s.app === appId);
@@ -1557,6 +1498,33 @@ const FormWizard = ({
   };
 
   // Urutan aplikasi yang harus diisi
+  // const getNextIncompleteTab = () => {
+  //   for (const app of filteredApps) {
+  //     if (!isFormFilled(app.id)) {
+  //       return app.id;
+  //     }
+  //   }
+  //   return filteredApps[filteredApps.length - 1]?.id;
+  // };
+
+  // Cek apakah tab sebelumnya sudah terisi
+  // const isPreviousTabCompleted = (currentTabId) => {
+  //   const currentIndex = filteredApps.findIndex(app => app.id === currentTabId);
+  //   if (currentIndex === 0) return true;
+    
+  //   const previousApp = filteredApps[currentIndex - 1];
+  //   return isFormFilled(previousApp.id);
+  // };
+
+    const isPreviousTabCompleted = (currentTabId) => {
+    const currentIndex = filteredApps.findIndex(app => app.id === currentTabId);
+    if (currentIndex === 0) return true; // Tab pertama tidak perlu validasi
+    
+    const previousApp = filteredApps[currentIndex - 1];
+    return isFormFilled(previousApp.id);
+  };
+
+  // Dapatkan tab berikutnya yang belum diisi (untuk auto-lanjut)
   const getNextIncompleteTab = () => {
     for (const app of filteredApps) {
       if (!isFormFilled(app.id)) {
@@ -1565,17 +1533,7 @@ const FormWizard = ({
     }
     return filteredApps[filteredApps.length - 1]?.id;
   };
-
-  // Cek apakah tab sebelumnya sudah terisi
-  const isPreviousTabCompleted = (currentTabId) => {
-    const currentIndex = filteredApps.findIndex(app => app.id === currentTabId);
-    if (currentIndex === 0) return true;
-    
-    const previousApp = filteredApps[currentIndex - 1];
-    return isFormFilled(previousApp.id);
-  };
-
-  const getFormComponent = () => {
+   const getFormComponent = () => {
     const commonProps = {
       dataUmum,
       initialData: savedSubmissions.find(s => s.app === activeTab)?.data || {},
@@ -1605,16 +1563,41 @@ const FormWizard = ({
     return null;
   };
 
+
   // Handler untuk pindah tab
   const handleTabChange = (tabId) => {
-    // Cek apakah tab yang dituju adalah tab sebelumnya yang sudah terisi
-    // atau tab berikutnya yang memerlukan tab sebelumnya sudah terisi
+    // Cek apakah tab yang dituju adalah tab sebelumnya yang belum diisi
     if (!isPreviousTabCompleted(tabId)) {
-      alert(`Harap isi form ${filteredApps.find(app => app.id === tabId)?.label} terlebih dahulu!`);
+      const previousApp = filteredApps[filteredApps.findIndex(app => app.id === tabId) - 1];
+      alert(`Harap isi form ${previousApp?.label} terlebih dahulu!`);
       return;
     }
     setActiveTab(tabId);
   };
+
+  // Handler untuk tombol Selanjutnya - otomatis pindah ke tab berikutnya atau ke tab yang belum diisi
+ const handleNextTab = () => {
+    const currentIndex = filteredApps.findIndex(app => app.id === activeTab);
+    const currentApp = filteredApps[currentIndex];
+    
+    // Cek apakah form saat ini sudah diisi
+    if (!isFormFilled(activeTab)) {
+      alert(`Harap isi form ${currentApp?.label} terlebih dahulu!`);
+      return;
+    }
+    
+    // Cari tab berikutnya yang belum diisi
+     const nextIncomplete = getNextIncompleteTab();
+    const nextIndex = filteredApps.findIndex(app => app.id === nextIncomplete);
+    
+    if (nextIndex > currentIndex) {
+      setActiveTab(nextIncomplete);
+    } else if (currentIndex < filteredApps.length - 1) {
+      // Jika semua sudah terisi, pindah ke tab berikutnya
+      setActiveTab(filteredApps[currentIndex + 1].id);
+    }
+  };
+  const allFormsFilled = filteredApps.every(app => isFormFilled(app.id));
 
   return (
     <div className="p-6">
@@ -1631,24 +1614,21 @@ const FormWizard = ({
             <h2 className="text-xl font-bold text-gray-900">Form Pengajuan Hak Akses</h2>
           </div>
           <div className="flex items-center gap-3">
-            {filteredApps.map(appId => {
-              const app = apps.find(a => a.id === appId);
-              const filled = isFormFilled(appId);
+            {filteredApps.map(app => {
+              const filled = isFormFilled(app.id);
               return (
-                <div 
-                  key={appId}
-                  className="flex items-center"
-                >
+                <div key={app.id} className="flex items-center">
                   {filled && (
                     <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
                   )}
+                  <span className="text-xs text-gray-500">{app.label}</span>
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* Tab Navigation dengan urutan yang harus diikuti */}
+        {/* Tab Navigation - Dengan validasi urutan */}
         <div className="flex border-b border-red-200">
           {filteredApps.map((app, index) => {
             const Icon = app.icon;
@@ -1669,8 +1649,10 @@ const FormWizard = ({
                   ${isDisabled ? 'opacity-50 cursor-not-allowed hover:text-gray-500' : ''}
                 `}
               >
-                <span className="w-5 h-5 rounded-full bg-red-100 text-red-800 text-xs flex items-center justify-center">
-                  {index + 1}
+                <span className={`w-5 h-5 rounded-full text-white text-xs flex items-center justify-center ${
+                  filled ? 'bg-green-500' : 'bg-red-500'
+                }`}>
+                  {app.order}
                 </span>
                 <Icon className={`w-4 h-4 ${filled ? 'text-green-500' : ''}`} />
                 {app.label}
@@ -1681,24 +1663,27 @@ const FormWizard = ({
             );
           })}
         </div>
-        
-        {/* Progress Indicator */}
+
+        {/* Progress Indicator - Sesuai urutan */}
         <div className="mt-4 flex items-center gap-2">
           {filteredApps.map((app, index) => {
             const filled = isFormFilled(app.id);
+            const isActive = activeTab === app.id;
             return (
               <div key={app.id} className="flex items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                  filled 
-                    ? 'bg-green-500 text-white' 
-                    : index === filteredApps.findIndex(a => a.id === activeTab)
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-200 text-gray-500'
-                }`}>
-                  {filled ? <CheckCircle className="w-4 h-4" /> : index + 1}
+                <div 
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                    filled 
+                      ? 'bg-green-500 text-white' 
+                      : isActive
+                      ? 'bg-red-600 text-white ring-2 ring-red-300 ring-offset-2'
+                      : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
+                  {filled ? <CheckCircle className="w-4 h-4" /> : app.order}
                 </div>
                 {index < filteredApps.length - 1 && (
-                  <div className={`w-8 h-0.5 mx-1 ${
+                  <div className={`w-8 h-0.5 mx-1 transition-all ${
                     filled && isFormFilled(filteredApps[index + 1]?.id) 
                       ? 'bg-green-500' 
                       : 'bg-gray-300'
@@ -1707,6 +1692,20 @@ const FormWizard = ({
               </div>
             );
           })}
+        </div>
+        
+        {/* Informasi urutan wajib */}
+        <div className="mt-3 text-xs text-gray-500 flex items-center gap-2">
+          <Info className="w-3 h-3" />
+          <span>Form harus diisi berurutan sesuai urutan yang dipilih: </span>
+          <span className="font-medium text-red-600">
+            {filteredApps.map((app, i) => (
+              <span key={app.id}>
+                {app.label}
+                {i < filteredApps.length - 1 && ' → '}
+              </span>
+            ))}
+          </span>
         </div>
       </div>
 
@@ -1729,18 +1728,12 @@ const FormWizard = ({
             </button>
           )}
           
+          <div className="flex-1" />
+          
           {filteredApps.findIndex(app => app.id === activeTab) < filteredApps.length - 1 && (
             <button
-              onClick={() => {
-                const currentApp = filteredApps.find(app => app.id === activeTab);
-                if (!isFormFilled(activeTab)) {
-                  alert(`Harap isi form ${currentApp?.label} terlebih dahulu!`);
-                  return;
-                }
-                const nextIndex = filteredApps.findIndex(app => app.id === activeTab) + 1;
-                setActiveTab(filteredApps[nextIndex].id);
-              }}
-              className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium rounded-lg hover:from-red-600 hover:to-red-700 flex items-center gap-2 ml-auto"
+              onClick={handleNextTab}
+              className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium rounded-lg hover:from-red-600 hover:to-red-700 flex items-center gap-2"
             >
               Selanjutnya
               <ArrowRight className="w-4 h-4" />
@@ -1813,30 +1806,35 @@ const FormWizard = ({
           </div>
         )}
 
-        {/* Submit Button */}
+        {/* Submit Button - Hanya aktif jika semua form sudah terisi */}
         <div className="flex justify-end">
           <button
             onClick={onSubmitAll}
-            disabled={savedSubmissions.length !== filteredApps.length || 
-                     savedSubmissions.some(sub => Object.keys(sub.data).length === 0)}
+            disabled={!allFormsFilled}
             className={`
-              px-8 py-3 font-bold rounded-lg flex items-center gap-2
-              ${savedSubmissions.length === filteredApps.length && 
-                savedSubmissions.every(sub => Object.keys(sub.data).length > 0)
-                ? 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700'
+              px-8 py-3 font-bold rounded-lg flex items-center gap-2 transition-all
+              ${allFormsFilled
+                ? 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-md'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }
             `}
           >
             <Send className="w-5 h-5" />
-            Submit Semua Pengajuan
+            Kirim Pengajuan
           </button>
         </div>
+        
+        {/* Pesan jika belum semua form terisi */}
+        {!allFormsFilled && (
+          <p className="text-xs text-yellow-600 mt-3 text-right flex items-center justify-end gap-1">
+            <AlertCircle className="w-3 h-3" />
+            Harap isi semua form secara berurutan sebelum mengirim
+          </p>
+        )}
       </div>
     </div>
   );
 };
-
 // ==================== FORM APOLO DENGAN ARO ====================
 const ApoloFormWithAro = ({ dataUmum, initialData, onSave, onCancel, hideCancel, aroData, setAroData }) => {
   const [formData, setFormData] = useState({
@@ -3950,3 +3948,5 @@ const StatusMonitoringTab = ({ submissions, getStatusBadge, getAppBadge, formatD
 };
 
 export default Profile;
+
+
